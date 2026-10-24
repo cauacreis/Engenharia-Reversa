@@ -1,0 +1,17 @@
+# Binaries and extracted payload artifacts
+extracted_bin/
+*.exe
+*.dll
+*.iso
+*.bin
+
+# Python caches
+__pycache__/
+*.pyc
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
