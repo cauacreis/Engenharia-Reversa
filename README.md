@@ -36,3 +36,4 @@ Este repositório adota por padrão o framework e as diretrizes do **REA (Revers
 | :--- | :--- | :--- | :--- | :--- |
 | **24/10/2026** | `Capri-Setup.exe` (v0.2.0) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report.md) |
 | **24/10/2026** | `Capri-Setup.exe` (v0.3.0) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report-v0.3.0.md) |
+| **25/10/2026** | `Capri-Setup.exe` (v0.3.1) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report-v0.3.1.md) |
