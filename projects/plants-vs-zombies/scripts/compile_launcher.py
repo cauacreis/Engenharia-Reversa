@@ -3,7 +3,8 @@ import subprocess
 
 def compile_launcher():
     csc = r"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-    src_dir = r"c:\Users\Cauã Felype\Documents\Engenharia Reversa\src\PvZLauncher"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    src_dir = os.path.abspath(os.path.join(script_dir, "..", "src", "PvZLauncher"))
     out_exe = os.path.join(src_dir, "PlantsVsZombies_Launcher.exe")
     
     cs_files = [

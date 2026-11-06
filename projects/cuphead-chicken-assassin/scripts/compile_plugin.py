@@ -3,7 +3,8 @@ import subprocess
 
 def compile_mod():
     csc = r"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-    src = r"c:\Users\Cauã Felype\Documents\Engenharia Reversa\scripts\ChickenAssassinCupheadMod\ChickenCupheadPlugin.cs"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    src = os.path.abspath(os.path.join(script_dir, "..", "src", "ChickenAssassinCupheadMod", "ChickenCupheadPlugin.cs"))
     out = r"C:\Program Files (x86)\Steam\steamapps\common\Cuphead\BepInEx\plugins\ChickenCupheadMod.dll"
     
     cuphead_managed = r"C:\Program Files (x86)\Steam\steamapps\common\Cuphead\Cuphead_Data\Managed"

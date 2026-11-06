@@ -17,45 +17,44 @@ Este repositório adota por padrão o framework e as diretrizes do **REA (Revers
 
 ---
 
-## 📂 Estrutura do Repositório
+## 📂 Estrutura Modular de Subprojetos
+
+O repositório é organizado de forma modular na pasta `projects/`, permitindo que cada projeto de engenharia reversa mantenha seu próprio código-fonte, scripts de compilação/extração e relatórios técnicos independentes:
 
 ```text
 ├── .agents/
 │   └── skills/
-│       └── reverse-engineer-anything/    # Skill e guias de referência REA
-├── reports/                             # Relatórios técnicos de engenharia reversa
-│   ├── capri-desktop/                   # Auditorias de integridade do Capri Desktop
-│   ├── chicken_cuphead_re_report.md     # Relatório do mod Crossover Cuphead x Chicken Assassin
-│   └── pvz_dlc_edition_steam_integration.md # Relatório de integração do PvZ DLC Edition na Steam
-├── scripts/                             # Scripts de automação, compilação e extração
-│   ├── ChickenAssassinCupheadMod/       # Código-fonte do plugin BepInEx (C# / Harmony)
-│   ├── compile_launcher.py              # Compilação automatizada do PvZ Multi-Mod Launcher
-│   └── compile_plugin.py                # Compilação do plugin do Cuphead
-├── src/
-│   └── PvZLauncher/                     # Código-fonte do Launcher Multi-Versões de PvZ (C# WinForms)
-│       ├── ModEntry.cs                  # Estrutura de dados e status de mods
-│       ├── ModManager.cs                # Catálogo de versões e fontes oficiais
-│       ├── SaveManager.cs               # Sandboxing e isolamento de saves (anti-corrupção)
-│       ├── PvZResources.cs              # Texturas autênticas de pedra/botões do PvZ embutidas
-│       ├── PvZLauncherForm.cs           # Interface visual no estilo do diálogo clássico de seleção
-│       └── Program.cs                   # Ponto de entrada do executável
-├── AGENTS.md                            # Diretrizes ativas para agentes de IA
-├── GEMINI.md                            # Configurações do Antigravity / Gemini CLI
+│       └── reverse-engineer-anything/          # Framework e guias REA
+├── projects/
+│   ├── capri-desktop/                          # Auditoria e segurança do Capri Desktop
+│   │   ├── reports/                            # Relatórios técnicos (v0.3.0, v0.3.1)
+│   │   ├── scripts/                            # Verificadores de atualização e hash
+│   │   └── README.md
+│   ├── cuphead-chicken-assassin/               # Crossover Cuphead x Chicken Assassin
+│   │   ├── src/ChickenAssassinCupheadMod/      # Plugin BepInEx/Harmony (C#)
+│   │   ├── scripts/                            # Extração de assets Spine e compilação
+│   │   ├── reports/                            # Relatório de engenharia reversa
+│   │   └── README.md
+│   └── plants-vs-zombies/                      # Ecossistema Plants vs. Zombies
+│       ├── src/PvZLauncher/                    # Multi-Mod Steam Launcher (C# WinForms)
+│       ├── scripts/                            # Compilador, deploy Steam e ferramentas PAK
+│       ├── reports/                            # Relatório de integração Steam
+│       └── README.md
+├── AGENTS.md                                   # Diretrizes ativas para agentes de IA
+├── GEMINI.md                                   # Configurações do Antigravity / Gemini CLI
 └── README.md
 ```
 
 ---
 
-## 📑 Projetos & Relatórios Realizados
+## 📑 Subprojetos & Relatórios Realizados
 
-| Data | Alvo / Projeto | Tipo | Veredito / Status | Relatório Técnico |
+| Data | Subprojeto | Tipo | Veredito / Status | Documentação |
 | :--- | :--- | :--- | :--- | :--- |
-| **24/10/2026** | `Capri-Setup.exe` (v0.2.0) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report.md) |
-| **24/10/2026** | `Capri-Setup.exe` (v0.3.0) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report-v0.3.0.md) |
-| **25/10/2026** | `Capri-Setup.exe` (v0.3.1) | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatório](reports/capri-desktop/analysis-report-v0.3.1.md) |
-| **25/10/2026** | `Cuphead x Chicken Assassin` | Mod Crossover (Unity/BepInEx) | 🥊 Franklin Schneider Canônico com Quimono | [Ver Relatório](reports/chicken_cuphead_re_report.md) |
-| **28/10/2026** | `PvZ: DLC Edition (v2.7.2)` | Integração Steam / XDelta3 | 🌻 100% Funcional na Steam com Horas | [Ver Relatório](reports/pvz_dlc_edition_steam_integration.md) |
-| **06/11/2026** | `PvZ Multi-Mod Steam Launcher` | Launcher Nativo C# (.NET) | 🎮 Multi-Versões, Saves Isolados e Auto-Update | [Código em src/](src/PvZLauncher/) |
+| **24/10/2026** | `projects/capri-desktop` | Instalador .NET C# | ✅ Seguro / Benigno | [Ver Relatórios](projects/capri-desktop/reports/) |
+| **25/10/2026** | `projects/cuphead-chicken-assassin` | Mod Crossover (Unity/BepInEx) | 🥊 Franklin Schneider Canônico com Quimono | [Ver Subprojeto](projects/cuphead-chicken-assassin/) |
+| **28/10/2026** | `projects/plants-vs-zombies` (DLC Edition) | Integração Steam / XDelta3 | 🌻 100% Funcional na Steam com Horas | [Ver Relatório](projects/plants-vs-zombies/reports/pvz_dlc_edition_steam_integration.md) |
+| **06/11/2026** | `projects/plants-vs-zombies` (Launcher) | Launcher Nativo C# (.NET) | 🎮 Multi-Versões, Saves Isolados e Auto-Update | [Código do Launcher](projects/plants-vs-zombies/src/PvZLauncher/) |
 
 ---
 

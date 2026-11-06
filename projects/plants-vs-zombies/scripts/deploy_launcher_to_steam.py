@@ -1,8 +1,12 @@
 import os
 import shutil
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+subproject_dir = os.path.abspath(os.path.join(script_dir, ".."))
+workspace_dir = os.path.abspath(os.path.join(subproject_dir, "..", ".."))
+
 steam_pvz = r"C:\Program Files (x86)\Steam\steamapps\common\Plants Vs Zombies"
-launcher_src = r"c:\Users\Cauã Felype\Documents\Engenharia Reversa\src\PvZLauncher\PlantsVsZombies_Launcher.exe"
+launcher_src = os.path.join(subproject_dir, "src", "PvZLauncher", "PlantsVsZombies_Launcher.exe")
 
 # 1. Ensure LauncherData directories
 dlc_mod_dir = os.path.join(steam_pvz, "LauncherData", "Mods", "DLC_Edition")
@@ -10,7 +14,7 @@ os.makedirs(dlc_mod_dir, exist_ok=True)
 
 # 2. Place DLC Edition executable into its mod directory
 dlc_target = os.path.join(dlc_mod_dir, "PlantsVsZombies_DLC.exe")
-root_dlc_source = r"c:\Users\Cauã Felype\Documents\Engenharia Reversa\pvz_mod\PlantsVsZombies_DLC.exe"
+root_dlc_source = os.path.join(workspace_dir, "pvz_mod", "PlantsVsZombies_DLC.exe")
 
 if not os.path.exists(dlc_target):
     if os.path.exists(root_dlc_source):
