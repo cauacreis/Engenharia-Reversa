@@ -1,0 +1,115 @@
+﻿Please do NOT request access to edit nor comment on the document.
+You have to follow these steps for every DLC update; Do not do things that are not listed on the steps. Random pirated versions of PvZ will NOT work for the patch.
+
+
+Español: Cómo instalar DLC
+Русский: Как установить DLC
+
+
+For OG (v1.0.0.1051):
+
+
+1. Open your OG folder.
+
+2. Go to the last page (page 3) in this document
+
+
+For Steam:
+
+   1. Open Steam.
+
+
+   1. Right click the game;
+Hover over “Manage”;
+Left click “Browse local files”.  
+
+
+      2. Go to the last page (page 3) in this document.
+For EA Store:
+
+
+      1. Open EA Store.
+
+      2. Go to "Library".
+
+      3. Hover over Plants vs. Zombies.
+
+      4. Click on "···".
+
+      5. Click on “View properties”.
+
+      6. Click on “OPEN FOLDER”.
+
+      7. Go to the last page (page 3) in this document.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Steps:
+
+
+         1. Open “DeltaPatcher.exe”.
+
+
+         2. Enable “Backup original file”.
+  
+
+
+
+         3. Drag “PlantsVsZombies.exe” into “Original file:”;
+Drag the corresponding patch into “XDelta patch:”.
+    
+
+         4. Click “Apply patch”.
+
+
+            5. Move “PlantsVsZombiesPATCHED.exe” into the DLC folder;
+Now you can play DLC.

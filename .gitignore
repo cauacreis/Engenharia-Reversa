@@ -1,15 +1,55 @@
-# Binaries and extracted payload artifacts
-extracted_bin/
+# ==========================================
+# GITIGNORE - ENGENHARIA REVERSA & MODDING
+# ==========================================
+
+# Binários pesados e executáveis compilados (Evita o limite de 100MB do GitHub)
 *.exe
 *.dll
 *.iso
 *.bin
+*.pak
+*.xdelta
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+# Pastas de pacotes e extração de binários
+extracted_bin/
+pvz_mod/
+pvz_launcher_assets/
+bepinex_x64.zip
+
+# Dados de save e perfis pessoais de jogadores (Proteção de privacidade)
+userdata/
+*.dat
+*.dlc
+*.sav
+*.save
+
+# Credenciais, chaves e tokens
+*.key
+*.pem
+*.token
+*.env
+credentials.json
+secrets.*
+
+# Logs de execução e temporários
+*.log
+*.tmp
+logs/
+.system_generated/
+scratch/
 
 # Python caches
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
 
-# OS generated
+# Sistema operacional
 Thumbs.db
 ehthumbs.db
 Desktop.ini
