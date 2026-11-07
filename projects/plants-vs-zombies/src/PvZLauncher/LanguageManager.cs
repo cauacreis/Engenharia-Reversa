@@ -16,8 +16,19 @@ namespace PvZLauncher
 
     public static class LanguageManager
     {
-        private static readonly string AppDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string LauncherDataDir = Path.Combine(AppDir, "LauncherData");
+        private static string GetAppDir()
+        {
+            try
+            {
+                string loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(loc)) return Path.GetDirectoryName(loc);
+            }
+            catch { }
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        private static readonly string AppDir = GetAppDir();
+        private static readonly string LauncherDataDir = Path.Combine(GetAppDir(), "LauncherData");
         private static readonly string LanguagesDir = Path.Combine(LauncherDataDir, "Languages");
         private static readonly string ConfigFile = Path.Combine(LauncherDataDir, "config.ini");
 
@@ -32,10 +43,14 @@ namespace PvZLauncher
 
         private static void EnsureDirectories()
         {
-            if (!Directory.Exists(LauncherDataDir)) Directory.CreateDirectory(LauncherDataDir);
-            if (!Directory.Exists(LanguagesDir)) Directory.CreateDirectory(LanguagesDir);
-            string ptBrDir = Path.Combine(LanguagesDir, "pt-BR");
-            if (!Directory.Exists(ptBrDir)) Directory.CreateDirectory(ptBrDir);
+            try
+            {
+                if (!Directory.Exists(LauncherDataDir)) Directory.CreateDirectory(LauncherDataDir);
+                if (!Directory.Exists(LanguagesDir)) Directory.CreateDirectory(LanguagesDir);
+                string ptBrDir = Path.Combine(LanguagesDir, "pt-BR");
+                if (!Directory.Exists(ptBrDir)) Directory.CreateDirectory(ptBrDir);
+            }
+            catch { }
         }
 
         public static List<LanguageOption> GetSupportedLanguages(string modId)

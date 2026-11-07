@@ -11,8 +11,19 @@ namespace PvZLauncher
 {
     public static class DownloaderManager
     {
-        private static readonly string AppDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string LauncherDataDir = Path.Combine(AppDir, "LauncherData");
+        private static string GetAppDir()
+        {
+            try
+            {
+                string loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(loc)) return Path.GetDirectoryName(loc);
+            }
+            catch { }
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        private static readonly string AppDir = GetAppDir();
+        private static readonly string LauncherDataDir = Path.Combine(GetAppDir(), "LauncherData");
         private static readonly string DownloadsDir = Path.Combine(LauncherDataDir, "Downloads");
         private static readonly string ModsDir = Path.Combine(LauncherDataDir, "Mods");
 
@@ -36,9 +47,13 @@ namespace PvZLauncher
 
         private static void EnsureDirectories()
         {
-            if (!Directory.Exists(LauncherDataDir)) Directory.CreateDirectory(LauncherDataDir);
-            if (!Directory.Exists(DownloadsDir)) Directory.CreateDirectory(DownloadsDir);
-            if (!Directory.Exists(ModsDir)) Directory.CreateDirectory(ModsDir);
+            try
+            {
+                if (!Directory.Exists(LauncherDataDir)) Directory.CreateDirectory(LauncherDataDir);
+                if (!Directory.Exists(DownloadsDir)) Directory.CreateDirectory(DownloadsDir);
+                if (!Directory.Exists(ModsDir)) Directory.CreateDirectory(ModsDir);
+            }
+            catch { }
         }
 
         public static void DownloadAndInstallMod(ModEntry mod)
@@ -185,6 +200,10 @@ namespace PvZLauncher
                 case "community_edition": return "Widescreen_Edition";
                 case "hybrid": return "Hybrid_Edition";
                 case "fusion": return "Fusion_Edition";
+                case "pvz2_reflourished": return "PvZ2_Reflourished";
+                case "pvz2_altverz": return "PvZ2_AltVerZ";
+                case "pvz2_pc_port": return "PvZ2_PC_Port";
+                case "pvz2_tat": return "PvZ2_TAT";
                 default: return modId;
             }
         }
@@ -199,6 +218,10 @@ namespace PvZLauncher
                 "PlantsVsZombies_DLC.exe",
                 "PlantsVsZombies_Hybrid.exe",
                 "PlantsVsZombies_Fusion.exe",
+                "PvZ2.exe",
+                "PlantsVsZombies2.exe",
+                "PlantsVsZombies2_TAT.exe",
+                "pvz2_pc.exe",
                 "PlantsVsZombies.exe",
                 "PvZ.exe"
             };

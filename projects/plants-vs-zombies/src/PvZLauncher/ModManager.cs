@@ -6,14 +6,29 @@ namespace PvZLauncher
 {
     public static class ModManager
     {
-        private static readonly string AppDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string ModsBaseDir = Path.Combine(Path.Combine(AppDir, "LauncherData"), "Mods");
+        private static string GetAppDir()
+        {
+            try
+            {
+                string loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(loc)) return Path.GetDirectoryName(loc);
+            }
+            catch { }
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        private static readonly string AppDir = GetAppDir();
+        private static readonly string ModsBaseDir = Path.Combine(Path.Combine(GetAppDir(), "LauncherData"), "Mods");
 
         public static List<ModEntry> GetAvailableMods()
         {
-            if (!Directory.Exists(ModsBaseDir)) Directory.CreateDirectory(ModsBaseDir);
+            try { if (!Directory.Exists(ModsBaseDir)) Directory.CreateDirectory(ModsBaseDir); } catch { }
 
             List<ModEntry> mods = new List<ModEntry>();
+
+            // ==========================================
+            // CATEGORIA 1: PLANTS VS. ZOMBIES 1 & MODS
+            // ==========================================
 
             // 1. VANILLA GOTY STEAM
             string vanillaPath = Path.Combine(AppDir, "PlantsVsZombies_ORIGINAL_BACKUP.exe");
@@ -33,7 +48,9 @@ namespace PvZLauncher
                 LatestVersion = "1.2.0",
                 SupportsSteamAchievements = true,
                 IsCustomEngine = false,
-                ThemeKey = "sun"
+                ThemeKey = "sun",
+                Category = "pvz1",
+                IsAndroidMod = false
             });
 
             // 2. PVZ DLC EDITION
@@ -56,7 +73,9 @@ namespace PvZLauncher
                 LatestVersion = "2.7.2",
                 SupportsSteamAchievements = true,
                 IsCustomEngine = false,
-                ThemeKey = "dlc"
+                ThemeKey = "dlc",
+                Category = "pvz1",
+                IsAndroidMod = false
             });
 
             // 3. PVZ WIDESCREEN / COMMUNITY EDITION (16:9 60FPS)
@@ -74,7 +93,9 @@ namespace PvZLauncher
                 LatestVersion = "1.1.2",
                 SupportsSteamAchievements = true,
                 IsCustomEngine = false,
-                ThemeKey = "trophy"
+                ThemeKey = "trophy",
+                Category = "pvz1",
+                IsAndroidMod = false
             });
 
             // 4. PVZ HYBRID EDITION (杂交版 v2.6.1)
@@ -92,7 +113,9 @@ namespace PvZLauncher
                 LatestVersion = "2.6.1",
                 SupportsSteamAchievements = false,
                 IsCustomEngine = true,
-                ThemeKey = "hybrid"
+                ThemeKey = "hybrid",
+                Category = "pvz1",
+                IsAndroidMod = false
             });
 
             // 5. PVZ FUSION EDITION (融合版 Multi-lang v4.0.5)
@@ -110,7 +133,95 @@ namespace PvZLauncher
                 LatestVersion = "4.0.5",
                 SupportsSteamAchievements = false,
                 IsCustomEngine = true,
-                ThemeKey = "fusion"
+                ThemeKey = "fusion",
+                Category = "pvz1",
+                IsAndroidMod = false
+            });
+
+            // ==========================================
+            // CATEGORIA 2: PLANTS VS. ZOMBIES 2 & MODS
+            // ==========================================
+
+            // 6. PVZ 2: REFLOURISHED (RFL)
+            string rflDir = Path.Combine(ModsBaseDir, "PvZ2_Reflourished");
+            string rflPath = DownloaderManager.FindModExecutable(rflDir, "pvz2_reflourished");
+
+            mods.Add(new ModEntry
+            {
+                Id = "pvz2_reflourished",
+                Title = "PvZ 2: Reflourished (RFL Definitivo)",
+                Description = "O mod definitivo de PvZ 2 sem microtransações, mundos expandidos e balanceamento clássico.",
+                ExecutablePath = rflPath,
+                DownloadUrl = "https://gamejolt.com/games/pvzdlceditionmod/1009738",
+                Version = "1.2.0",
+                LatestVersion = "1.2.0",
+                SupportsSteamAchievements = false,
+                IsCustomEngine = true,
+                ThemeKey = "rfl",
+                Category = "pvz2",
+                PackageName = "com.ea.game.pvz2_rfl",
+                IsAndroidMod = true
+            });
+
+            // 7. PVZ 2: ALTVERZ
+            string altverzDir = Path.Combine(ModsBaseDir, "PvZ2_AltVerZ");
+            string altverzPath = DownloaderManager.FindModExecutable(altverzDir, "pvz2_altverz");
+
+            mods.Add(new ModEntry
+            {
+                Id = "pvz2_altverz",
+                Title = "PvZ 2: AltVerZ (Reimaginação Clássica)",
+                Description = "Reimaginação com 25 fases por mundo, meta nostálgico de 50 sóis e estética vintage.",
+                ExecutablePath = altverzPath,
+                DownloadUrl = "https://gamejolt.com/games/pvzdlceditionmod/1009738",
+                Version = "2.0.0",
+                LatestVersion = "2.0.0",
+                SupportsSteamAchievements = false,
+                IsCustomEngine = true,
+                ThemeKey = "altverz",
+                Category = "pvz2",
+                PackageName = "com.ea.game.pvz2_altverz",
+                IsAndroidMod = true
+            });
+
+            // 8. PVZ 2: PC EDITION (PORT NATIVO C++/DIRECTX)
+            string pcPortDir = Path.Combine(ModsBaseDir, "PvZ2_PC_Port");
+            string pcPortPath = DownloaderManager.FindModExecutable(pcPortDir, "pvz2_pc_port");
+
+            mods.Add(new ModEntry
+            {
+                Id = "pvz2_pc_port",
+                Title = "PvZ 2: PC Edition (Port Nativo)",
+                Description = "Port 100% nativo para PC. Roda direto no Windows sem emulador, com widescreen e 60 FPS.",
+                ExecutablePath = pcPortPath,
+                DownloadUrl = "https://github.com/HenryJk/PvZWidescreen/releases/download/v1.1.2/PvZWidescreen_1.1.2.zip",
+                Version = "1.0.0",
+                LatestVersion = "1.0.0",
+                SupportsSteamAchievements = true,
+                IsCustomEngine = false,
+                ThemeKey = "pvz2pc",
+                Category = "pvz2",
+                IsAndroidMod = false
+            });
+
+            // 9. PVZ 2: TRAVEL AROUND TIME (TAT)
+            string tatDir = Path.Combine(ModsBaseDir, "PvZ2_TAT");
+            string tatPath = DownloaderManager.FindModExecutable(tatDir, "pvz2_tat");
+
+            mods.Add(new ModEntry
+            {
+                Id = "pvz2_tat",
+                Title = "PvZ 2: Travel Around Time (TAT)",
+                Description = "Expansão para PC incluindo mundos chineses exclusivos, chefes colossais e mecânicas temporais.",
+                ExecutablePath = tatPath,
+                DownloadUrl = "https://github.com/HenryJk/PvZWidescreen/releases/download/v1.1.2/PvZWidescreen_1.1.2.zip",
+                Version = "3.2.0",
+                LatestVersion = "3.2.0",
+                SupportsSteamAchievements = false,
+                IsCustomEngine = true,
+                ThemeKey = "tat",
+                Category = "pvz2",
+                IsAndroidMod = false
             });
 
             return mods;

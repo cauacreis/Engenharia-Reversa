@@ -5,16 +5,31 @@ namespace PvZLauncher
 {
     public static class SaveManager
     {
-        private static readonly string AppDir = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string ActiveUserData = Path.Combine(AppDir, "userdata");
-        private static readonly string SavesBaseDir = Path.Combine(Path.Combine(AppDir, "LauncherData"), "Saves");
-        private static readonly string BackupsBaseDir = Path.Combine(Path.Combine(AppDir, "LauncherData"), "Backups");
+        private static string GetAppDir()
+        {
+            try
+            {
+                string loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(loc)) return Path.GetDirectoryName(loc);
+            }
+            catch { }
+            return AppDomain.CurrentDomain.BaseDirectory;
+        }
+
+        private static readonly string AppDir = GetAppDir();
+        private static readonly string ActiveUserData = Path.Combine(GetAppDir(), "userdata");
+        private static readonly string SavesBaseDir = Path.Combine(Path.Combine(GetAppDir(), "LauncherData"), "Saves");
+        private static readonly string BackupsBaseDir = Path.Combine(Path.Combine(GetAppDir(), "LauncherData"), "Backups");
 
         public static void EnsureDirectories()
         {
-            if (!Directory.Exists(SavesBaseDir)) Directory.CreateDirectory(SavesBaseDir);
-            if (!Directory.Exists(BackupsBaseDir)) Directory.CreateDirectory(BackupsBaseDir);
-            if (!Directory.Exists(ActiveUserData)) Directory.CreateDirectory(ActiveUserData);
+            try
+            {
+                if (!Directory.Exists(SavesBaseDir)) Directory.CreateDirectory(SavesBaseDir);
+                if (!Directory.Exists(BackupsBaseDir)) Directory.CreateDirectory(BackupsBaseDir);
+                if (!Directory.Exists(ActiveUserData)) Directory.CreateDirectory(ActiveUserData);
+            }
+            catch { }
         }
 
         public static void BackupActiveUserData(string prefix = "AutoBackup")

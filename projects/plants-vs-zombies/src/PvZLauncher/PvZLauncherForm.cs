@@ -11,6 +11,7 @@ namespace PvZLauncher
     public class PvZLauncherForm : Form
     {
         private List<ModEntry> mods;
+        private string activeTab = "pvz1"; // "pvz1" ou "pvz2"
         private int selectedIndex = 0;
         private int hoveredIndex = -1;
 
@@ -22,6 +23,8 @@ namespace PvZLauncher
         private Bitmap bmpBtnLeft, bmpBtnMiddle, bmpBtnRight;
 
         // UI Rectangles
+        private Rectangle tabPvZ1Rect;
+        private Rectangle tabPvZ2Rect;
         private Rectangle listRect;
         private Rectangle langInfoRect;
         private Rectangle btnPlayRect;
@@ -34,9 +37,12 @@ namespace PvZLauncher
         // Button hover & press states
         private Rectangle pressedButton = Rectangle.Empty;
         private Rectangle hoveredButton = Rectangle.Empty;
+        private bool isHoveringTab1 = false;
+        private bool isHoveringTab2 = false;
 
         // Fonts
         private Font titleFont;
+        private Font tabFont;
         private Font itemFont;
         private Font descFont;
         private Font badgeFont;
@@ -140,12 +146,20 @@ namespace PvZLauncher
         private void LoadMods()
         {
             mods = ModManager.GetAvailableMods();
-            if (selectedIndex >= mods.Count) selectedIndex = 0;
+            List<ModEntry> displayed = GetDisplayedMods();
+            if (selectedIndex >= displayed.Count) selectedIndex = 0;
+        }
+
+        private List<ModEntry> GetDisplayedMods()
+        {
+            if (mods == null) return new List<ModEntry>();
+            return mods.FindAll(m => m.Category == activeTab);
         }
 
         private void InitFonts()
         {
             try { titleFont = new Font("Arial", 18, FontStyle.Bold); } catch { titleFont = SystemFonts.DefaultFont; }
+            try { tabFont = new Font("Arial", 10, FontStyle.Bold); } catch { tabFont = SystemFonts.DefaultFont; }
             try { itemFont = new Font("Arial", 11, FontStyle.Bold); } catch { itemFont = SystemFonts.DefaultFont; }
             try { descFont = new Font("Arial", 9, FontStyle.Regular); } catch { descFont = SystemFonts.DefaultFont; }
             try { badgeFont = new Font("Arial", 8, FontStyle.Bold); } catch { badgeFont = SystemFonts.DefaultFont; }
@@ -156,7 +170,10 @@ namespace PvZLauncher
 
         private void SetupLayout()
         {
-            listRect = new Rectangle(45, 95, 485, 292);
+            tabPvZ1Rect = new Rectangle(45, 66, 241, 30);
+            tabPvZ2Rect = new Rectangle(287, 66, 243, 30);
+
+            listRect = new Rectangle(45, 96, 485, 291);
             langInfoRect = new Rectangle(45, 394, 485, 44);
 
             int btnX = 545;
@@ -206,14 +223,17 @@ namespace PvZLauncher
             string titleText = "QUAL VERSÃO VAI JOGAR?";
             SizeF titleSize = g.MeasureString(titleText, titleFont);
             float tx = (this.Width - titleSize.Width) / 2f;
-            float ty = 28f;
+            float ty = 26f;
             g.DrawString(titleText, titleFont, Brushes.Black, tx + 2, ty + 2);
             using (Brush goldBrush = new SolidBrush(Color.FromArgb(255, 235, 140)))
             {
                 g.DrawString(titleText, titleFont, goldBrush, tx, ty);
             }
 
-            // 3. Draw Inset Mod List Box (Stone sunken look)
+            // 3. Draw Category Tabs (PvZ 1 vs PvZ 2)
+            DrawCategoryTabs(g);
+
+            // 4. Draw Inset Mod List Box (Stone sunken look)
             using (SolidBrush bgBrush = new SolidBrush(Color.FromArgb(240, 25, 20, 16)))
             using (Pen borderPen = new Pen(Color.FromArgb(95, 75, 50), 2))
             using (Pen innerPen = new Pen(Color.FromArgb(15, 10, 8), 1))
@@ -223,11 +243,14 @@ namespace PvZLauncher
                 g.DrawRectangle(innerPen, listRect.X + 2, listRect.Y + 2, listRect.Width - 4, listRect.Height - 4);
             }
 
-            // Draw Mod items
-            int itemHeight = listRect.Height / Math.Max(mods.Count, 1);
-            for (int i = 0; i < mods.Count; i++)
+            // Draw Mod items for current active tab
+            List<ModEntry> displayed = GetDisplayedMods();
+            int itemCount = displayed.Count;
+            int itemHeight = listRect.Height / Math.Max(itemCount, 1);
+
+            for (int i = 0; i < itemCount; i++)
             {
-                ModEntry mod = mods[i];
+                ModEntry mod = displayed[i];
                 Rectangle rowRect = new Rectangle(listRect.X + 4, listRect.Y + 4 + (i * itemHeight), listRect.Width - 8, itemHeight - 6);
 
                 bool isSelected = (i == selectedIndex);
@@ -269,8 +292,8 @@ namespace PvZLauncher
                 bool isThisDownloading = (DownloaderManager.IsDownloading && DownloaderManager.CurrentModId == mod.Id);
                 string statusText = isThisDownloading ? (DownloaderManager.ProgressPercentage + "%") : (mod.IsInstalled ? "INSTALADO" : "BAIXAR");
                 Color badgeBg = isThisDownloading ? Color.FromArgb(40, 140, 210) : (mod.IsInstalled ? Color.FromArgb(60, 145, 60) : Color.FromArgb(190, 120, 30));
-                
-                int bw = 72;
+
+                int bw = 74;
                 int bh = 20;
                 int bx = rowRect.Right - bw - 6;
                 int by = rowRect.Y + 8;
@@ -310,12 +333,12 @@ namespace PvZLauncher
                 TextRenderer.DrawText(g, mod.Description, descFont, descRect, dColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
             }
 
-            // 4. Draw Language & Info Bar under list (Shows live progress bar during downloads!)
+            // 5. Draw Language & Info Bar under list (Shows live progress bar during downloads!)
             DrawLanguageInfoBar(g);
 
-            // 5. Draw Authentic Action Buttons
-            ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
-            
+            // 6. Draw Authentic Action Buttons
+            ModEntry current = (selectedIndex >= 0 && selectedIndex < displayed.Count) ? displayed[selectedIndex] : null;
+
             string playBtnText = "JOGAR";
             if (DownloaderManager.IsDownloading && current != null && current.Id == DownloaderManager.CurrentModId)
             {
@@ -336,8 +359,98 @@ namespace PvZLauncher
             DrawPvZButton(g, btnSavesRect, "SAVES", false);
             DrawPvZButton(g, btnCloseRect, "FECHAR", false);
 
-            // 6. Bottom Status Bar & Steam Tracking Banner
+            // 7. Bottom Status Bar & Steam Tracking Banner
             DrawStatusBar(g);
+        }
+
+        private void DrawCategoryTabs(Graphics g)
+        {
+            bool isPvZ1Active = (activeTab == "pvz1");
+            bool isPvZ2Active = (activeTab == "pvz2");
+
+            DrawSingleTab(g, tabPvZ1Rect, "PLANTS VS. ZOMBIES 1", "sun", isPvZ1Active, isHoveringTab1);
+            DrawSingleTab(g, tabPvZ2Rect, "PLANTS VS. ZOMBIES 2", "time", isPvZ2Active, isHoveringTab2);
+        }
+
+        private void DrawSingleTab(Graphics g, Rectangle r, string text, string iconType, bool isActive, bool isHovered)
+        {
+            Color tabBg = isActive ? Color.FromArgb(245, 45, 36, 28) : (isHovered ? Color.FromArgb(210, 32, 26, 20) : Color.FromArgb(190, 22, 17, 13));
+            Color tabBorder = isActive ? Color.FromArgb(200, 160, 80) : Color.FromArgb(75, 60, 42);
+            Color textColor = isActive ? Color.FromArgb(255, 235, 140) : (isHovered ? Color.White : Color.FromArgb(170, 160, 145));
+
+            using (SolidBrush bgB = new SolidBrush(tabBg))
+            using (Pen borderP = new Pen(tabBorder, 2))
+            {
+                g.FillRectangle(bgB, r);
+
+                // Top, Left, Right borders
+                g.DrawLine(borderP, r.Left, r.Bottom, r.Left, r.Top + 2);
+                g.DrawLine(borderP, r.Left + 2, r.Top, r.Right - 2, r.Top);
+                g.DrawLine(borderP, r.Right, r.Top + 2, r.Right, r.Bottom);
+
+                if (!isActive)
+                {
+                    // Bottom border separating inactive tab from list
+                    g.DrawLine(borderP, r.Left, r.Bottom, r.Right, r.Bottom);
+                }
+                else
+                {
+                    // Active tab merges seamlessly with list below
+                    using (SolidBrush blendBrush = new SolidBrush(tabBg))
+                    {
+                        g.FillRectangle(blendBrush, r.Left + 1, r.Bottom - 1, r.Width - 2, 4);
+                    }
+                    // Inner gold glow on active tab top
+                    using (Pen glowP = new Pen(Color.FromArgb(60, 255, 255, 200), 1))
+                    {
+                        g.DrawLine(glowP, r.Left + 2, r.Top + 2, r.Right - 2, r.Top + 2);
+                    }
+                }
+            }
+
+            // Draw custom vector icon and text
+            SizeF s = g.MeasureString(text, tabFont);
+            int totalW = 14 + 6 + (int)s.Width;
+            int startX = r.X + (r.Width - totalW) / 2;
+            int iconCy = r.Y + r.Height / 2 - (isActive ? 1 : 0);
+
+            if (iconType == "sun")
+            {
+                using (Brush petalB = new SolidBrush(Color.FromArgb(255, 205, 30)))
+                using (Pen petalP = new Pen(Color.FromArgb(190, 130, 10), 1))
+                using (Brush centerB = new SolidBrush(Color.FromArgb(150, 85, 10)))
+                {
+                    g.FillEllipse(petalB, startX, iconCy - 6, 12, 12);
+                    g.DrawEllipse(petalP, startX, iconCy - 6, 12, 12);
+                    g.FillEllipse(centerB, startX + 3, iconCy - 3, 6, 6);
+                }
+            }
+            else if (iconType == "time")
+            {
+                using (Brush capB = new SolidBrush(Color.FromArgb(160, 120, 60)))
+                using (Brush glassB = new SolidBrush(Color.FromArgb(80, 180, 230)))
+                using (Brush sandB = new SolidBrush(Color.FromArgb(250, 210, 90)))
+                {
+                    g.FillRectangle(capB, startX, iconCy - 6, 12, 2);
+                    g.FillRectangle(capB, startX, iconCy + 4, 12, 2);
+                    Point[] p1 = new Point[] { new Point(startX + 1, iconCy - 4), new Point(startX + 11, iconCy - 4), new Point(startX + 6, iconCy) };
+                    Point[] p2 = new Point[] { new Point(startX + 6, iconCy), new Point(startX + 11, iconCy + 4), new Point(startX + 1, iconCy + 4) };
+                    g.FillPolygon(glassB, p1);
+                    g.FillPolygon(glassB, p2);
+                    Point[] sandP = new Point[] { new Point(startX + 3, iconCy + 4), new Point(startX + 9, iconCy + 4), new Point(startX + 6, iconCy + 1) };
+                    g.FillPolygon(sandB, sandP);
+                }
+            }
+
+            int textX = startX + 18;
+            int textY = r.Y + (r.Height - (int)s.Height) / 2 - (isActive ? 1 : 0);
+
+            using (Brush shadowB = new SolidBrush(Color.Black))
+            using (Brush textB = new SolidBrush(textColor))
+            {
+                g.DrawString(text, tabFont, shadowB, textX + 1, textY + 1);
+                g.DrawString(text, tabFont, textB, textX, textY);
+            }
         }
 
         private void DrawThematicBadgeIcon(Graphics g, string themeKey, int cx, int cy)
@@ -412,6 +525,72 @@ namespace PvZLauncher
                         g.DrawPolygon(boltP, bolt);
                     }
                     break;
+
+                case "rfl":
+                    // Crazy Dave's Golden Taco / Temporal Gateway
+                    using (Brush tacoB = new SolidBrush(Color.FromArgb(235, 175, 45)))
+                    using (Pen tacoP = new Pen(Color.FromArgb(170, 115, 20), 1))
+                    using (Brush greenB = new SolidBrush(Color.FromArgb(60, 180, 60)))
+                    using (Brush redB = new SolidBrush(Color.FromArgb(220, 50, 40)))
+                    {
+                        g.FillPie(tacoB, cx - 10, cy - 10, 20, 20, 180, 180);
+                        g.DrawArc(tacoP, cx - 10, cy - 10, 20, 20, 180, 180);
+                        g.DrawLine(tacoP, cx - 10, cy, cx + 10, cy);
+                        g.FillEllipse(greenB, cx - 7, cy - 4, 6, 4);
+                        g.FillEllipse(greenB, cx + 1, cy - 4, 6, 4);
+                        g.FillRectangle(redB, cx - 2, cy - 3, 4, 3);
+                    }
+                    break;
+
+                case "altverz":
+                    // Hourglass of Time
+                    using (Brush glassB = new SolidBrush(Color.FromArgb(70, 160, 210)))
+                    using (Brush sandB = new SolidBrush(Color.FromArgb(240, 200, 80)))
+                    using (Pen frameP = new Pen(Color.FromArgb(160, 130, 70), 1))
+                    using (Brush capB = new SolidBrush(Color.FromArgb(120, 85, 40)))
+                    {
+                        g.FillRectangle(capB, cx - 8, cy - 10, 16, 3);
+                        g.FillRectangle(capB, cx - 8, cy + 7, 16, 3);
+                        Point[] topTri = new Point[] { new Point(cx - 6, cy - 7), new Point(cx + 6, cy - 7), new Point(cx, cy) };
+                        g.FillPolygon(glassB, topTri);
+                        Point[] botTri = new Point[] { new Point(cx, cy), new Point(cx + 6, cy + 7), new Point(cx - 6, cy + 7) };
+                        g.FillPolygon(glassB, botTri);
+                        Point[] sandTri = new Point[] { new Point(cx - 4, cy + 7), new Point(cx + 4, cy + 7), new Point(cx, cy + 3) };
+                        g.FillPolygon(sandB, sandTri);
+                        g.DrawLine(frameP, cx - 7, cy - 7, cx - 7, cy + 7);
+                        g.DrawLine(frameP, cx + 7, cy - 7, cx + 7, cy + 7);
+                    }
+                    break;
+
+                case "pvz2pc":
+                    // Native PC Monitor with Seedling
+                    using (Brush monB = new SolidBrush(Color.FromArgb(45, 55, 72)))
+                    using (Brush screenB = new SolidBrush(Color.FromArgb(20, 140, 180)))
+                    using (Pen monFrameP = new Pen(Color.FromArgb(90, 110, 135), 1))
+                    using (Brush sproutB = new SolidBrush(Color.FromArgb(110, 215, 60)))
+                    {
+                        g.FillRectangle(monB, cx - 9, cy - 8, 18, 13);
+                        g.DrawRectangle(monFrameP, cx - 9, cy - 8, 18, 13);
+                        g.FillRectangle(screenB, cx - 7, cy - 6, 14, 9);
+                        g.FillEllipse(sproutB, cx - 3, cy - 4, 3, 4);
+                        g.FillEllipse(sproutB, cx, cy - 4, 3, 4);
+                        g.FillRectangle(monB, cx - 2, cy + 5, 4, 3);
+                        g.FillRectangle(monB, cx - 6, cy + 8, 12, 2);
+                    }
+                    break;
+
+                case "tat":
+                    // Cosmic Time Vortex
+                    using (Brush outerB = new SolidBrush(Color.FromArgb(140, 70, 190)))
+                    using (Brush innerB = new SolidBrush(Color.FromArgb(70, 170, 240)))
+                    using (Pen starP = new Pen(Color.FromArgb(255, 240, 160), 1))
+                    {
+                        g.FillEllipse(outerB, cx - 9, cy - 9, 18, 18);
+                        g.FillEllipse(innerB, cx - 5, cy - 5, 10, 10);
+                        g.DrawLine(starP, cx - 7, cy, cx + 7, cy);
+                        g.DrawLine(starP, cx, cy - 7, cx, cy + 7);
+                    }
+                    break;
             }
         }
 
@@ -470,7 +649,8 @@ namespace PvZLauncher
             }
 
             // Modo normal: Detalhes do idioma
-            ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
+            List<ModEntry> displayed = GetDisplayedMods();
+            ModEntry current = (selectedIndex >= 0 && selectedIndex < displayed.Count) ? displayed[selectedIndex] : null;
             LanguageOption curLang = current != null ? LanguageManager.GetCurrentLanguage(current.Id) : new LanguageOption { Code = "pt-BR", DisplayName = "Português (Brasil)", Description = "Tradução comunitária ativa." };
 
             string line1 = string.Format("IDIOMA SELECIONADO: {0} [{1}]", curLang.DisplayName, curLang.ShortName);
@@ -564,11 +744,29 @@ namespace PvZLauncher
                 g.FillEllipse(ledCenter, ledX + 2, ledY + 2, 4, 4);
             }
 
-            ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
+            List<ModEntry> displayed = GetDisplayedMods();
+            ModEntry current = (selectedIndex >= 0 && selectedIndex < displayed.Count) ? displayed[selectedIndex] : null;
+
             string statusLine1 = "Conexão Steam Ativa (AppID: 3590) • Rastreamento de Horas Habilitado";
-            string statusLine2 = current != null
-                ? string.Format("Saves: Sandbox Seguro Isolado • Conquistas Steam: {0}", current.SupportsSteamAchievements ? "Totalmente Suportadas" : "Mod Customizado")
-                : "Selecione uma versão para iniciar.";
+            string statusLine2;
+
+            if (current != null)
+            {
+                if (current.Category == "pvz2")
+                {
+                    statusLine2 = current.IsAndroidMod
+                        ? "PvZ 2 Runner Integrado • Suporte a Emulador / Android • Horas Steam Contabilizadas 100%"
+                        : "PvZ 2 Port Nativo PC • DirectX 60FPS • Conquistas e Horas Steam Ativas";
+                }
+                else
+                {
+                    statusLine2 = string.Format("Saves: Sandbox Seguro Isolado • Conquistas Steam: {0}", current.SupportsSteamAchievements ? "Totalmente Suportadas" : "Mod Customizado");
+                }
+            }
+            else
+            {
+                statusLine2 = "Selecione uma versão para iniciar.";
+            }
 
             using (Brush textB = new SolidBrush(Color.FromArgb(130, 235, 130)))
             using (Brush textB2 = new SolidBrush(Color.FromArgb(195, 185, 165)))
@@ -582,7 +780,7 @@ namespace PvZLauncher
         {
             base.OnMouseDown(e);
 
-            if (e.Button == MouseButtons.Left && e.Y < 80)
+            if (e.Button == MouseButtons.Left && e.Y < 60)
             {
                 isDragging = true;
                 dragCursorPoint = Cursor.Position;
@@ -590,11 +788,37 @@ namespace PvZLauncher
                 return;
             }
 
+            // Tab clicks
+            if (tabPvZ1Rect.Contains(e.Location))
+            {
+                if (activeTab != "pvz1")
+                {
+                    activeTab = "pvz1";
+                    selectedIndex = 0;
+                    hoveredIndex = -1;
+                    this.Invalidate();
+                }
+                return;
+            }
+
+            if (tabPvZ2Rect.Contains(e.Location))
+            {
+                if (activeTab != "pvz2")
+                {
+                    activeTab = "pvz2";
+                    selectedIndex = 0;
+                    hoveredIndex = -1;
+                    this.Invalidate();
+                }
+                return;
+            }
+
             if (listRect.Contains(e.Location))
             {
-                int itemHeight = listRect.Height / Math.Max(mods.Count, 1);
+                List<ModEntry> displayed = GetDisplayedMods();
+                int itemHeight = listRect.Height / Math.Max(displayed.Count, 1);
                 int clickedIdx = (e.Y - listRect.Y) / itemHeight;
-                if (clickedIdx >= 0 && clickedIdx < mods.Count)
+                if (clickedIdx >= 0 && clickedIdx < displayed.Count)
                 {
                     selectedIndex = clickedIdx;
                     this.Invalidate();
@@ -619,10 +843,16 @@ namespace PvZLauncher
                 return;
             }
 
+            bool oldHov1 = isHoveringTab1;
+            bool oldHov2 = isHoveringTab2;
+            isHoveringTab1 = tabPvZ1Rect.Contains(e.Location);
+            isHoveringTab2 = tabPvZ2Rect.Contains(e.Location);
+
             int oldHover = hoveredIndex;
+            List<ModEntry> displayed = GetDisplayedMods();
             if (listRect.Contains(e.Location))
             {
-                int itemHeight = listRect.Height / Math.Max(mods.Count, 1);
+                int itemHeight = listRect.Height / Math.Max(displayed.Count, 1);
                 hoveredIndex = (e.Y - listRect.Y) / itemHeight;
                 this.Cursor = Cursors.Hand;
             }
@@ -639,10 +869,10 @@ namespace PvZLauncher
             else if (btnCloseRect.Contains(e.Location)) hoveredButton = btnCloseRect;
             else hoveredButton = Rectangle.Empty;
 
-            if (hoveredButton != Rectangle.Empty) this.Cursor = Cursors.Hand;
+            if (hoveredButton != Rectangle.Empty || isHoveringTab1 || isHoveringTab2) this.Cursor = Cursors.Hand;
             else if (hoveredIndex == -1) this.Cursor = Cursors.Default;
 
-            if (oldHover != hoveredIndex || oldBtnHover != hoveredButton)
+            if (oldHover != hoveredIndex || oldBtnHover != hoveredButton || oldHov1 != isHoveringTab1 || oldHov2 != isHoveringTab2)
             {
                 this.Invalidate();
             }
@@ -669,7 +899,8 @@ namespace PvZLauncher
             }
             else if (wasPressed == btnSavesRect && btnSavesRect.Contains(e.Location))
             {
-                ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
+                List<ModEntry> displayed = GetDisplayedMods();
+                ModEntry current = (selectedIndex >= 0 && selectedIndex < displayed.Count) ? displayed[selectedIndex] : null;
                 SaveManager.OpenSavesFolder(current != null ? current.Id : null);
             }
             else if (wasPressed == btnCloseRect && btnCloseRect.Contains(e.Location))
@@ -682,8 +913,9 @@ namespace PvZLauncher
 
         private void CycleLanguage()
         {
-            if (selectedIndex < 0 || selectedIndex >= mods.Count) return;
-            ModEntry mod = mods[selectedIndex];
+            List<ModEntry> displayed = GetDisplayedMods();
+            if (selectedIndex < 0 || selectedIndex >= displayed.Count) return;
+            ModEntry mod = displayed[selectedIndex];
 
             LanguageOption next = LanguageManager.CycleNextLanguage(mod.Id);
             this.Invalidate();
@@ -691,8 +923,9 @@ namespace PvZLauncher
 
         private void LaunchOrInstallSelectedMod()
         {
-            if (selectedIndex < 0 || selectedIndex >= mods.Count) return;
-            ModEntry mod = mods[selectedIndex];
+            List<ModEntry> displayed = GetDisplayedMods();
+            if (selectedIndex < 0 || selectedIndex >= displayed.Count) return;
+            ModEntry mod = displayed[selectedIndex];
 
             // 1. Se NÃO estiver instalado, baixa e instala de forma 100% autônoma!
             if (!mod.IsInstalled)
@@ -716,10 +949,25 @@ namespace PvZLauncher
                 string balloonMsg = string.Format("Rodando {0} [{1}].\nHoras da Steam contabilizando!", mod.Title, lang.DisplayName);
                 trayIcon.ShowBalloonTip(3000, "Plants vs. Zombies", balloonMsg, ToolTipIcon.Info);
 
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = mod.ExecutablePath;
-                psi.WorkingDirectory = Path.GetDirectoryName(mod.ExecutablePath);
-                Process gameProc = Process.Start(psi);
+                Process gameProc = null;
+                if (mod.Category == "pvz2")
+                {
+                    gameProc = PvZ2RunnerManager.LaunchPvZ2Mod(mod);
+                    if (gameProc == null)
+                    {
+                        // Usuário cancelou ou emulador não iniciado
+                        this.Show();
+                        trayIcon.Visible = false;
+                        return;
+                    }
+                }
+                else
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo();
+                    psi.FileName = mod.ExecutablePath;
+                    psi.WorkingDirectory = Path.GetDirectoryName(mod.ExecutablePath);
+                    gameProc = Process.Start(psi);
+                }
 
                 if (gameProc != null)
                 {
@@ -741,22 +989,29 @@ namespace PvZLauncher
 
         private void ActionSelectedMod()
         {
-            if (selectedIndex < 0 || selectedIndex >= mods.Count) return;
-            ModEntry mod = mods[selectedIndex];
+            List<ModEntry> displayed = GetDisplayedMods();
+            if (selectedIndex < 0 || selectedIndex >= displayed.Count) return;
+            ModEntry mod = displayed[selectedIndex];
 
             if (mod.IsInstalled)
             {
-                // Se instalado, abre pasta no Windows Explorer
                 try
                 {
-                    string folder = Path.GetDirectoryName(mod.ExecutablePath);
-                    if (Directory.Exists(folder)) Process.Start("explorer.exe", folder);
+                    string folder = !string.IsNullOrEmpty(mod.ExecutablePath) ? Path.GetDirectoryName(mod.ExecutablePath) : null;
+                    if (!string.IsNullOrEmpty(folder) && Directory.Exists(folder))
+                    {
+                        Process.Start("explorer.exe", folder);
+                    }
+                    else
+                    {
+                        string modFolder = Path.Combine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LauncherData"), Path.Combine("Mods", mod.Id));
+                        if (Directory.Exists(modFolder)) Process.Start("explorer.exe", modFolder);
+                    }
                 }
                 catch { }
             }
             else
             {
-                // Se não instalado, baixa autonomamente também!
                 if (!DownloaderManager.IsDownloading)
                 {
                     DownloaderManager.DownloadAndInstallMod(mod);
