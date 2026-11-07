@@ -62,6 +62,7 @@ namespace PvZLauncher
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
 
             LoadAssets();
+            try { this.Icon = PvZResources.GetAppIcon(); } catch { }
             LoadMods();
             InitFonts();
             SetupLayout();
@@ -134,7 +135,7 @@ namespace PvZLauncher
             trayIcon.Text = "Plants vs. Zombies - Mod Manager";
             try
             {
-                trayIcon.Icon = SystemIcons.Application;
+                trayIcon.Icon = this.Icon != null ? this.Icon : PvZResources.GetAppIcon();
             }
             catch { }
             trayIcon.Visible = false;

@@ -17,6 +17,9 @@ def compile_launcher():
         os.path.join(src_dir, "Program.cs"),
     ]
     
+    ico_path = os.path.join(src_dir, "pvz.ico")
+    icon_arg = [f"/win32icon:{ico_path}"] if os.path.exists(ico_path) else []
+    
     cmd = [
         csc,
         "/target:winexe",
@@ -27,7 +30,7 @@ def compile_launcher():
         "/reference:System.Core.dll",
         "/reference:System.Drawing.dll",
         "/reference:System.Windows.Forms.dll",
-    ] + cs_files
+    ] + icon_arg + cs_files
     
     print("Compiling PvZ Multi-Mod Launcher...")
     result = subprocess.run(cmd, capture_output=True, text=True)
