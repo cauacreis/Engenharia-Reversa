@@ -323,6 +323,33 @@ namespace PvZLauncher
         {
             if (!Directory.Exists(folder)) return null;
 
+            // Prioridades específicas por mod
+            if (modId == "hybrid")
+            {
+                string gameSub = Path.Combine(folder, "Game");
+                if (Directory.Exists(gameSub))
+                {
+                    string pz = Path.Combine(gameSub, "PlantsVsZombies.exe");
+                    if (File.Exists(pz)) return pz;
+                    string pzHe = Path.Combine(gameSub, "pvzHE-Launcher.exe");
+                    if (File.Exists(pzHe)) return pzHe;
+                }
+                string rootPz = Path.Combine(folder, "PlantsVsZombies.exe");
+                if (File.Exists(rootPz)) return rootPz;
+            }
+
+            if (modId == "community_edition")
+            {
+                string[] candidates = Directory.GetFiles(folder, "pvz_widescreen.exe", SearchOption.AllDirectories);
+                if (candidates.Length > 0) return candidates[0];
+            }
+
+            if (modId == "dlc_edition")
+            {
+                string[] candidates = Directory.GetFiles(folder, "PlantsVsZombies_DLC.exe", SearchOption.AllDirectories);
+                if (candidates.Length > 0) return candidates[0];
+            }
+
             string[] preferred = new string[] {
                 "pvz_widescreen.exe",
                 "PlantsVsZombies_DLC.exe",
@@ -333,6 +360,7 @@ namespace PvZLauncher
                 "PlantsVsZombies2_TAT.exe",
                 "pvz2_pc.exe",
                 "PlantsVsZombies.exe",
+                "pvzHE-Launcher.exe",
                 "PvZ.exe"
             };
 
@@ -342,14 +370,19 @@ namespace PvZLauncher
                 if (File.Exists(direct)) return direct;
 
                 string[] files = Directory.GetFiles(folder, name, SearchOption.AllDirectories);
-                if (files.Length > 0) return files[0];
+                foreach (string f in files)
+                {
+                    string low = f.ToLowerInvariant();
+                    if (!low.Contains("安装程序") && !low.Contains("setup") && !low.Contains("unins") && !low.Contains("helper"))
+                        return f;
+                }
             }
 
             string[] allExes = Directory.GetFiles(folder, "*.exe", SearchOption.AllDirectories);
             foreach (string exe in allExes)
             {
                 string lower = Path.GetFileName(exe).ToLowerInvariant();
-                if (!lower.Contains("unins") && !lower.Contains("setup") && !lower.Contains("crash"))
+                if (!lower.Contains("unins") && !lower.Contains("setup") && !lower.Contains("crash") && !lower.Contains("安装程序") && !lower.Contains("installer") && !lower.Contains("helper"))
                 {
                     return exe;
                 }

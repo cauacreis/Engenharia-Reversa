@@ -108,7 +108,7 @@ namespace PvZLauncher
                 Title = "Plants vs. Zombies: Hybrid Edition (杂交版)",
                 Description = "Fenômeno global criado por SubmarineWeizei com cruzamento de plantas e poderes combinados.",
                 ExecutablePath = hybridPath,
-                DownloadUrl = "https://github.com/nextisme/Plants.vs.Zombies-hybrid/releases/download/PvZ-hybrid-2.6.1/v.2.6.1.zip",
+                DownloadUrl = "https://github.com/nextisme/Plants.vs.Zombies-hybrid/releases/download/PvZ-hybrid-English-2.0.88/PVZHybridEdition-English-v2.0.88.zip",
                 Version = "2.6.1",
                 LatestVersion = "2.6.1",
                 SupportsSteamAchievements = false,

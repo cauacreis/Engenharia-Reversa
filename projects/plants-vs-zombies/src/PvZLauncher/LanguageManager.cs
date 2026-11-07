@@ -70,8 +70,8 @@ namespace PvZLauncher
             }
             else if (modId == "hybrid")
             {
-                list.Add(new LanguageOption { Code = "en-US", ShortName = "ENG", DisplayName = "English (Patch)", Description = "Patch de tradução em inglês da comunidade internacional." });
-                list.Add(new LanguageOption { Code = "pt-BR", ShortName = "PT-BR", DisplayName = "Português (Patch)", Description = "Patch de tradução PT-BR experimental." });
+                list.Add(new LanguageOption { Code = "pt-BR", ShortName = "PT-BR", DisplayName = "Português (Brasil)", Description = "Tradução completa em português do Brasil com todas as plantas e modos." });
+                list.Add(new LanguageOption { Code = "en-US", ShortName = "ENG", DisplayName = "English (Official)", Description = "Versão oficial internacional traduzida em inglês." });
                 list.Add(new LanguageOption { Code = "zh-CN", ShortName = "中文", DisplayName = "中文 (Original)", Description = "Versão original em chinês por SubmarineWeizei." });
             }
             else if (modId == "fusion")
@@ -129,37 +129,85 @@ namespace PvZLauncher
 
         public static void ApplyLanguageForMod(ModEntry mod)
         {
+            if (mod == null) return;
             LanguageOption current = GetCurrentLanguage(mod.Id);
 
-            // PopCap Engine Mods (Vanilla e DLC Edition)
-            if (mod.Id == "vanilla" || mod.Id == "dlc_edition")
+            string gameDir = AppDir;
+            if (!string.IsNullOrEmpty(mod.ExecutablePath))
             {
-                string gameDir = AppDir;
-                if (!string.IsNullOrEmpty(mod.ExecutablePath))
-                {
-                    string dir = Path.GetDirectoryName(mod.ExecutablePath);
-                    if (Directory.Exists(dir)) gameDir = dir;
-                }
+                string dir = Path.GetDirectoryName(mod.ExecutablePath);
+                if (Directory.Exists(dir)) gameDir = dir;
+            }
 
-                string propertiesDir = Path.Combine(gameDir, "properties");
-                if (!Directory.Exists(propertiesDir)) Directory.CreateDirectory(propertiesDir);
-                string lawnStringsFile = Path.Combine(propertiesDir, "LawnStrings.txt");
+            string propertiesDir = Path.Combine(gameDir, "properties");
+            if (!Directory.Exists(propertiesDir))
+            {
+                try { Directory.CreateDirectory(propertiesDir); } catch { }
+            }
+            string lawnStringsFile = Path.Combine(propertiesDir, "LawnStrings.txt");
 
+            if (mod.Id == "hybrid")
+            {
                 if (current.Code.Equals("pt-BR", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Injeta tradução PT-BR em properties/LawnStrings.txt
-                    string ptBrSource = Path.Combine(Path.Combine(LanguagesDir, "pt-BR"), "LawnStrings.txt");
+                    string ptBrSource = Path.Combine(Path.Combine(LanguagesDir, "pt-BR"), "LawnStrings_hybrid.txt");
+                    if (!File.Exists(ptBrSource))
+                    {
+                        ptBrSource = Path.Combine(Path.Combine(LanguagesDir, "pt-BR"), "LawnStrings.txt");
+                    }
                     if (File.Exists(ptBrSource))
                     {
-                        File.Copy(ptBrSource, lawnStringsFile, true);
+                        try { File.Copy(ptBrSource, lawnStringsFile, true); } catch { }
                     }
                 }
                 else if (current.Code.Equals("en-US", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Remove LawnStrings.txt solto para que o jogo volte a usar o inglês padrão do main.pak
+                    string engSource = Path.Combine(Path.Combine(LanguagesDir, "en-US"), "LawnStrings_hybrid.txt");
+                    if (File.Exists(engSource))
+                    {
+                        try { File.Copy(engSource, lawnStringsFile, true); } catch { }
+                    }
+                    else if (File.Exists(lawnStringsFile))
+                    {
+                        try { File.Delete(lawnStringsFile); } catch { }
+                    }
+                }
+                else if (current.Code.Equals("zh-CN", StringComparison.OrdinalIgnoreCase))
+                {
                     if (File.Exists(lawnStringsFile))
                     {
                         try { File.Delete(lawnStringsFile); } catch { }
+                    }
+                }
+            }
+            else
+            {
+                // Vanilla, DLC Edition, Community Widescreen e demais mods PopCap
+                if (current.Code.Equals("pt-BR", StringComparison.OrdinalIgnoreCase))
+                {
+                    string ptBrSource = Path.Combine(Path.Combine(LanguagesDir, "pt-BR"), "LawnStrings.txt");
+                    if (File.Exists(ptBrSource))
+                    {
+                        try { File.Copy(ptBrSource, lawnStringsFile, true); } catch { }
+                    }
+
+                    if (mod.Id == "vanilla")
+                    {
+                        string appProp = Path.Combine(AppDir, "properties");
+                        if (!Directory.Exists(appProp)) try { Directory.CreateDirectory(appProp); } catch { }
+                        try { File.Copy(ptBrSource, Path.Combine(appProp, "LawnStrings.txt"), true); } catch { }
+                    }
+                }
+                else if (current.Code.Equals("en-US", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (File.Exists(lawnStringsFile))
+                    {
+                        try { File.Delete(lawnStringsFile); } catch { }
+                    }
+                    if (mod.Id == "vanilla")
+                    {
+                        string rootLawn = Path.Combine(Path.Combine(AppDir, "properties"), "LawnStrings.txt");
+                        if (File.Exists(rootLawn)) try { File.Delete(rootLawn); } catch { }
                     }
                 }
             }
@@ -167,16 +215,35 @@ namespace PvZLauncher
 
         private static void EnsureDefaultTranslations()
         {
-            string ptBrTarget = Path.Combine(Path.Combine(LanguagesDir, "pt-BR"), "LawnStrings.txt");
-            if (!File.Exists(ptBrTarget))
+            try
             {
-                // Verifica se existe o gerado em scripts/../Languages/pt-BR
-                string localDev = Path.Combine(AppDir, @"projects\plants-vs-zombies\src\PvZLauncher\Languages\pt-BR\LawnStrings.txt");
-                if (File.Exists(localDev))
+                string ptBrDir = Path.Combine(LanguagesDir, "pt-BR");
+                string enUsDir = Path.Combine(LanguagesDir, "en-US");
+                if (!Directory.Exists(ptBrDir)) Directory.CreateDirectory(ptBrDir);
+                if (!Directory.Exists(enUsDir)) Directory.CreateDirectory(enUsDir);
+
+                string ptBrTarget = Path.Combine(ptBrDir, "LawnStrings.txt");
+                if (!File.Exists(ptBrTarget))
                 {
-                    try { File.Copy(localDev, ptBrTarget, true); } catch { }
+                    string localDev = Path.Combine(AppDir, @"projects\plants-vs-zombies\src\PvZLauncher\Languages\pt-BR\LawnStrings.txt");
+                    if (File.Exists(localDev)) try { File.Copy(localDev, ptBrTarget, true); } catch { }
+                }
+
+                string ptBrHybrid = Path.Combine(ptBrDir, "LawnStrings_hybrid.txt");
+                if (!File.Exists(ptBrHybrid))
+                {
+                    string localDevHybrid = Path.Combine(AppDir, @"projects\plants-vs-zombies\src\PvZLauncher\Languages\pt-BR\LawnStrings_hybrid.txt");
+                    if (File.Exists(localDevHybrid)) try { File.Copy(localDevHybrid, ptBrHybrid, true); } catch { }
+                }
+
+                string enUsHybrid = Path.Combine(enUsDir, "LawnStrings_hybrid.txt");
+                if (!File.Exists(enUsHybrid))
+                {
+                    string localDevEng = Path.Combine(AppDir, @"projects\plants-vs-zombies\src\PvZLauncher\Languages\en-US\LawnStrings_hybrid.txt");
+                    if (File.Exists(localDevEng)) try { File.Copy(localDevEng, enUsHybrid, true); } catch { }
                 }
             }
+            catch { }
         }
 
         private static void LoadConfig()

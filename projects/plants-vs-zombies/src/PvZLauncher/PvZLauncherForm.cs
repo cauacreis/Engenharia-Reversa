@@ -229,6 +229,35 @@ namespace PvZLauncher
                 trayIcon.Icon = this.Icon != null ? this.Icon : PvZResources.GetAppIcon();
             }
             catch { }
+
+            ContextMenuStrip cms = new ContextMenuStrip();
+            ToolStripMenuItem itemOpen = new ToolStripMenuItem("Abrir Menu do Launcher");
+            itemOpen.Click += (s, e) =>
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.BringToFront();
+                this.Invalidate();
+            };
+            ToolStripMenuItem itemExit = new ToolStripMenuItem("Encerrar e Fechar Launcher");
+            itemExit.Click += (s, e) =>
+            {
+                trayIcon.Visible = false;
+                Application.Exit();
+            };
+            cms.Items.Add(itemOpen);
+            cms.Items.Add(new ToolStripSeparator());
+            cms.Items.Add(itemExit);
+            trayIcon.ContextMenuStrip = cms;
+
+            trayIcon.DoubleClick += (s, e) =>
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.BringToFront();
+                this.Invalidate();
+            };
+
             trayIcon.Visible = false;
         }
 
@@ -1378,10 +1407,19 @@ namespace PvZLauncher
 
                 SaveManager.PrepareSavesForMod(mod.Id);
 
+                // Garante steam_appid.txt na pasta de execução do mod e na raiz
+                string exeDir = Path.GetDirectoryName(mod.ExecutablePath);
+                if (!string.IsNullOrEmpty(exeDir) && Directory.Exists(exeDir))
+                {
+                    try { File.WriteAllText(Path.Combine(exeDir, "steam_appid.txt"), "3590\n"); } catch { }
+                }
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                try { File.WriteAllText(Path.Combine(baseDir, "steam_appid.txt"), "3590\n"); } catch { }
+
                 this.Hide();
                 trayIcon.Visible = true;
-                string balloonMsg = string.Format("Rodando {0} [{1}].\nHoras da Steam contabilizando!", mod.Title, lang.DisplayName);
-                trayIcon.ShowBalloonTip(3000, "Plants vs. Zombies", balloonMsg, ToolTipIcon.Info);
+                string balloonMsg = string.Format("Rodando {0} [{1}].\nHoras da Steam contabilizando ativamente!", mod.Title, lang.DisplayName);
+                trayIcon.ShowBalloonTip(3500, "Plants vs. Zombies", balloonMsg, ToolTipIcon.Info);
 
                 Process gameProc = null;
                 if (mod.Category == "pvz2")
@@ -1398,19 +1436,99 @@ namespace PvZLauncher
                 {
                     ProcessStartInfo psi = new ProcessStartInfo();
                     psi.FileName = mod.ExecutablePath;
-                    psi.WorkingDirectory = Path.GetDirectoryName(mod.ExecutablePath);
+                    psi.WorkingDirectory = exeDir;
+                    psi.UseShellExecute = false;
+                    psi.EnvironmentVariables["SteamAppId"] = "3590";
+                    psi.EnvironmentVariables["SteamGameId"] = "3590";
                     gameProc = Process.Start(psi);
                 }
 
-                if (gameProc != null)
+                // Monitoramento Contínuo Multi-Processo de Horas Steam
+                int launcherPid = Process.GetCurrentProcess().Id;
+                System.Threading.ThreadPool.QueueUserWorkItem((state) =>
                 {
-                    gameProc.WaitForExit();
-                }
+                    // Aguarda inicialização do processo
+                    System.Threading.Thread.Sleep(2500);
 
-                SaveManager.SyncSavesAfterModExit(mod.Id);
+                    string[] candidateNames = new string[] {
+                        "PlantsVsZombies",
+                        "PlantsVsZombies_ORIGINAL_BACKUP",
+                        "PlantsVsZombies_vanilla",
+                        "PlantsVsZombies_DLC",
+                        "pvz_widescreen",
+                        "PlantsVsZombies_Hybrid",
+                        "pvzHE-Launcher",
+                        "PlantsVsZombies_Fusion",
+                        "PvZ2",
+                        "PlantsVsZombies2",
+                        "PlantsVsZombies2_TAT",
+                        "popcapgame1",
+                        "dnplayer",
+                        "HD-Player",
+                        "BlueStacks"
+                    };
 
-                trayIcon.Visible = false;
-                Application.Exit();
+                    while (true)
+                    {
+                        bool isAnyAlive = false;
+
+                        if (gameProc != null)
+                        {
+                            try
+                            {
+                                if (!gameProc.HasExited) isAnyAlive = true;
+                            }
+                            catch { }
+                        }
+
+                        if (!isAnyAlive)
+                        {
+                            try
+                            {
+                                Process[] procs = Process.GetProcesses();
+                                foreach (Process p in procs)
+                                {
+                                    if (p.Id == launcherPid) continue;
+                                    string pName = p.ProcessName;
+                                    foreach (string cand in candidateNames)
+                                    {
+                                        if (pName.IndexOf(cand, StringComparison.OrdinalIgnoreCase) >= 0)
+                                        {
+                                            isAnyAlive = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isAnyAlive) break;
+                                }
+                            }
+                            catch { }
+                        }
+
+                        if (!isAnyAlive)
+                        {
+                            break;
+                        }
+
+                        System.Threading.Thread.Sleep(1500);
+                    }
+
+                    // Sincroniza saves de forma segura após encerramento
+                    SaveManager.SyncSavesAfterModExit(mod.Id);
+
+                    // Restaura launcher para primeiro plano
+                    try
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            trayIcon.Visible = false;
+                            this.Show();
+                            this.WindowState = FormWindowState.Normal;
+                            this.BringToFront();
+                            this.Invalidate();
+                        }));
+                    }
+                    catch { }
+                });
             }
             catch (Exception ex)
             {

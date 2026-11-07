@@ -1,0 +1,4072 @@
+[LEVEL_TIP1]
+Plants vs. Zombies Turbo Version!
+
+[LEVEL_TIP2]
+Be careful of Zombies coming through the portals!
+
+[LEVEL_TIP3]
+Plant one, get a whole row!
+
+[LEVEL_TIP4]
+Tiny but cute!
+
+[LEVEL_TIP5]
+Watch out! Gravitational anomaly!
+
+[LEVEL_TIP6]
+Why did it go dark? Can you see them?
+
+[LEVEL_TIP7]
+Red alert, buddies!
+
+[LEVEL_TIP8]
+Can't hold down the coffin board anymore!!!
+
+[LEVEL_TIP9]
+Invisible brain-eater!
+
+[LEVEL_TIP10]
+It's the end of the month now!
+
+[LEVEL_TIP11]
+Inflation, brother!
+
+
+
+[REPEAT_LAST_SELECTION]
+Repeat last selection
+
+
+[POTATOMINE_R]
+Jalapeno Potato Mine
+
+[POTATOMINE_R_TOOLTIP]
+That day, Potato Mine and Jalapeno both drank too much!
+
+[POTATOMINE_R_DESCRIPTION]
+That day, Potato Mine and Jalapeno both drank too much!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}1800
+{KEYWORD}Range: {STAT}One row
+{KEYWORD}Feature: {STAT}Clear ice tracks
+{SHORTLINE}
+{FLAVOR}Sun Potato Mine always had a fiery temper. She hates it when someone steps on her head. "It ruins my fascinator!" Sun Potato Mine said.
+
+
+[WALLNUT_R]
+Jalapeno-Nut
+
+[WALLNUT_R_TOOLTIP]
+That day, Wall-Nut was there too!
+
+[WALLNUT_R_DESCRIPTION]
+That day, Wall-Nut was there too!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000 
+{KEYWORD}Power: {STAT}Explosion 1800, Reflect 20/s
+{KEYWORD}Range: {STAT}One row
+{KEYWORD}Feature: {STAT}Clear ice tracks.
+Zombies biting it turn red, receiving 20 damage per second for 3 seconds.
+{SHORTLINE}
+{FLAVOR}Jalapeno-Nut always carries peppers on her back, as if it’s something precious. "This is my precious comrade in arms!" Jalapeno-Nut said, but in reality, it was just an ordinary pepper.
+
+
+[CATTAIL_P]
+Peashooter Cattail
+
+[CATTAIL_P_TOOLTIP]
+Cattail and Peashooter got drunk!?
+
+[CATTAIL_P_DESCRIPTION]
+Cattail and Peashooter got drunk!?
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}20×2/second
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Bullets can ignite
+{SHORTLINE}
+{FLAVOR}"I heard everyone likes catgirls. So I reluctantly put on this outfit, for which, your old buddy the Peashooter might get more screen time," by the way, he doesn’t like the hat from Cattail.
+
+
+[CATTAIL_B]
+Winter-Melon Cattail
+
+[CATTAIL_B_TOOLTIP]
+Winter Melon is here too!
+
+[CATTAIL_B_DESCRIPTION]
+Strongest Cattail!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}80×2/1.5 seconds
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Range slow down
+{SHORTLINE}
+{FLAVOR}Frozen Melon Cattail aspired to become the protagonist of Frozen, the princess of the Kingdom of Ice. She almost succeeded until she let out a "woof" in excitement while putting on her ice-made dress.
+
+
+
+[PUMPKIN_F]
+Torch-Pumpkin
+
+[PUMPKIN_F_TOOLTIP]
+Torchwood drank, and the fire went out of control!
+
+[PUMPKIN_F_DESCRIPTION]
+Torchwood drank, and the fire went out of control!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Power: {STAT}40/second
+{KEYWORD}Range: {STAT}Three spots on the left, middle, and right
+{KEYWORD}Feature: {STAT}Ignite peas
+{SHORTLINE}
+{FLAVOR}Lately, Pumpkin got addicted to Ghost Rider. He plans to dress up as his idol for Halloween. "I feel like I'm burning up," Pumpkin said. But he didn't know, he himself is a Halloween decoration.
+
+
+[PEASHOOTER_Z]
+Zombie Peashooter
+
+[PEASHOOTER_Z_TOOLTIP]
+How could a zombie get drunk with plants?
+
+[PEASHOOTER_Z_DESCRIPTION]
+The first batch of experiments in plant-zombie hybrids!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}40/second
+{KEYWORD}Range: {STAT}Front row
+{KEYWORD}Feature: {STAT}Summon an enchanted Pea Zombie every 30 seconds
+{SHORTLINE}
+{FLAVOR}Zombie Peashooter stands on the lawn, unsure if he's plant or zombie, watching the battle on the lawn, falling into deep thought. But then, how could he think if his brain was eaten?
+
+
+[BLOVER_B]
+Frozen Clover
+
+[BLOVER_B_TOOLTIP]
+Is it because Ice-shroom doesn't sleep at day or because Clover doesn't sleep at night?
+
+[BLOVER_B_DESCRIPTION]
+Blow away all enemies on the screen and also slow them down.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}20×11/row
+{KEYWORD}Range: {STAT}Full screen
+{KEYWORD}Feature: {STAT}Blow enemies away, release ice bullets
+{SHORTLINE}
+{FLAVOR}"Hey, buddy, feel the storm!" Frozen Clover's aura swept the entire scene. But who knew, the storm he mentioned was a mix of hurricane and hail.
+
+
+
+[HOTDOG]
+Hot Dog Shooter
+
+[HOTDOG_TOOLTIP]
+Shoots bullets from both sides!
+
+[HOTDOG_DESCRIPTION]
+Very delicious hot dogs!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}6000
+{KEYWORD}Power: {STAT}40×8/2 seconds
+{KEYWORD}Range: {STAT}Both sides
+{KEYWORD}Feature: {STAT}Fireballs, butter, cabbage
+{SHORTLINE}
+{FLAVOR}"Butter, corn, peas..." Hot Dog Shooter muttered. Don't get it wrong; this isn't Hot Dog Shooter's year-end summary. It's the recipe for corn rolls—providing corn rolls to Dave in the house is the primary duty of left-side shooters.
+
+
+[CACTUS_B]
+Ice Cactus
+
+[CACTUS_B_TOOLTIP]
+Shoots freezing spike bullets
+
+[CACTUS_B_DESCRIPTION]
+Shoots three ice spikes, causing a large area to slow down.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}40×3/2.5 seconds
+{KEYWORD}Range: {STAT}Three lines
+{KEYWORD}Feature: {STAT}Bullet slow down, penetration
+{SHORTLINE}
+{FLAVOR}"I'm just a little cold! It's just a sneeze." "Why are you looking at me that way?" Ice Cactus said, "Please, the desert nights are actually quite chilly!"
+
+
+[SQUASH_K]
+Squash King
+
+[SQUASH_K_TOOLTIP]
+Crush all zombies within three squares in front
+
+[SQUASH_K_DESCRIPTION]
+Master of the Shadows!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}1800×3
+{KEYWORD}Range: {STAT}3 squares
+{SHORTLINE}
+{FLAVOR}Actually, Squash prefers his cape over the crown, as it always makes his scalp itch. "If it weren't for the ability to clone myself, who would bother with this crown!"
+
+
+[JALAJOKER]
+JALAJOKER
+
+[JALAJOKER_TOOLTIP]
+Burns a row and a column of zombies and applies butter.
+
+[JALAJOKER_DESCRIPTION]
+Burns a row and a column of zombies and applies butter.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}1800
+{KEYWORD}Range: {STAT}One row and one column
+{SHORTLINE}
+{FLAVOR}"Heard Gloomy-shroom started selling butter, so I tried buying some and rubbed it on myself," JALAJOKER said. When other plants asked about his jester outfit, he said, "I wanted to change the hot-tempered nature of the pepper family in this way."
+
+
+[SUNKING]
+Sunflower Queen
+
+[SUNKING_TOOLTIP]
+Master of the fiery domain
+
+[SUNKING_DESCRIPTION]
+Shoots tracking fireballs, produces a lot of sunlight.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1000
+{KEYWORD}Power: {STAT}40×6/1.5 seconds
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Produces 150 sunlight every 25 seconds
+{SHORTLINE}
+{FLAVOR}This is the sunflower who loves basking in the sun the most. Crowned, she became the Sunflower Queen. "Now I can eat free cheese grilled sandwiches anytime." Sunflower Queen said.
+
+
+[JALAPENO_G]
+Garlic Jalapeno
+
+[JALAPENO_G_TOOLTIP]
+Turns a vast amount of damage into stinky flames
+
+[JALAPENO_G_DESCRIPTION]
+Makes zombies change lanes and deals partial damage.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}500
+{KEYWORD}Range: {STAT}One row
+{KEYWORD}Feature: {STAT}Makes zombies change lanes
+{SHORTLINE}
+{FLAVOR} "Can you imagine, not only do I taste stinky, even the flames I burn are stinky, making zombies keep their distance from me," Garlic Jalapeno said. However, the plants don't shun him. 
+
+
+[WALLNUT_V]
+Supreme VIP Walnut
+
+[WALLNUT_V_TOOLTIP]
+Supreme VIP, at the cheapest price.
+
+[WALLNUT_V_DESCRIPTION]
+Supreme VIP, at the cheapest price.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Feature: {STAT}Produces 25 sunlight every 25 seconds,
+Death rattle: Produces 300 sunlight;
+Grows after 100 seconds, increases 4000 health after growing,
+Death rattle: Produces 600 sunlight.
+{SHORTLINE}
+{FLAVOR}Among many nuts, the bravest nut that dares to sacrifice itself. After many nut bandaging surgeries, it was granted a crown. "OMG, now I feel stronger than any other nut!" VIP nut said. "Be careful not to break the Viya!" He was playing the role of the sun in a theater.
+
+
+[WALLNUT_Z]
+Zombie Wall-Nut
+
+[WALLNUT_Z_TOOLTIP]
+How did a zombie get mixed in?
+
+[WALLNUT_Z_DESCRIPTION]
+How did a zombie get mixed in?
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Feature: {STAT}Summon an enchanted Wall-Nut Zombie every 30 seconds,
+Death rattle: Summon an enchanted White-Eye Giant
+{SHORTLINE}
+{FLAVOR} "Many people wonder why the zombies we face don't have the ability to infect. Now let me clarify." Some wall-nuts are reminded of the once walnut peel again.
+
+
+[CUPID]
+Cupid-Shroom
+
+[CUPID_TOOLTIP]
+Gorgeous college girl.
+
+[CUPID_DESCRIPTION]
+Gorgeous college girl.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1000
+{KEYWORD}Feature: {STAT}Shoots three enchanting bullets every 2 seconds,
+Enchanting the hit zombies; (Type 2 armor cancels one hit,
+the ice car giant's ice car hit effect changes to dealing 1800 damage),
+Disappears after 15 seconds on the field.
+{SHORTLINE}
+{FLAVOR} Enchanting Mushroom has always longed to become a messenger of love, so she cosplayed her idol—Cupid the god of love and vowed to bring love and beauty to all zombies!
+Of course, giants are no exception
+
+
+[MARIGOLD_G]
+Wealthy Marigold
+
+[MARIGOLD_G_TOOLTIP]
+Wealthy Marigold has countless coins.
+
+[MARIGOLD_G_DESCRIPTION]
+The god of wealth owns countless coins.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1000
+{KEYWORD}Feature: {STAT}Shoots 10 silver coins (60%)
+or 4 gold coins (30%)
+or 3 diamonds (10%)
+every 5 seconds
+Silver coin damage 100, Gold coin damage 500, Diamond damage 1000
+{SHORTLINE}
+{FLAVOR} Wealthy Marigold had always been performing logistics support in the army's rear. Until one day, he suddenly realized another use of golden coins...his action received strong condemnation from PopCap's finance department.
+
+
+[CATPOT]
+Cat Litter Pot
+
+[CATPOT_TOOLTIP]
+This is not for Cattail, is it?
+
+[CATPOT_DESCRIPTION]
+This is not for Cattail, is it?
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}30×2/1.5 seconds
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Carries plants, shoots 2 spikes every 2 seconds
+{SHORTLINE}
+{FLAVOR} "You might not know," said Cattail, "but my tail is the real deal." She removed her hat, revealing it was empty. Thus, Dave filled it with soil. "Just call it cat pot, anyone who calls it a cat litter pot is asking for trouble!"
+
+
+
+[WALLNUTHOLE]
+Crater-Nut
+
+[WALLNUTHOLE_TOOLTIP]
+It can block diggers.
+
+[WALLNUTHOLE_DESCRIPTION]
+It can block diggers.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Feature: {STAT}Forces diggers to emerge early,
+Death rattle, when removed: leaves behind a pit
+{SHORTLINE}
+{FLAVOR} How to make a new hat for Crater-Nut has always been a hot topic among plants. "Actually, it's quite simple. You just need a bit of soil, 9.55 ounces of fertilizer, and a pinch of four-dimensional shards, and it's done." To this, Doom-Shroom sneers.
+
+
+[FUMESHROOM]
+Bouncy Fume-Shroom
+
+[FUMESHROOM_TOOLTIP]
+Someday......
+
+[FUMESHROOM_DESCRIPTION]
+Someday......
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}0
+{KEYWORD}Range: {STAT}Its own square
+{KEYWORD}Feature: {STAT}Cannot attack, being chewed/crushed/hammered,
+makes the target move back by 2 squares, can withstand 3 hits/crushing/hammering
+{SHORTLINE}
+{FLAVOR} Having absorbed too much protein, Fume-Shroom became as bouncy as a trampoline. Not only attracted by the love of trampoline kids but also his fans.
+
+[CALTROPSNOW]
+Ice Spikes
+
+[CALTROPSNOW_TOOLTIP]
+Don't forget, the war cry can also freeze~
+
+[CALTROPSNOW_DESCRIPTION]
+Don't forget, the war cry can also freeze~
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}40/1.5 seconds
+{KEYWORD}Range: {STAT}Its own square
+{KEYWORD}Feature: {STAT}War cry: Freezes all zombies in its square for 5 seconds;
+Slows zombies, punctures tires;
+Death rattle: Freezes all zombies on the field for 3 seconds and slows them for 20 seconds.
+{SHORTLINE}
+{FLAVOR} Ice Spike once saw a saying somewhere: "I have been walking on thin ice all my life, do you think I can make it to the other side?" It liked this saying so much that it even made a trip to Antarctica, finally letting zombies experience the feeling of "walking on thin ice".
+
+
+[POTATOSTAR]
+Potato Starfruit
+
+[POTATOSTAR_TOOLTIP]
+It's not "rural" at all.
+
+[POTATOSTAR_DESCRIPTION]
+Potato Starfruit may randomly shoot small potato mines!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}40/1.5 seconds (each direction)
+{KEYWORD}Range: {STAT}Five directions
+{KEYWORD}Feature: {STAT}5% chance to shoot a small potato mine dealing 500 damage,
+Upon death releases potato mine effect (1800 damage)
+{SHORTLINE}
+{FLAVOR}Potato Starfruit hates its name because it seems to mock it for being "rural". "It reminds me of those stinky zombies crawling out of the ground, I'm not like them! Gosh, just the thought is horrifying..." Potato Starfruit said. Potato Mine disagrees with Starfruit's thoughts but sadly, it has to wait until the last moment to act.
+
+
+[LVSHROOM]
+Elf-shroom
+
+[LVSHROOM_TOOLTIP]
+A far-off cousin of the Enchanting Mushroom.
+
+[LVSHROOM_DESCRIPTION]
+High burst area damage.
+{SHORTLINE}
+{KEYWORD}Power: {STAT}100/second
+{KEYWORD}Range: {STAT}3×3
+{KEYWORD}Feature: {STAT}Disappears after 50 seconds, zombies ignore it,
+immune to bullet attacks, can ignore terrain to plant.
+{SHORTLINE}
+{FLAVOR}Elf-shroom originally lived quietly in the dark swamps, but the arrival of zombies broke this peace... She couldn't sleep well anymore, so Elf-shroom made all those zombies disfigure by poisoning them, making them taste the feeling of worsened skin. "Actually, zombies’ skin is already bad, right?" Scaredy-shroom said. "It's about their facial expressions, their faces turned green." "(Aren’t zombies’ faces already green?)"
+
+[CABBAGEJALAPENO]
+Cabbage Jalapeno
+
+[CABBAGEJALAPENO_TOOLTIP]
+A plant from Sichuan.
+
+[CABBAGEJALAPENO_DESCRIPTION]
+High-value range fire damage.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}Throw a Sichuan vegetable (new bullet), damage 80/3 seconds, hitting a zombie will generate fire in the current grid (continuing to burn passing zombies for 5 seconds, 80 damage per second) does not generate continuous fire in water. 5% chance to throw a chili pepper with 500 damage.
+{SHORTLINE}
+{FLAVOR}“I’m too spicy," the Cabbage Jalapeno is always very proud. “I’m spicier than garlic! Zombies will run away when they see me!” he always thinks to himself. But zombies never think so. After all, Sichuan cuisine is much tastier than garlic. Most zombies think they can just eat the projectile from the Cabbage Jalapeno, but in fact, he’s throwing hot pot base.
+
+[IMITATERW]
+Nut Imitator
+
+[IMITATERW_TOOLTIP]
+Specializes in long life, good at imitating nuts.
+
+[IMITATERW_DESCRIPTION]
+The Nut Imitator can randomly become a type of small nut.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{SHORTLINE}
+{FLAVOR}The Nut Imitator has always envied other nuts. "It would be great if I could be as cool as them." So, he borrowed the clothes of other nuts to dress himself up. But it turns out no matter what kind of nut it becomes, it’s the same. Because zombies do not care what they eat.
+
+[WALLNUTS]
+Squash-Nut
+
+[WALLNUTS_TOOLTIP]
+Pear?
+
+[WALLNUTS_DESCRIPTION]
+Squash-Nut can deliver a deadly strike to enemies.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}2000
+{KEYWORD}Strength: {STAT}1800
+{KEYWORD}Range: {STAT}One grid
+{KEYWORD}Feature: {STAT}Deathrattle: Squashes all zombies within one grid.
+{SHORTLINE}
+{FLAVOR}Squash-Nut and Potato Mine have always been best friends, with endless conversations. “I like to be fully prepared and act at the last moment!” says Squash-Nut. Potato Mine agrees with him, except he doesn't like the crispy, numb back massages - from zombies.
+
+[ICE-NUT]
+Ice-Nut
+
+[ICE-NUT_TOOLTIP]
+“Son of War”
+
+[ICE-NUT_DESCRIPTION]
+Ice-Nut can shoot bullets and freeze zombies.
+{SHORTLINE}
+{KEYWORD}Strength: {STAT}20×2/1.5 seconds
+{KEYWORD}Range: {STAT}Front row
+{KEYWORD}Feature: {STAT}Fires 2 ice bullets every 1.5 seconds. Slows and deals 20 damage per second to biting zombies. Deathrattle: Freezes all zombies within a 3×3 range for 3 seconds and slows them down for 20 seconds.
+{SHORTLINE}
+{FLAVOR}After coming out of the freezer, the walnut quickly put on several layers of clothes, but to his surprise; the clothes were also frozen...
+
+[BRAINSTORM]
+Brainstorm
+
+[BRAINSTORM_TOOLTIP]
+Error, error, error
+
+[BRAINSTORM_DESCRIPTION]
+Brainstorm can make zombies disappear.
+{SHORTLINE}
+{KEYWORD}Range: {STAT}3×3
+{KEYWORD}Feature: {STAT}Battlecry, Deathrattle: Makes zombies within a 3×3 range disappear; not attacked by zombies. Dies after 50 seconds on the field.
+{SHORTLINE}
+{FLAVOR}Brainstorm has always been an unsung hero. Plants often don’t understand how those zombies died. “Believe me, it was the one you killed next to me!” Disco Zombie said. But the plants looked at each other in confusion, because no one had seen Brainstorm on the battlefield. “But what does that matter?” Brainstorm said, “Someone has to guard the garden.” But most of the time, it doesn’t see the victory.
+
+[GRAVEBUSTERG]
+Treasure Devourer
+
+[GRAVEBUSTERG_TOOLTIP]
+Want to dig treasures, bring me along!
+
+[GRAVEBUSTERG_DESCRIPTION]
+The Treasure Devourer can create a pit that generates treasures.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}Pit location produces an item every 5 seconds. (Small Sun 30%, Ordinary Sun 15%, Large Sun 5%, Silver coin 30%, Gold coin 15%, Diamond 5%) When the pit disappears, produce a card (Sun Bomb 80%, Random Gold Card 20%)
+{SHORTLINE}
+{FLAVOR}“A gentleman loves wealth, in a proper way.” The Treasure Devourer points to the golden pit and says, “As for ‘the way’, I have pointed out the direction.”
+
+[CARDLESS]
+Holographic Card Projection
+
+[CARDLESS_TOOLTIP]
+Some fresh gadgets of future technology~
+
+[CARDLESS_DESCRIPTION]
+Holographic Card Projection can reduce the sun cost of your cards.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}Aura effect: Your non-diamond card prices are reduced by 25 (cannot be lower than 0) Not targeted by zombies. For each of these plants on the field, the card price doubles.
+{SHORTLINE}
+{FLAVOR}Plants have diverse opinions on how holographic projection reduces the price of seed packets. Actually, it’s simple, just project a few seed packets, then absorb sunlight below the original price, and the projection can be turned into real seeds. “I come from the future world, kid!”
+
+[COFFEEBEANUP]
+Growth Coffee Bean
+
+[COFFEEBEANUP_TOOLTIP]
+Makes your growing plants grow instantly~
+
+[COFFEEBEANUP_DESCRIPTION]
+Growth Coffee Bean can make your growing plants grow instantly!
+{SHORTLINE}
+{KEYWORD}Range: {STAT}Single grid
+{SHORTLINE}
+{FLAVOR}Modern research shows that, in addition to keeping mushrooms awake during the day, coffee beans can also promote plant growth. “You know, some people need a little extra stimulation,” says the Growth Coffee Bean who completed this research.
+
+[ICESUNSHROOM]
+Ice-Sun-Shroom
+
+[ICESUNSHROOM_TOOLTIP]
+Freeze zombies, gain sunlight~
+
+[ICESUNSHROOM_DESCRIPTION]
+Ice-Sun-Shroom can freeze zombies and provide corresponding sunlight.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Strength: {STAT}20
+{KEYWORD}Range: {STAT}Full screen
+{KEYWORD}Feature: {STAT}A one-time plant, releases the effect of ice mushroom, producing 15 sunlight for every frozen zombie in its grid.
+{SHORTLINE}
+{FLAVOR}Ice-Sun-Shroom is a great scientist, converting the internal energy of zombies into solar energy. However, the Mediterranean hairstyle has always troubled it. “There are some costs to scientific research,” it consoles itself.
+
+[SUNPEASHOOTER]
+Sun Peashooter
+
+[SUNPEASHOOTER_TOOLTIP]
+Generates sunlight, fires fireballs.
+
+[SUNPEASHOOTER_DESCRIPTION]
+Sun Peashooter can generate sunlight and fire fireballs.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Strength: {STAT}40×2/2 seconds
+{KEYWORD}Range: {STAT}One row
+{KEYWORD}Feature: {STAT}Generates two regular suns every 25 seconds, firing two white fireballs per second. White fireball: 100% AoE damage in a single grid (direct damage), 30% chance to penetrate zombies (non-direct damage), does not neutralize slowdown
+{SHORTLINE}
+{FLAVOR}As the only member of the pea family in the Sunshine Club, he is proud of this. “The members of the club did not realize that besides cultivation, sunlight also has powerful thermal energy.”
+
+[HAMMER_LIGHT]
+Fluorescent Hammer
+
+[HAMMER_LIGHT_TOOLTIP]
+Fluorescent Hammer can repair a pit.
+
+[HAMMER_LIGHT_DESCRIPTION]
+Fluorescent Hammer can hammer wood to repair a pit.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Range: {STAT}Single grid
+{KEYWORD}Feature: {STAT}Can only be planted in a pit, repairing a pit (including ordinary pits, skeleton pits, golden pits)
+{SHORTLINE}
+{FLAVOR}The fluorescent hammer is actually just a piece of wood with a suitable shape, but following the principle of making do with what's available, Dave still used it to plug some pits. "Feels unexpectedly good," he said.
+
+[WILDPEA]
+Wild Gatling Pea
+
+[WILDPEA_TOOLTIP]
+Fires a large number of peas at once.
+
+[WILDPEA_DESCRIPTION]
+Wild Gatling Pea can fire shotgun peas forward.
+{SHORTLINE}
+{KEYWORD}Strength: {STAT}20×4×5/2 seconds
+{KEYWORD}Range: {STAT}The front three rows
+{SHORTLINE}
+{FLAVOR}As the most courageous gatling gun among the machine gun shooters, its firepower on the battlefield is as terrifying as meteorites falling from the sky. Oh yeah, his hat is actually from the shrub next door, and the cloak is from the neighbor's bedsheets.
+
+[RELIFE]
+Life Reshaper
+
+[RELIFE_TOOLTIP]
+Life Reshaper can turn plants into sunlight.
+
+[RELIFE_DESCRIPTION]
+Life Reshaper can turn plants into sunlight.
+{SHORTLINE}
+{KEYWORD}Range: {STAT}Single grid
+{KEYWORD}Feature: {STAT}Turns all plants in a grid to 0 life value, then obtains the corresponding sunlight of their cards.
+{SHORTLINE}
+{FLAVOR}Where exactly does Life Reshaper take the plants? Plants have various theories and guesses. “Actually,” Life Reshaper says, “The plants in the hybrid seed rain are those I’ve taken there. They are happy to be put to use while not costing any sunlight.”
+
+[CHERRYBOMBSINGLE]
+Twin Cherries
+
+[CHERRYBOMBSINGLE_TOOLTIP]
+Twin Cherries can explode in a small area.
+
+[CHERRYBOMBSINGLE_DESCRIPTION]
+Twin Cherries can explode in a small area.
+{SHORTLINE}
+{KEYWORD}Strength: {STAT}1800
+{KEYWORD}Range: {STAT}Single grid
+{KEYWORD}Feature: {STAT}Planting it will produce a copy of this card.
+{SHORTLINE}
+{FLAVOR}“Please, I’m not weak at all!” one of the cherries angrily says, “It’s just our stems were cut off!” Although the explosion power has decreased, Dave found a new business opportunity, there will always be a student who buys these cherries, and they have a unique way of eating them.
+
+[LUCKYBLOVER]
+Lucky Clover
+
+[LUCKYBLOVER_TOOLTIP]
+Get a random card deck with reduced cost.
+
+[LUCKYBLOVER_DESCRIPTION]
+Lucky Clover can turn your card slots into random cards, and reduce their cost by 50 points.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}A one-time plant. Turns your other card slots into random cards (except itself), and reduces their price by 50 points (diamond card prices unchanged) The reduction is from the original price, and can be stacked with Holographic Card Projection.
+{SHORTLINE}
+{FLAVOR}“Oh no, this is all you deserve, your luck entitles you to it.” Lucky Clover fiddles with the chips in its hands, estimating your worth. “Of course, including you, my lovely Sunflower.”
+
+[SUNFLOWER_GOLD]
+Golden Sunflower
+
+[SUNFLOWER_GOLD_TOOLTIP]
+Get a legendary golden deck.
+
+[SUNFLOWER_GOLD_DESCRIPTION]
+Golden Sunflower can turn your card slots into random golden cards.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}A one-time plant. Obtain 500 suns, turning all your other cards into random golden cards (except itself, repeat cards may appear)
+{SHORTLINE}
+{FLAVOR}“Yes, all of these are your rewards,” Golden Sunflower says, holding a bunch of golden seeds. “No, the reward doesn’t include me,” she adds shyly.
+
+[POTATOCOBCANNON]
+Potato Cob Cannon
+
+[POTATOCOBCANNON_TOOLTIP]
+Click to fire a potato bomb.
+
+[POTATOCOBCANNON_DESCRIPTION]
+Click the potato cannon to fire a potato bomb.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Strength: {STAT}1800
+{KEYWORD}Range: {STAT}Single grid
+{KEYWORD}Feature: {STAT}Hits the ground to install a sprouted Sunshine Potato Bomb. Single grid plant, reload time 30 seconds.
+{SHORTLINE}
+{FLAVOR}“You’re always so lazy, only taking action against zombies at the last moment!” Other plants blamed the Potato Bomb, but the Potato Bomb couldn’t be bothered with them. Until today, the plants suddenly discovered that the Potato Bomb secretly got into Harvard University's law program, just like the Corn Cob Cannon, now they are roommates!
+
+[PLANTTRAP]
+Punishment Cage
+
+[PLANTTRAP_TOOLTIP]
+Detain zombies for a period of time.
+
+[PLANTTRAP_DESCRIPTION]
+Any defense will eventually be brought to justice!
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}A one-time plant. Opens a cage, stopping passing zombies in their tracks (except miners). Cage disappears after 30 seconds.
+{SHORTLINE}
+{FLAVOR}“Actually, this idea came to us when we saw the cage in the yard,” says a plant on the Punishment Cage. “At that time, we only saw a brain that attracted all the zombies to the cage, and when it suddenly closed with a snap, crows would automatically eliminate them.” “It’s a pity that both the crows and the brain are gone, probably that brain has gone bad.” Then, as the cage broke open, they once again entered the soil, searching for that rotten brain.
+
+[BYWZ]
+Backup Supplies
+
+[BYWZ_TOOLTIP]
+Randomly get a plant card priced at or below 100
+
+[BYWZ_DESCRIPTION]
+Only 25 suns for a full field, don't miss out~
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}A one-time plant. Randomly obtains a plant card less than or equal to 100 in price (excluding gold and diamond cards).
+{SHORTLINE}
+{FLAVOR}Dave used to recycle unused cards and hide them in barrels, but lately, there seems to be someone stealing cards. “Please, rummaging through the trash barrels is quite fun! I just saw something shiny...” Hopefully, this won’t happen again.
+
+[CALTROPCHOMPER]
+Caltrop Chomper
+
+[CALTROPCHOMPER_TOOLTIP]
+Caltrop Chomper can devour zombies, immune to zombies’ bites and tire bursting.
+
+[CALTROPCHOMPER_DESCRIPTION]
+Caltrop Chomper can devour zombies, immune to zombies’ bites and tire bursting.
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}Devours a zombie (excluding giants and ice vehicles, changes to 100 damage/1.5 seconds). Chewing time 40 seconds, not affected by zombie bites during chewing (but can be crushed/hammered), deals 50 damage/1.5 seconds to passing zombies. Can burst tires. Deathrattle: Deals 1800 damage to zombies in the same grid (change to 3000 damage for giant ice vehicles)
+{SHORTLINE}
+{FLAVOR}Caltrop Chomper is lurking. He has been lurking for a whole night, if he can integrate the accumulated sullen malice, maybe he can lurk through the entire dawn. “My new album ‘Born to Lurk’ is now on sale,” says Caltrop Chomper.
+
+[ZOMBIEBEAN]
+Zombie Bean
+
+[ZOMBIEBEAN_TOOLTIP]
+Turns zombies into cards.
+
+[ZOMBIEBEAN_DESCRIPTION]
+Whose little baby?
+{SHORTLINE}
+{KEYWORD}Feature: {STAT}Planted on a zombie, turns a zombie into the corresponding zombie card, which you can place anywhere on the lawn. If you don’t take action, after the card disappears, the zombie will be summoned again in the same grid.
+{SHORTLINE}
+{FLAVOR}This plant is still researched from the plants after Dave captured the Red-Eyed one, this Zombie Bean directly imprisons the soul of the zombie, and locks the body in the card slot, unfortunately, it can't directly eliminate them… So, Dave is researching a stronger Enchanting Zombie Bean… “What are you guys doing again?” Peashooter turned on the light again, “Coffee Bean can make up a ghost story without taking a bath, I’m done with you guys.”
+
+[TABOODOOMSHROOM]
+Forbidden Doom Shroom
+
+[TABOODOOMSHROOM_TOOLTIP]
+Turns zombies into pits.
+
+[TABOODOOMSHROOM_DESCRIPTION]
+Do you want to try the power of the forbidden?
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Strength: {STAT}Infinite
+{KEYWORD}Range: {STAT}Around itself with a radius of 3.5 squares
+{KEYWORD}Feature: {STAT}Eliminates a large number of zombies, leaving a pit where each zombie is eliminated.
+{SHORTLINE}
+{FLAVOR}What infinite explosion damage, Forbidden Doom Shroom simply took advantage of the lingering smoke to drag the zombies into the ground. “No one can discover my magic show,” the Forbidden Doom Shroom said proudly, just it forgot to cover up the pits.
+
+
+[PINATA]
+Candy Crush
+
+[PINATA_TOOLTIP]
+Remove armor, ladders, tombstones, holes.
+[PINATA_DESCRIPTION]
+Such delicious candy, you can try it for free once~
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}0
+{KEYWORD}Range: {STAT}A circle with a radius of 1.5 squares centered on itself
+{KEYWORD}Feature: {STAT}One-time plant, can be planted unlimited, can be placed on plants. Removes all zombie armors, ladders on the field, tombstones, and various holes within a 3*3 range. After you purchase this card once, the price of the card changes to 100.
+{SHORTLINE}
+{FLAVOR}Many people wonder why candy is also counted as a plant.
+"Sugarcane doesn't want to face the terrible zombies directly," Weiwei said,
+"So I extracted some sugar."
+
+[ICESEASHROOM]
+Ice-Sea-Shroom
+
+[ICESEASHROOM_TOOLTIP]
+Free slowing spores.
+[ICESEASHROOM_DESCRIPTION]
+Is the slowdown effect cheap enough to not require sunlight?
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}20/s
+{KEYWORD}Range: {STAT}Three squares in front
+{KEYWORD}Feature: {STAT}Shoots an ice spore every second, slowing zombies on hit. Can only be planted in water, sleeps during the day.
+{SHORTLINE}
+{FLAVOR}Ice-Sea-Shroom always emphasizes the difference between it and Marine Mushroom, but other plants find it hard to understand what it is saying. "Listen, he is called Marine Mushroom, I am called Ice-Sea-Shroom, we are not the same!" It tried hard to explain. Maybe they pretend to not understand - after all, the plants enjoy seeing the Ice-Sea-Shroom pout when angry.
+
+[PUMPKINPAD]
+Pumpkin Pad
+
+[PUMPKINPAD_TOOLTIP]
+Pumpkin Wrap in the water.
+[PUMPKINPAD_DESCRIPTION]
+Pumpkin Pad saves you the trouble of planting water lilies!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Power: {STAT}0
+{KEYWORD}Range: {STAT}Single square
+{KEYWORD}Feature: {STAT}Can only be planted on water, protects plants, Deathrattle: leaves a Pea Lily Pad.
+{SHORTLINE}
+{FLAVOR}As a new hybrid variety, many plants come up with ideas. "It should have a cannon!" "It should have a lid!" The noise was endless. However, Pumpkin Pad itself doesn't care about these, and the bubbles it spits might mean it has fallen asleep.
+
+[CATFLOWER]
+Kitten Sunflower
+
+[CATFLOWER_TOOLTIP]
+Produces sunlight, fires tracking sunlight bullets.
+[CATFLOWER_DESCRIPTION]
+Kitten loves basking in the sun!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Power: {STAT}200/10s
+{KEYWORD}Range: {STAT}Full-screen tracking
+{KEYWORD}Feature: {STAT}Produces 25 sun every 25 seconds; fires a small sunlight bullet every 10 seconds, hitting zombies drops 15 sun.
+{SHORTLINE}
+{FLAVOR}"This is the cat costume given by the Peashooter." Sunflower said,
+"He thinks I look good in it." However, the side effect is
+she will bark from time to time, making the concert a mess. "That should be the sound we make!" said a fan.
+
+[ZOMBIE_DISCO]
+Disco Zombie
+
+[ZOMBIE_DISCO_DESCRIPTION]
+Any resemblance to real persons, living or dead, by the Disco Zombie is purely coincidental.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}500
+{KEYWORD}Feature: {STAT}Summons dancer zombies
+{SHORTLINE}
+{FLAVOR}Disco Zombie's latest record "Grab the Brain and Bite" is rapidly gaining popularity in the zombie world.
+
+[ZOMBIE_BACKUP]
+Dancer Zombie
+
+[ZOMBIE_BACKUP_DESCRIPTION]
+When Disco Zombie dances, these zombies appear in a group of four.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}270
+{SHORTLINE}
+{FLAVOR}Dancer Zombie studied dance techniques for six years at the "Jawliet" Performing Arts Academy in Zombie New York City.
+
+[ZOMBIE_SKELETON]
+Skeleton Zombie
+
+[ZOMBIE_SKELETON_DESCRIPTION]
+Skeleton Zombie is truly undead.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}500
+{KEYWORD}Speed: {STAT}Slow
+{KEYWORD}Feature: {STAT}①Immune to garlic and charm effects. ②Deathrattle: leaves a pit that can resurrect Skeleton Zombie. (The pit disappears after 30 seconds, then summons a Skeleton Zombie) ③This zombie can appear on water lanes, can dive, but no pits are left in water.
+{SHORTLINE}
+{FLAVOR}Elite zombies equipped with Dr. Dave's mysterious black technology.
+
+[ZOMBIE_NECROMANCER]
+Necromancer Zombie
+
+[ZOMBIE_NECROMANCER_DESCRIPTION]
+Necromancer Zombie can summon an army of undead Skeleton Zombies.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}3000
+{KEYWORD}Speed: {STAT}Slow
+{KEYWORD}Feature: {STAT}①Immune to all debuffs except damage. ②Every 15 seconds, summon two Skeleton Zombies in the square in front. ③Only appears on land.
+{SHORTLINE}
+{FLAVOR}A special zombie wizard strengthened by Dr. Dave, more experienced in combat than regular zombies. After Dr. Dave's training, their magic poses a wide threat on the battlefield.
+
+[ZOMBIE_DISCOFIRE]
+Flaming Disco Zombie
+
+[ZOMBIE_DISCOFIRE_DESCRIPTION]
+Disco Zombie caught on fire!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1800
+{KEYWORD}Speed: {STAT}Slow
+{KEYWORD}Feature: {STAT}①Immune to slow and freeze. ②Pass-by zombie peas turn into zombie fireballs (area damage 40 for single square) ③Summons 4 Flame Dancer Zombies.
+{SHORTLINE}
+{FLAVOR}"Dude, the flame is not dangerous at all. On the contrary, being in the inner flame, I'm actually quite safe." Flaming Disco Zombie proudly said, "Now, we're on fire!"
+
+[ZOMBIE_BACKUPFIRE]
+Flame Dancer Zombie
+
+[ZOMBIE_BACKUPFIRE_DESCRIPTION]
+Flame Dancer Zombie caught on fire too!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}500
+{KEYWORD}Speed: {STAT}Slow
+{KEYWORD}Feature: {STAT}①Immune to slow and freeze. ②Pass-by zombie peas turn into zombie fireballs (area damage 40 for single square)
+{SHORTLINE}
+{FLAVOR}Flame Dancer is in his adolescence, his beard is fake. To match the hotness of Flaming Disco Zombie, he changed his own flame to green. "I didn't want to dye this stuff green!"
+
+[ZOMBIE_DUCK]
+Duck Zombie
+[ZOMBIE_DUCK_DESCRIPTION]
+Wholesale Duck!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}800
+{KEYWORD}Speed: {STAT}Slow
+{KEYWORD}Feature: {STAT}Deathrattle: leaves a duck swimming ring (Health 800)
+{SHORTLINE}
+{FLAVOR}"Why do you always tie double ponytails?" This is the most asked question by zombies to Duck Zombie, Duck Zombie hasn't explained much about this, he thinks it's very important to keep the childlike innocence of childhood, it's just that he often forgets to bring back his duck swim ring.
+
+[ZOMBIE_BED]
+Bed Car Zombie
+[ZOMBIE_BED_DESCRIPTION]
+Sometimes zombies just don't want to get up!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1800
+{KEYWORD}Speed: {STAT}Fast
+{KEYWORD}Feature: {STAT}①Rolls over plants, immune to control, occupies 2 squares. ②Deathrattle: summons a Mini Crash Brother Zombie.
+{SHORTLINE}
+{FLAVOR}It seems Dr. Dave recently got inspired from a game, he brainwashed a zombie, successfully making him obsessed with sleeping and skiing. Even though there's absolutely no snow here.
+
+
+[ZOMBIE_SLEEP]
+Xiaoshuaige Zombie
+[ZOMBIE_SLEEP_DESCRIPTION]
+Xiaoshuaige Zombie hates early morning classes!
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}500+270
+{KEYWORD}Speed: {STAT}Fast
+{SHORTLINE}
+{FLAVOR}"Where's my sled? Aren't there any penguins and motorcycles to help me out?" "Oh, at least there are yetis." Xiaoshuaige Zombie continued to immerse in his dreams, unaware that his bed was about to be destroyed any second.
+
+[PEASHOOTER]
+Peashooter Sunflower
+
+[PEASHOOTER_TOOLTIP]
+Produces sunlight, shoots peas at enemies
+
+[SUNFLOWER]
+Sun Bean
+
+[SUNFLOWER_TOOLTIP]
+A sun-producing crop that doesn't take up space and grows
+
+[CHERRY_BOMB]
+Sun Bomb
+
+[CHERRY_BOMB_TOOLTIP]
+Turns zombies into sunlight
+
+[WALL_NUT]
+Torch-Nut
+
+[WALL_NUT_TOOLTIP]
+Blocks zombies, can ignite peas
+
+[REPEATER]
+Repeater Cactus
+
+[REPEATER_TOOLTIP]
+Shoots two spikes at a time
+
+[POTATO_MINE]
+Sun Potato Mine
+
+[POTATO_MINE_TOOLTIP]
+Free, but please be patient
+
+[SNOW_PEA]
+Snow Cattail
+
+[SNOW_PEA_TOOLTIP]
+Shoots tracking frost peas
+
+[CHOMPER]
+Garlic Chomper
+
+[CHOMPER_TOOLTIP]
+Swallows small ice cars, making other zombies switch lanes
+
+[PUFF_SHROOM]
+Pot-Shroom
+
+[PUFF_SHROOM_TOOLTIP]
+Free pot, free spores
+
+[SUN_SHROOM]
+Sun Sunflower
+
+[SUN_SHROOM_TOOLTIP]
+A sun-producing crop that grows
+
+[FUME_SHROOM]
+Winter-Melen-Shroom
+
+[FUME_SHROOM_TOOLTIP]
+Emits penetrating gas and ice melons
+
+[GRAVE_BUSTER]
+Grave Mine Burier
+
+[GRAVE_BUSTER_TOOLTIP]
+Eats graves, produces potato mines
+
+[HYPNO_SHROOM]
+Red-Eyed-Shroom
+
+[HYPNO_SHROOM_TOOLTIP]
+Turns zombies into red-eyed giants
+
+[SCAREDY_SHROOM]
+Sun-Scaredy-Shroom
+
+[SCAREDY_SHROOM_TOOLTIP]
+A shy mushroom that produces sunlight and grows
+
+[ICE_SHROOM]
+Snowflake-Ice-Shroom
+
+[ICE_SHROOM_TOOLTIP]
+Snowflakes fluttering~
+
+[DOOM_SHROOM]
+Hypno-Doom-Shroom
+
+[DOOM_SHROOM_TOOLTIP]
+Charms all zombies within range
+
+[LILY_PAD]
+Peashooter Lily Pad
+
+[LILY_PAD_TOOLTIP]
+"Hot water bag"
+
+[SQUASH]
+Ice-Shroom Squash
+
+[SQUASH_TOOLTIP]
+Squashes approaching zombies, unleashes ice mushroom effect
+
+[THREEPEATER]
+Peashooter Wishing Well
+
+[THREEPEATER_TOOLTIP]
+Shoots peas in a circle, 360-degree attack with no dead angles
+
+[TANGLE_KELP]
+Doom-Kelp
+
+[TANGLE_KELP_TOOLTIP]
+Drags zombies underwater and releases the effect of a doom mushroom
+
+[JALAPENO]
+Cherry Janapeno
+
+[JALAPENO_TOOLTIP]
+Eliminates enemies in three rows
+
+[SPIKEWEED]
+Butter Spikeweed
+
+[SPIKEWEED_TOOLTIP]
+Punctures tires, also damages zombies walking over it and may release butter
+
+[TORCHWOOD]
+Ice-Torchwood
+
+[TORCHWOOD_TOOLTIP]
+Peas and frost beans passing through become slowing fireballs
+
+[TALL_NUT]
+Tall-Ice-Nut
+
+[TALL_NUT_TOOLTIP]
+"He's like a god of war"
+
+[SEA_SHROOM]
+Sea-Nut
+
+[SEA_SHROOM_TOOLTIP]
+A nut in the water, attacks the entire row
+
+[PLANTERN]
+Plantern No.6
+
+[PLANTERN_TOOLTIP]
+Illuminates, slows and damages in range, deathrattle: freeze in range and shoot bullets
+
+[CACTUS]
+Peashooter Cannon
+
+[CACTUS_TOOLTIP]
+Shoots a pea with 25x damage, can be ignited
+
+[BLOVER]
+Ice Blover
+
+[BLOVER_TOOLTIP]
+Blows zombies away, releases spikes
+
+[SPLIT_PEA]
+Taco Cattail
+
+[SPLIT_PEA_TOOLTIP]
+Corn, cabbage, and butter
+
+[STARFRUIT]
+Spikeweed Starfruit
+
+[STARFRUIT_TOOLTIP]
+Shoots mini starfruits in five directions, zombies will trample over it
+
+[PUMPKIN]
+Gloomy-Pumpkin
+
+[PUMPKIN_TOOLTIP]
+"Endless artifact"
+
+[MAGNET_SHROOM]
+Magnet-Nut
+
+[MAGNET_SHROOM_TOOLTIP]
+Removes ordinary iron items, blocks zombie attacks
+
+[CABBAGE_PULT]
+Gatling Cabbage-Pult
+
+[CABBAGE_PULT_TOOLTIP]
+"Don't underestimate its power"
+
+[FLOWER_POT]
+Sun Pot
+
+[FLOWER_POT_TOOLTIP]
+Produces sunlight, a flower pot
+
+[KERNEL_PULT]
+Threernel-Pult
+
+[KERNEL_PULT_TOOLTIP]
+Throws corn kernels or butter at three rows of enemies
+
+[GARLIC]
+Hypno-Garlic
+
+[GARLIC_TOOLTIP]
+Drives zombies to other rows and charms them
+
+[UMBRELLA_LEAF]
+Coffee Umbrella
+
+[UMBRELLA_LEAF_TOOLTIP]
+Protects neighboring plants from bungee zombies and pitcher zombies, floats
+
+[MARIGOLD]
+Cactus Blover Flower
+
+[MARIGOLD_TOOLTIP]
+A non-disposable clover plant
+
+[MELON_PULT]
+Melon-Pult
+
+[MELON_PULT_TOOLTIP]
+"Raw melon and eggs"
+
+[GATLING_PEA]
+Burger Shooter
+
+[GATLING_PEA_TOOLTIP]
+Burger King!!!
+
+[TWIN_SUNFLOWER]
+Sun Pumpkin Palm
+
+[TWIN_SUNFLOWER_TOOLTIP]
+Sun, spikes, pumpkin head
+
+[GLOOM_SHROOM]
+Butter-Gloom-Shroom
+
+[GLOOM_SHROOM_TOOLTIP]
+Shoots corn kernels and butter simultaneously
+
+[CATTAIL]
+Melon Cattail
+
+[CATTAIL_TOOLTIP]
+Magic watermelon, the original powerful cat-tail plant
+
+[WINTER_MELON]
+Sun-Shroom-Pult
+
+[WINTER_MELON_TOOLTIP]
+Throws sun mushrooms, produces sunlight, grows
+
+[GOLD_MAGNET]
+Golden Magnet
+
+[GOLD_MAGNET_TOOLTIP]
+Turns coins into bullets and shoots them out
+
+[SPIKEROCK]
+Steel-Spike-Nut King
+
+[SPIKEROCK_TOOLTIP]
+Dominates left, center, and right, bursts tires with authority
+
+[COB_CANNON]
+Doom Cannon
+
+[COB_CANNON_TOOLTIP]
+Click to launch a doom mushroom
+
+[IMITATER]
+Imitator
+
+[IMITATER_TOOLTIP]
+Allows players to use two of the same plant, each with its own cooldown time.
+
+[COFFEE_BEAN]
+Random Plant Box
+
+[COFFEE_BEAN_TOOLTIP]
+Randomly produces another plant
+
+[EXPLODE_O_NUT]
+Explosive Nut
+
+[EXPLODE_O_NUT_TOOLTIP]
+Explodes when zombies approach
+
+[GIANT_WALLNUT]
+Giant Nut
+
+[SPROUT]
+Sprout
+
+[MARIGOLD_SPROUT]
+Marigold Sprout
+
+[ZOMBIE]
+Zombie
+
+[FLAG_ZOMBIE]
+Flag Zombie
+
+[CONEHEAD_ZOMBIE]
+Conehead Zombie
+
+[BUCKETHEAD_ZOMBIE]
+Buckethead Zombie
+
+[POLE_VAULTING_ZOMBIE]
+Pole Vaulting Zombie
+
+[NEWSPAPER_ZOMBIE]
+Newspaper Ice Car Zombie
+
+[SCREEN_DOOR_ZOMBIE]
+Screen Door Zombie
+
+[FOOTBALL_ZOMBIE]
+Dark Football Zombie
+
+[DANCING_ZOMBIE]
+Armed Dance King Zombie
+
+[BACKUP_DANCER]
+Backup Dancer Zombie
+
+[DUCKY_TUBE_ZOMBIE]
+Ducky Tube Zombie
+
+[SNORKEL_ZOMBIE]
+Snorkel Zombie
+
+[ZOMBONI]
+Zamboni Zombie
+
+[ZOMBIE_BOBSLED_TEAM]
+Bobsled Zombie Team
+
+[DOLPHIN_RIDER_ZOMBIE]
+Dolphin Pea Knight
+
+[JACK_IN_THE_BOX_ZOMBIE]
+Jack-in-the-box Zombie
+
+[BALLOON_ZOMBIE]
+Balloon Dance King Zombie
+
+[DIGGER_ZOMBIE]
+Dark Olive Miner Zombie
+
+[POGO_ZOMBIE]
+Pogo Zombie
+
+[ZOMBIE_YETI]
+Zombie Yeti
+
+[BUNGEE_ZOMBIE]
+Bungee Zombie
+
+[LADDER_ZOMBIE]
+Ladder Zombie
+
+[CATAPULT_ZOMBIE]
+Pitcher Zombie
+
+[GARGANTUAR]
+Armed Gargantuar
+
+[REDEYED_GARGANTUAR]
+Red-eyed Armed Gargantuar
+
+[REDEYED_GARGANTUAR_DESCRIPTION]
+The Red-eyed Gargantuar is an upgraded version of the giant zombie.
+{KEYWORD}Resilience: {STAT}6000 plus (1100 or 3000) plus 1100
+{KEYWORD}Wearing: {STAT}Bucket Hat (1 type), Screen Door (2 types), or Football Helmet (1 type), or Waste Paper Helmet (immune to control)
+{KEYWORD}Attack Damage: {STAT}Instant death normally, 1001 for high ice fruits and steel spike kings, QQ bullet Giant Fume-shroom 100.
+{KEYWORD}Features: {STAT}Throws imps when its health falls below half
+{FLAVOR}As the overlord of the zombie world, the Red-eyed Giant Zombie lacks brains. It often falls into traps easily. It also requires the cooperation of other zombies.
+
+[IMP]
+Imp Zombie
+
+[BOSS]
+Dr. Dave
+
+[DOG_WALKING_ZOMBIE]
+Dog Walking Zombie
+
+[DOG_ZOMBIE]
+Zombie Dog
+
+[PROPELLER_ZOMBIE]
+Propeller Zombie
+
+[PEASHOOTER_DESCRIPTION]
+A basic plant with both offense and defense, where the dream starts!
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}300
+{KEYWORD}Power: {STAT}20/second
+{KEYWORD}Range: {STAT}The front row
+{KEYWORD}Features: {STAT}Produces 25 points of sunlight every 25 seconds
+{SHORTLINE}
+{FLAVOR}
+Hybrid plants come from the same lab as the Twin Sunflower was born. "But that doesn't mean we're brothers," Twin Sunflower said, "their birth was a horrific tragedy!"
+
+[SUNFLOWER_DESCRIPTION]
+Sun Bean, a sun-producing crop that doesn't take up space and grows!
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}300
+{KEYWORD}Power: {STAT}---
+{KEYWORD}Range: {STAT}---
+{KEYWORD}Features: {STAT}Produces 15 points of sunlight every 12.5 seconds; grows bigger after 90 seconds, producing 25 points of sunlight every 12.5 seconds
+{SHORTLINE}
+{FLAVOR}
+Sun Bean is a firm supporter of clean energy. "Maybe you'd say, isn't solar energy already clean?" Sun Bean said, "But that's not the point! The point is about efficiency, we aim to cover every inch of usable lawn!"
+
+[WALL_NUT_DESCRIPTION]
+Defends and entertains with great skill!
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}4000
+{KEYWORD}Power: {STAT}1/frame
+{KEYWORD}Range: {STAT}The cell it occupies
+{KEYWORD}Features: {STAT}Ignites peas
+{SHORTLINE}
+{FLAVOR}Wall Nut loves fireworks; to him, various fireworks are endlessly fascinating. "Just talking about fireworks gets my head hot, and my body starts feeling warm!" It seems not only his head gets heated up — he hasn't realized that nutshells are flammable.
+
+[CHERRY_BOMB_DESCRIPTION]
+Turns zombies into sunlight.
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}300
+{KEYWORD}Power: {STAT}1800
+{KEYWORD}Range: {STAT}1.5 tiles around itself
+{KEYWORD}Features: {STAT}Turns zombies into sunlight
+{SHORTLINE}
+{FLAVOR}On the issue of sourcing sunlight from zombies, Sun Bomb had a heated argument with Sunflower, but it didn't stop her from attending the Sun Lovers Club every Thursday afternoon.
+
+[POTATO_MINE_DESCRIPTION]
+Potato Mine has great power; however, they need some time to arm themselves. You should plant them on the path of zombies’ approach, where they will explode upon contact.
+{SHORTLINE}
+{KEYWORD}Resilience: {STAT}300
+{KEYWORD}Power: {STAT}1800
+{KEYWORD}Range: {STAT}The cell it occupies
+{KEYWORD}Features: {STAT}Single-use, requires 15s preparation time, springs out a large sun
+{SHORTLINE}
+{FLAVOR}Getting sunlight from zombies is not only an idea of Sun Bomb — Sun Potato also has it. "There's no plagiarism between us — in fact, I founded the Sun Club, and he is a member," said Sun Potato.
+
+[REPEATER_DESCRIPTION]
+The Twin Cactus can fire two spikes at a time.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}30×2 points/2s
+{KEYWORD}Range: {STAT}Full row in front
+{KEYWORD}Feature: {STAT}Bullet penetration
+{SHORTLINE}
+{FLAVOR}Cacti love hugs, but their appearance even keeps the armored rat at bay. "No matter what people say, I love her," the Twin shooter said, "This is the crystallization of our love."
+[SNOW_PEA_DESCRIPTION]
+A cat's tail with a slowdown effect!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20×2/s
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Single target slowdown by 1/2, lasts 15s
+{SHORTLINE}
+{FLAVOR}This kitty outfit suddenly became popular in the plant world, with the pea family buying the most. Snowshooter snapped up this outfit when hats were sold out.
+[CHOMPER_DESCRIPTION]
+The Garlic Flower loves to eat garlic the most!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}Only swallows small ice vehicles, other zombies 40
+{KEYWORD}Range: {STAT}1.5 squares in front
+{KEYWORD}Feature: {STAT}Forces zombies to switch lanes
+{SHORTLINE}
+{FLAVOR}The Garlic Flower always smells like it just walked out of an Italian restaurant. Its slogan is “Smell is power,” although this often keeps plants beside it at a distance. It likes to sunbathe, but its neighbors always complain, “Can you go somewhere else to sunbathe?” Anyway, the Garlic Flower optimistically considers the strong smell as a natural tool for social distancing.
+[PUFF_SHROOM_DESCRIPTION]
+Free mushrooms, free flowerpots.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20/1.5s
+{KEYWORD}Range: {STAT}3 squares in front
+{KEYWORD}Feature: {STAT}Allows planting on bare ground
+{SHORTLINE}
+{FLAVOR}Little Puff didn't want to be the lowest in the mushroom family, so it put a flowerpot on its head. "Plant tall plants in this pot, and the plants will respect me!" “(Isn't this pretending to be a tiger?)” Fume-Shroom thought.
+[SUN_SHROOM_DESCRIPTION]
+A growing Sunflower, second in sunlight production.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}---
+{KEYWORD}Range: {STAT}---
+{KEYWORD}Feature: {STAT}Produces 40 sunlight every 25s, grows after 120s to produce 75 sunlight every 25s
+{SHORTLINE}
+{FLAVOR}The glamorous hat gives the Sunflower a higher look, making it a hit in the plant fashion and clothing industry. Of course, it also has to return to its essence, providing sunlight for plants to fight. The Sunflower thought of this, completely ignoring the plants saying behind him: “You’re blocking our view, move away!”
+[FUME_SHROOM_DESCRIPTION]
+Fume-Shroom with an ice watermelon can penetrate iron gratings while firing a watermelon.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}(20+80)/1.5s
+{KEYWORD}Range: {STAT}Full row attack
+{KEYWORD}Feature: {STAT}Penetrating attack
+{SHORTLINE}
+{FLAVOR}This ice-striped hat instantly made Fume-Shroom the most special in the mushroom family, with every mushroom amazed at how its cap is like the winter’s chill, giving them a unique feeling. Oh no, it's going to sneeze, everyone run away, run away!
+[GRAVE_BUSTER_DESCRIPTION]
+Devours gravestones, leaving a ready-to-deploy Sunshine Potato Mine.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}1800
+{KEYWORD}Range: {STAT}Its own square
+{KEYWORD}Feature: {STAT}Needs to be planted on a gravestone
+{SHORTLINE}
+{FLAVOR}“It's always like this, why should I be the one to clear the weeds.” “How about you take me along every time, then you won’t have to clear that place again,” Potato Mine said to the Grave Digger.
+[HYPNO_SHROOM_DESCRIPTION]
+When a zombie eats a Hypno-shroom, it turns into a mesmerizing red-eyed giant.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}---
+{KEYWORD}Range: {STAT}Single zombie
+{KEYWORD}Feature: {STAT}Turns a zombie into a mesmerizing red-eyed giant
+{SHORTLINE}
+{FLAVOR}This jewel plant was fabricated by Dave after capturing a red-eyed specimen, showing no signs of Hypno-shroom anymore. When zombies eat a red-eyed shroom, the spirit of the red-eyed will reside in the zombie to fight for Dave... "What are you doing?" Peashooter turned on the light. "It's just a Hypno-shroom going moldy!"
+[SCAREDY_SHROOM_DESCRIPTION]
+Grows under sunlight - but still timid.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20/1s, grows to 20×4/1 second after growing
+{KEYWORD}Range: {STAT}Full row in front
+{KEYWORD}Feature: {STAT}Hides and stops attacking when zombies are about 1.5 squares around it. Produces 15 sunlight when young, 50 after growing.
+{SHORTLINE}
+{FLAVOR}To avoid fear of the dark, it makes its head glow, unknowingly attracting zombies as well.
+[ICE_SHROOM_DESCRIPTION]
+Snowflakes flying, north wind howling!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Damage: {STAT}20×100/second
+{KEYWORD}Range: {STAT}All zombies on the screen
+{KEYWORD}Feature: {STAT}Sky-drop icicles last 8 seconds, then freeze the whole field for 3 seconds, and continue to slow down for 15 seconds
+{SHORTLINE}
+{FLAVOR}"Winter has come, can spring be far behind?" Ice Glacier Mushroom longs for spring, living in the icy world for most of the year as a polar plant. Maybe he doesn't like the cold, because he always takes his buddy fishing during the warmest time of the year. In fact, Snow Pea was his first teacher.
+[DOOM_SHROOM_DESCRIPTION]
+Charm-Destroy Mushroom can charm all zombies within range.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}---
+{KEYWORD}Range: {STAT}Around itself with a radius of about 3.5 squares
+{KEYWORD}Feature: {STAT}Leaves a crater in place after exploding, where no plants can be grown, lasting 180s.
+{SHORTLINE}
+{FLAVOR}People have been debating about the origins of Charm-Destroy Mushroom. It’s neither from an evil lab nor a bad one-night stand. It's just that clumsy Destroy Mushroom accidentally spilled paint and splashed it onto zombies during the explosion.
+[LILY_PAD_DESCRIPTION]
+Water lily allows you to plant non-aquatic plants on it and shoot bullets.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20/3s
+{KEYWORD}Range: {STAT}Full row in front
+{KEYWORD}Feature: {STAT}Planted on water, can plant on it, and shoots bullets.
+{SHORTLINE}
+{FLAVOR}Water lily never complains, it also never wants to know what happened. Planting on it, it won't say anything. Maybe it has some amazing ideas or terrible secrets? No one knows. Water lily keeps all these buried deep inside.
+[SQUASH_DESCRIPTION]
+Ice Shroom Squash will squash the first zombie that approaches it and freeze the entire field.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}1800
+{KEYWORD}Range: {STAT}Very small area behind and about 1.5 squares in front
+{KEYWORD}Feature: {STAT}Freezes the entire field for 3 seconds, slows down for 15 seconds
+{SHORTLINE}
+{FLAVOR}This is what Squash looks like after being stuck in a fridge for 2000 years, how did he get back to now? We found the frozen Squash with just a small piece of the teleporter.
+[THREEPEATER_DESCRIPTION]
+Pea fountain can shoot peas in all directions.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1500
+{KEYWORD}Damage: {STAT}20×36/3s
+{KEYWORD}Range: {STAT}Full screen
+{KEYWORD}Feature: {STAT}360-degree attack without dead ends
+{SHORTLINE}
+{FLAVOR}"Drop a pea, make a wish." This is the slogan of the Pea Wishing Well. "Hey, don't throw other stuff in there! Don't throw Spicy Water!" Dave is stopping a hot pepper.
+[TANGLE_KELP_DESCRIPTION]
+Destructive Seaweed can pull zombies underwater and release a Doom-shroom effect.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}(Instant kill)
+{KEYWORD}Range: {STAT}Small range around itself, then a large area explosion
+{KEYWORD}Feature: {STAT}Pulls 1 zombie underwater, then releases a Doom-shroom effect
+{SHORTLINE}
+{FLAVOR}In fact, Tangle Kelp itself is a Doom-shroom, it just accidentally fell into the water and got entangled by seaweed before.
+[JALAPENO_DESCRIPTION]
+Cherry Pepper can destroy enemies on three lanes.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}1800
+{KEYWORD}Range: {STAT}The entire row it's on and the two adjacent rows
+{KEYWORD}Feature: {STAT}Destroys ice paths, counters ice slowdown
+{SHORTLINE}
+{FLAVOR}Cherry Pepper: "I'm gonna explode," "No, it should be I'm gonna blow up!" The Cherry Bomb brothers have been arguing over the word "explode" for a long time - but the appearance of the Blazing Pepper settled the dispute.
+[SPIKEWEED_DESCRIPTION]
+The art of puncturing tires and butter.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20×1 point/1s
+{KEYWORD}Range: {STAT}Its own square
+{KEYWORD}Feature: {STAT}Punctures tires, has a chance to release butter.
+{SHORTLINE}
+{FLAVOR}Dave spilled a butter can, accidentally dropping it on the Spikeweed, this butter directly changed the Spikeweed's color, and spikes. Zombies can no longer "slip" past Spikeweed.
+[TORCHWOOD_DESCRIPTION]
+Ignites peas/ice peas into slow-down fireballs.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}Ice ball 40 damage
+{KEYWORD}Range: {STAT}Ice ball single square group damage
+{KEYWORD}Feature: {STAT}Ignites peas and ice peas
+{SHORTLINE}
+{FLAVOR}The crown is an important item in the Torchwood family, the larger the fire crown, the higher the status. "I once tried to highlight my fire crown with a crown, but they said I was outdated," Torchwood said, "Now, with this ice crown, I've also become one of the high-status ones in Torchwood." "Isn't that Snow Pea's headdress..." Peashooter whispered.
+[TALL_NUT_DESCRIPTION]
+High ice fruit has strong defensive capabilities! It can also shoot bullets!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}8000
+{KEYWORD}Damage: {STAT}20×6/1.5 seconds
+{KEYWORD}Range: {STAT}Full row in front
+{KEYWORD}Feature: {STAT}Shoots 6 ice peas, reflecting damage slows down 1/frame, reflecting damage has a chance to freeze the enemy, withstands 8 hammer strikes/crushing
+{SHORTLINE}
+{FLAVOR}Since I was a child, everyone disliked me for being short, so I made up my mind to become strong, and that's how I got the powerful strength to push all the way. But the loneliness has not diminished, causing the exterior to gradually become as cold as the inside.
+[SEA_SHROOM_DESCRIPTION]
+Sea walnut, a must-have for pool levels!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}6000
+{KEYWORD}Damage: {STAT}20/1s
+{KEYWORD}Range: {STAT}Full row in front
+{KEYWORD}Feature: {STAT}Aquatic plant, blocks zombies
+{SHORTLINE}
+{FLAVOR}High walnut tried to wear the sea mushroom outfit to go underwater, as can be seen, his mouth curled up with joy. However, the other high walnut family was puzzled...
+[PLANTERN_DESCRIPTION]
+Clears the fog, slows down zombies in range and causes damage.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}20/s
+{KEYWORD}Feature: {STAT}Clears fog, 3×3 range slow and damage. Deathrattle: Freezes zombies within a 3×3 range for 3 seconds, and shoots 10 bullets in six directions.
+{SHORTLINE}
+{FLAVOR}"6"th Street Lantern says the day after Christmas is very important — that is, on 2"6"th — but she forgot why, and cried her eyes red for it. "It was in 1893. His birthday," the Wisdom Tree replied, "Like the street lantern, he had a hot heart, and illuminated the plants’ way forward."
+[CACTUS_DESCRIPTION]
+Pea cannon can fire a large pea with a knockback effect.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1000
+{KEYWORD}Damage: {STAT}500/4s
+{KEYWORD}Range: {STAT}One square in front
+{KEYWORD}Feature: {STAT}Massive damage, knocks back zombies
+{SHORTLINE}
+{FLAVOR}Moving the giant pea model on Peashooter’s head onto the cart took quite an effort, and Dave even hurt his back then. Then, he put a pea pod in...
+[BLOVER_DESCRIPTION]
+A barrage of arrows!
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}30×21/row
+{KEYWORD}Range: {STAT}Full screen
+{KEYWORD}Feature: {STAT}Blows away all zombies on the screen, releases spikes
+{SHORTLINE}
+{FLAVOR}Clover enjoys quick battles, though blowing a bunch of spikes makes his muscles tired, but he still enjoys it, while also guarding against Clover Flower's nagging.
+[SPLIT_PEA_DESCRIPTION]
+Corn roll cat-tail can shoot four tracking bullets, corn, cabbage, butter.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}(20+40)×2 or (40+40)×2/2s
+{KEYWORD}Range: {STAT}Full screen tracking
+{KEYWORD}Feature: {STAT}Has a chance to shoot butter.
+{SHORTLINE}
+{FLAVOR}An accidental product of Dave's experiment, originally he just wanted to make an ordinary corn roll, "I don’t believe my birth was an accident" "Yes, we finally got closer to each other"
+[STARFRUIT_DESCRIPTION]
+Starfruit with spikes can shoot small starfruits in five directions, also punctures tires.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300
+{KEYWORD}Damage: {STAT}40×1 point/1.5s
+{KEYWORD}Range: {STAT}Five directions
+{KEYWORD}Feature: {STAT}Cannot be eaten by zombies
+{SHORTLINE}
+{FLAVOR}Starfruit’s big buck teeth make him not fond of socializing, so he asked Spikeweed the secret of being unnoticed, "Dude, just lie down, change to a dull color, and they won’t see you," Spikeweed said.
+[PUMPKIN_DESCRIPTION]
+Melancholic pumpkin head, protects other plants, while spraying spores around.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Damage: {STAT}(20×4)/2 seconds
+{KEYWORD}Range: {STAT}3×3
+{KEYWORD}Feature: {STAT}Supreme gold card For each same plant on the field, card price increases by 100
+{SHORTLINE}
+{FLAVOR}Like Chomper and Wall-Nut, many plants were college roommates. "Me and Melancholy Shroom are just like brothers," Pumpkin Head said. Indeed, he has considered Melancholy Shroom as his "limb". However, Sunflower and Peashooter seem not very close—they always back to back.
+[MAGNET_SHROOM_DESCRIPTION]
+Magnet-nut can use magnetic force to extract zombies' helmets and other metal items.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}4000
+{KEYWORD}Damage: {STAT}---
+{KEYWORD}Range: {STAT}A circle around itself within 3 squares
+{KEYWORD}Feature: {STAT}Removes metal from zombies
+{SHORTLINE}
+{FLAVOR} "The focus of physicists' debates is never why a nut can produce a metallic effect," Magnet-nut mentioned, "Actually, it’s quite explainable on a philosophical level, I think, therefore I am." Magnet-nut believes he will gain more by completing the study of Wang Yangming's philosophy of mind.
+
+[CABBAGE_PULT_DESCRIPTION]
+The Gatling Pea Shooter can throw cabbages and shoot peas simultaneously.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}(40+20)×4/1.5s
+{KEYWORD}Range：{STAT}Full row in front
+{KEYWORD}Feature：{STAT}Throws ignoring the angle of the roof
+{SHORTLINE}
+{FLAVOR}“Honestly, I'm quite envious that cabbages can attack at will on uneven terrains,” said the Gatling Pea truthfully. Thus, it swapped with the cabbage, but its way of attacking still didn't change completely.
+[FLOWER_POT_DESCRIPTION]
+The Sunflower Pot allows you to plant on bare ground and produces sunlight.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}---
+{KEYWORD}Range：{STAT}---
+{KEYWORD}Feature：{STAT}Allows planting on bare ground.
+{SHORTLINE}
+{FLAVOR}The Sunflower pot faces upwards.
+"Don't get me wrong, it's just that it's noon right now," she said. She hopes this excuse can cover up the embarrassment of having a stiff neck until evening.
+[KERNEL_PULT_DESCRIPTION]
+The Triple Corn Shooter can shoot corn kernels and butter at three rows simultaneously.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}Butter: 40×1 point/2s (Freezes zombies for 3s)
+Corn Kernel: 20×1 point/2s
+{KEYWORD}Range：{STAT}Full three rows in front
+{KEYWORD}Feature：{STAT}Throws ignoring the angle of the roof
+{SHORTLINE}
+{FLAVOR}The Corn Shooter has always been the eldest among the three shooters, being the only one who can remember the birthdays of the three brothers, though not quite accurately. For this, he prepared three baskets to jot down significant events of the three brothers, so he wouldn’t mix them up.
+[COFFEE_BEAN_DESCRIPTION]
+What's the next surprise?
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}---
+{KEYWORD}Range：{STAT}---
+{KEYWORD}Feature：{STAT}Randomly grows one plant
+{SHORTLINE}
+{FLAVOR}“As you can see, I am a box,” said the Random Plant Box.
+“There are some seeds inside me, you might find hybrid seeds, as they box inside. As for why it can grow a Corn Cannon…” The box hesitated.
+“Because it was squeezed out.”
+[GARLIC_DESCRIPTION]
+The Charming Garlic can change zombies' advancing route and charm them.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}150
+{KEYWORD}Power：{STAT}---
+{KEYWORD}Range：{STAT}---
+{KEYWORD}Feature：{STAT}Forces the zombies that have bitten it to change lanes, charming zombies
+{SHORTLINE}
+{FLAVOR}Garlic used to work in a paint factory, the only place that could conceal his smell. One day, a clumsy guy spilled the paint, leading him to lose his job and turn colorful.
+[UMBRELLA_LEAF_DESCRIPTION]
+The Coffee Umbrella protects nearby plants from bungee zombies and catapult zombies.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}---
+{KEYWORD}Range：{STAT}The 8 squares surrounding it
+{KEYWORD}Feature：{STAT}Protects nearby plants from bungee zombies and catapult zombies.
+{SHORTLINE}
+{FLAVOR}Even though it seldom rains during the day, it doesn't stop the Coffee Bean from holding an umbrella, but only the Coffee Umbrella knows, it's the result of its hard work in hair protection. As for the hybrid technology? That's not important.
+[MARIGOLD_DESCRIPTION]
+Repels and penetrates an entire row!
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}30×4/3 seconds
+{KEYWORD}Range：{STAT}A row
+{KEYWORD}Feature：{STAT}Repels the entire row
+{SHORTLINE}
+{FLAVOR}The Marigold likes a steady flow. In its view, teamwork is the key. Even if the output isn’t huge, it’s still useful. Meanwhile, it’s wary of Clover’s muttering.
+[MELON_PULT_DESCRIPTION]
+The Melon Nut can cause huge damage to a group of zombies.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}4000
+{KEYWORD}Power：{STAT}80/1.5s, with splash damage of 26 to surrounding zombies
+{KEYWORD}Range：{STAT}Full row in front
+{KEYWORD}Feature：{STAT}Offense and defense combined
+{SHORTLINE}
+{FLAVOR}Everyone wonders whether he is a melon or a nut upon seeing him for the first time, but he firmly believes he is a melon: “Look at me, I’m obviously a melon, not a nut, what’s there to doubt?” But in summer, he thinks he’s a nut, which is very strange.
+[GATLING_PEA_DESCRIPTION]
+The Hamburger Shooter fires 8 random bullets at a time.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}4000
+{KEYWORD}Power：{STAT}(160~640)/2.5s
+{KEYWORD}Range：{STAT}Full row in front
+{KEYWORD}Feature：{STAT}Produces sunlight, high health
+{SHORTLINE}
+{FLAVOR}The Hamburger Shooter hates when people talk about “McDoor” or “KFC Door”, his only desire is to stay true to his heart—“Fighting zombies is my duty, and Burger King is my forever belief.”
+[TWIN_SUNFLOWER_DESCRIPTION]
+The Sunshine Pumpkin Palm can produce sunlight, shoot spikes, and protect plants.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}4000
+{KEYWORD}Power：{STAT}30×2/3 seconds
+{KEYWORD}Range：{STAT}Front row
+{KEYWORD}Feature：{STAT}Produces 50 sunlight every 25s
+{SHORTLINE}
+{FLAVOR}As a desert plant, the Sunflower Cactus has maximized photosynthesis. This allows it to provide sunlight to other plants, and it enjoys doing so, even though no plant wants to get close to it.
+[GLOOM_SHROOM_DESCRIPTION]
+The Gloom Mushroom releases a large amount of smoke, corn kernels, and butter around itself.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}(20+20)×4/2s or (20+40)×4/2s
+{KEYWORD}Range：{STAT}The 8 squares surrounding it
+{SHORTLINE}
+{FLAVOR}The Gloom Mushroom’s butter actually came from an accident—it accidentally fell into a butter barrel. However, he found out that everyone started to like him, so he wasn’t very gloomy anymore. “Would you like some butter?” Gloom Mushroom would ask its customers like this.
+[CATTAIL_DESCRIPTION]
+Magical Melon, the first-generation powerful Cat Tail plant.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}80*2/1.5 seconds
+{KEYWORD}Range：{STAT}Screen-wide tracking
+{KEYWORD}Feature：{STAT}Splash damage
+{SHORTLINE}
+{FLAVOR}“Honestly, I kind of miss the days when I was an apprentice,” sipped the Melon Cat Tail slowly and continued, “After all, I learned my magic from my master.” Looking at the Cat Tail photo on the wall, he took another sip of melon juice.
+[WINTER_MELON_DESCRIPTION]
+The Sunshroom Shooter can attack by throwing Sunshrooms.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}40/1.5s, grows to 80/1.5s
+{KEYWORD}Range：{STAT}Full row in front
+{KEYWORD}Feature：{STAT}Produces 25 sunlight every 25 seconds, grows bigger after 120 seconds; after growing, produces 50 sunlight every 25 seconds.
+{SHORTLINE}
+{FLAVOR}Throwing its own brothers, this seemed very strange to other plants, even though there was already a Melon Shooter example. But for the Mushroom Shooter, it’s the first time they’ve seen. “It’s just a plastic replica…” said the Sunshroom Shooter, who also bought his basketball from the Cabbage Pult.
+[GOLD_MAGNET_DESCRIPTION]
+The Gold Magnet can collect coins and diamonds for you and shoot them out.
+{{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}Silver Coin 100, Gold Coin 500, Diamond 1000
+{KEYWORD}Range：{STAT}Full screen
+{KEYWORD}Feature：{STAT}Produces every 5 seconds, absorbs every 5 seconds, shoots every 5 seconds
+{{SHORTLINE}
+{FLAVOR}“Hybrid plants are expensive,” Dave said like this, “I don’t even have money to buy my favorite burrito! So, I hybridized the Gold Magnet to alleviate my financial crisis.” But Dave forgot something very important—the money produced by the Marigold can only be used in his place.
+[COB_CANNON_DESCRIPTION]
+Click to launch a lethal destructive bomb from the Cob Cannon.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}1000
+{KEYWORD}Power：{STAT}1800
+{KEYWORD}Range：{STAT}Manual launch, destroys zombies in the clicked area
+{KEYWORD}Explosion：{STAT}Circle around the target with a radius of 3.5 squares.
+{SHORTLINE}
+{FLAVOR}Not a Corn Cannon but a Doom-shroom, not popcorn but a mushroom cloud, the Doom Cannon always gets confused which family it belongs to. “I know, Mushroom Corn Soup!” said a little Pea Shooter. Was this what Dave ate the day before yesterday?
+[IMITATER_DESCRIPTION]
+The Imitater allows you to use two of the same plants in the same level!
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}300
+{KEYWORD}Power：{STAT}---
+{KEYWORD}Range：{STAT}---
+{KEYWORD}Feature：{STAT}Requires 3.2s to transform
+All features are the same as the imitated plant
+{FLAVOR}“That party was simply too crazy, I didn’t even know as what to appear.” said the Imitater eggplant. Unfortunately, he didn’t know either after dawn. My poor Imitater.
+[SPIKEROCK_DESCRIPTION]
+The Spike Nut King can pierce multiple tires, block zombie attacks, and damage nearby zombies.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}8000
+{KEYWORD}Power：{STAT}20×2 points/1s
+{KEYWORD}Range：{STAT}1×3
+{KEYWORD}Feature：{STAT}Platinum Card
+The price of the card increases by 100 for each identical plant on the field
+{FLAVOR}Due to not taking baths for a long time, Tall-nut's body has grown thorns, but he enjoys it. “Buddy! They are my comrades, how could you make me abandon them?” When someone suggested Tall-nut to clean himself, Tall-nut replied like this.
+[ZOMBIE_DESCRIPTION]
+Regular zombie
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}270
+{KEYWORD}Wearing：{STAT}——
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 4-7s/square
+{SHORTLINE}
+{FLAVOR}This kind of zombie is crazily fond of brains, greedy and never satisfied. Brains, brains, brains, —pursuing them day and night.
+Stinky brains? Rotten brains? I guess it doesn’t matter, zombies don’t mind.
+[FLAG_ZOMBIE_DESCRIPTION]
+The Flag Zombie signifies an upcoming large wave of zombie horde.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}270
+{KEYWORD}Wearing：{STAT}——
+{KEYWORD}Bite Damage：{STAT} 100 points/s
+{KEYWORD}Speed：{STAT}About 3.7s/square
+{SHORTLINE}
+{FLAVOR}Undoubtedly; Flag Zombie loves brains, but privately he is also obsessed with flags. Maybe it’s because the flag also has a brain painted on it, hard to say.
+[CONEHEAD_ZOMBIE_DESCRIPTION]
+His traffic cone helmet makes him more resilient than the regular zombies.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}(370 or 500) + 270
+{KEYWORD}Wearing：{STAT}Traffic cone (Category 1), green cone (speed up)
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 4-7s/square
+{SHORTLINE}
+{FLAVOR}Like other zombies, the Conehead Zombie blindly moves forward. But some things made him stop, pick up a traffic cone, and firmly place it on his head. Yes, he loves parties.
+[BUCKETHEAD_ZOMBIE_DESCRIPTION]
+His bucket helmet greatly increases his resilience.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}1100 + 270
+{KEYWORD}Wearing：{STAT}Bucket (Category 1)
+{KEYMETAL}Weakness：{METAL}Magnet-shroom
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 4-7s/square
+{SHORTLINE}
+{FLAVOR}Buckethead Zombie often wears a bucket, appearing unique in the indifferent world. But in fact, he just forgot that the bucket was still on his head.
+[POLE_VAULTING_ZOMBIE_DESCRIPTION]
+The Pole Vaulting Zombie uses a pole to leap over obstacles.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}500 or (1100 + 500)
+{KEYWORD}Wearing：{STAT}——
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 2.5s/square before the leap, after leaping about 4-7s/square
+{KEYWORD}Feature：{STAT}Leaps over the first plant he encounters
+{SHORTLINE}
+{FLAVOR}Some zombies yearn for going further, acquiring more, which also motivates them from ordinary to extraordinary. That's the Pole Vaulting Zombie.
+[NEWSPAPER_ZOMBIE_DESCRIPTION]
+Uncle just mentioned his new car!
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}500 + 1350
+{KEYWORD}Wearing：{STAT}Newspaper (Category 2)
+{KEYWORD}Bite Damage：{STAT}Crushing
+{KEYWORD}Speed：{STAT}About 4-7s/square, after losing the newspaper 1.8s/square
+{SHORTLINE}
+{FLAVOR}Zombies that have been encountered before, using impressively heated anger to attack. The enemy once defeated by you with a few little sprouts in the original night lawns, will reappear before you, unleashing the flames of vengeance. Determined to snatch the brain.
+[SCREEN_DOOR_ZOMBIE_DESCRIPTION]
+His screen door is an effective shield.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}1100 + 270 (or + 370, + 1100)
+{KEYWORD}Wearing：{STAT}Screen door (Category 2)
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 4-7s/square
+{KEYWORD}Weakness：{STAT}Fume-shroom{METAL}and Magnet-shroom{KEYWORD}
+{SHORTLINE}
+{FLAVOR}The last homeowner Screen Door Zombie visited was not good at defending, after eating the homeowner’s brain, he took away his screen door.
+[FOOTBALL_ZOMBIE_DESCRIPTION]
+The Dark Football Zombie is the captain of the football zombies.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}3000 + 270
+{KEYWORD}Wearing：{STAT}Football helmet (Category 1), wasted helmet cap (immune to control)
+{KEYWORD}Bite Damage：{STAT}200 points/s
+{KEYWORD}Speed：{STAT}About 2.5s/square
+{SHORTLINE}
+{FLAVOR}On the field, the Dark Football Zombie, as the captain, always shows more enthusiasm than other football zombies. Although he's well-versed in defense and offense, he still doesn't understand football.
+[DANCING_ZOMBIE_DESCRIPTION]
+The Disco Zombie and humans (both alive and dead), any similarity is purely coincidental.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}3000 + 500
+{KEYWORD}Wearing：{STAT}Olive hat (Category 1), wasted helmet (immune to control)
+{KEYWORD}Bite Damage：{STAT}200 points/s
+{KEYWORD}Speed：{STAT}Entering slide about 1.2s/square, after summoning about 5.5s/square
+{KEYWORD}Feature：{STAT}Summons anniversarial Disco Zombies and Backup Dancer Zombies
+{SHORTLINE}
+{FLAVOR}Disco Zombie's latest album “Wow Brain Milk Ah Pup Ah Pup” is rapidly rising in popularity among the zombie world.
+[BACKUP_DANCER_DESCRIPTION]
+When the Disco Zombie sways, 4 of these zombies make their entrance.
+{SHORTLINE}
+{KEYWORD}Toughness：{STAT}370 + 270
+{KEYWORD}Wearing：{STAT}Traffic cone (Category 1)
+{KEYWORD}Bite Damage：{STAT}100 points/s
+{KEYWORD}Speed：{STAT}About 5.5s/square
+{SHORTLINE}
+{FLAVOR}Backup Dancer Zombies studied dance techniques deeply for six years at “Jaw Giulia” Performing Arts Academy in Zombie New York City and were specially invited to participate in “Dancing Grand Gathering”.
+
+[DUCKY_TUBE_ZOMBIE_DESCRIPTION]
+The duck lifebuoy allows zombies to float on the water.
+{KEYWORD}Toughness: {STAT}270
+{KEYWORD}Wearing: {STAT}——
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{{KEYWORD}Speed: {STAT}about 4-7s/square
+{AQUATIC}Appears only in pool levels
+{FLAVOR}Only specific zombies can become lifebuoy zombies, not every water-logged zombie is cut out for this.
+Some lifebuoys are a bit leaky, but they didn’t notice, so they left and abandoned their craving for brains.
+
+[SNORKEL_ZOMBIE_DESCRIPTION]
+Snorkel zombies can move underwater.
+{KEYWORD}Toughness: {STAT}3000+270
+{KEYWORD}Wearing: {STAT}Olive hat (Category 1)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT}about 4s/square
+{KEYWORD}Feature: {STAT}Swim to avoid attacks
+{FLAVOR}Zombies don't breathe; they don't need air, so why do snorkel zombies still need a set of fancy diving equipment to dive? {KEYWORD}
+{FLAVOR}Answer: Peer pressure.
+
+[ZOMBONI_DESCRIPTION]
+The ice vehicle giant zombie rolls over your plants and leaves a trail of ice.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}3000
+{KEYWORD}Features: {STAT}Rolling over plants, leaving an ice trail,
+Deathrattle: Summon an iron bucket door giant
+{KEYWORD}Rolling Damage: {STAT}Instant death for regular ones, high ice fruit and steel spike king 1001, QQ bouncing big mushroom 100.
+{KEYWORD}Speed: {STAT}about 3-8s/square
+{SHORTLINE}
+{FLAVOR}The retired ice vehicle zombie used his life’s learning to preach to Gargantuar and customized a giant ice vehicle for him.
+
+[ZOMBIE_BOBSLED_TEAM_DESCRIPTION]
+These zombies appear as a four-person team.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}300+270×4
+{KEYWORD}Wearing: {STAT}Sled (Category I)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT}Sliding about 1.2s/square, after abandoning about 4-7s/square
+{KEYWORD}Feature: {STAT}Appears only in snowy areas
+{SHORTLINE}
+{FLAVOR}The bobsled zombie team does their best to reach where they want to go. They rely on each other, share brains, and train together as a perfectly coordinated zombie squad.
+
+[DOLPHIN_RIDER_ZOMBIE_DESCRIPTION]
+The dolphin rider zombie is good at exploiting the weaknesses of your pool defense.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}370+500
+{KEYWORD}Wearing: {STAT}Barrier (Category 1)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT}Riding about 0.8s/square, after jumping about 4-7s/square
+{KEYWORD}Feature: {STAT}Jumps over the first plant it encounters
+{KEYMETAL}Weakness: {METAL}Tall-nut
+{SHORTLINE}
+{FLAVOR}That dolphin is actually a zombie too.
+
+[ZOMBIE_YETI_DESCRIPTION]
+A rare and quirky creature.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}2000
+{KEYWORD}Rolling Damage: {STAT}Instant death for regular ones, high ice fruit and steel spike king 1001, QQ bouncing big mushroom 100.
+{KEYWORD}Speed: {STAT} Entrance about 5s/square, escape about 2.1s/square
+{KEYWORD}Feature: {STAT}Will run away after a short while
+{SHORTLINE}
+{FLAVOR}There’s little information about the zombie yeti, except his name, date of birth, social security number, education level, job history, and his love for sandwich (roasted beef and Swiss human flesh flavor).
+
+[JACK_IN_THE_BOX_ZOMBIE_DESCRIPTION]
+This type of zombie carries a Pandora box that can explode.
+{KEYWORD}Toughness: {STAT}370+500
+{KEYWORD}Wearing: {STAT}Barrier
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Feature: {STAT}Explosion when opening the doll box
+{KEYWORD}Damage: {STAT}1800 (Instant death)
+{KEYWORD}Range: {STAT}1.5 squares around itself as the center
+{KEYWORD}Speed: {STAT}about 2.2s/square
+{FLAVOR}This type of zombie is chilling, not because of his cold body, but because of his madness.
+
+[BALLOON_ZOMBIE_DESCRIPTION]
+Balloon dance king zombies float in the air, avoiding most attacks.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}250+270
+{KEYWORD}Wearing: {STAT}Balloon (Category I)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Feature: {STAT}Flying, Deathrattle: Summon an olive dance king zombie
+{KEYWORD}Speed: {STAT}Flying about 2.5s/square, after being knocked down about 4-7s/square
+{SHORTLINE}
+{FLAVOR}Balloon zombies are really lucky. Balloons have many uses, but other zombies have never found one.
+
+[DIGGER_ZOMBIE_DESCRIPTION]
+This type of zombie digs tunnels to bypass your defense.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}270
+{KEYWORD}Chewing Damage: {STAT}200 points/s
+{KEYWORD}Speed: {STAT} Digging about 1.2s/square, after emerging about 7s/square
+{KEYWORD}Feature: {STAT}Passes through underground tunnels and appears on the left side of the lawn
+{SHORTLINE}
+{FLAVOR}The miner zombie spends three days a week applying for his excavation permit.
+
+[POGO_ZOMBIE_DESCRIPTION]
+Pogo zombies can jump over your defenses.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}1100+270
+{KEYWORD}Wearing: {STAT}Iron bucket (Category 1)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT} Bouncing about 1.9s/square, walking about 3.8s/square
+{KEYWORD}Feature: {STAT}Jumps over plants
+{SHORTLINE}
+{FLAVOR}Bounce! Bounce! Bounce! That’s the powerful and effective sound made by pogo zombies.
+
+[BUNGEE_ZOMBIE_DESCRIPTION]
+Bungee zombies attack from the sky.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}450
+{KEYWORD}Feature: {STAT}Drops from the sky and steals your plants
+{SHORTLINE}
+{FLAVOR}Bungee zombies love adventure. After all, if you are no longer alive, why not experience death again?
+
+[LADDER_ZOMBIE_DESCRIPTION]
+Ladder zombies can climb over obstacles.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}(370+1000) or (1100+1000)
+{KEYWORD}Wearing: {STAT}Iron ladder (Category II), Barrier (Category 1), Iron bucket (Category 1)
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT}Carrying the ladder about 2s/square, after losing the ladder about 4-7s/square
+{KEYWORD}Weakness: {STAT}Fume-shroom {METAL}and Magnet-shroom {KEYWORD}
+{SHORTLINE}
+{FLAVOR}This ladder cost him $8.99.
+
+[CATAPULT_ZOMBIE_DESCRIPTION]
+Catapult zombie operates a heavy machine.
+{KEYWORD}Toughness: {STAT}3000+850
+{KEYWORD}Wearing: {STAT}Olive hat (Category 1)
+{KEYWORD}Feature: {STAT}Throws basketballs at your plants
+{KEYWORD}Speed: {STAT}about 2.5s/square
+{KEYWORD}Crushing Damage: {STAT}50 (Instant death)
+{KEYWORD}Basketball Damage: {STAT}75
+{KEYWORD}Target for Throwing: {STAT}The leftmost plant in the current column except for spike-type plants
+{SHORTLINE}
+{FLAVOR}The catapult zombie can use the catapult to launch anything, but basketballs seem to be the perfect choice.
+
+[GARGANTUAR_DESCRIPTION]
+Gargantuar is a giant zombie
+{KEYWORD}Toughness: {STAT}3000+ (1100 or 3000) +1100
+{KEYWORD}Wearing: {STAT}Iron bucket hat (Category 1), Iron gate (Category 2), or Football hat (Category 1), or Draft helmet (Immune)
+{KEYWORD}Attack Damage: {STAT}Instant death for regular ones, high ice fruit and steel spike king 1001, QQ bouncing big mushroom 100.
+{FLAVOR}When Gargantuar walks, the earth trembles. When he mourns, all zombies silence. He is the idol that zombies dream of becoming. However, he still hasn’t got a girlfriend yet.
+
+[IMP_DESCRIPTION]
+Imps are a group of small zombies that Gargantuar uses to throw into your defenses.
+{KEYWORD}Toughness: {STAT}270 (70 for I, Zombie series)
+{KEYWORD}Wearing: {STAT}——
+{KEYWORD}Chewing Damage: {STAT}100 points/s
+{KEYWORD}Speed: {STAT}about 4-7s/square (about 1.9s/square for I, Zombie series)
+{KEYWORD}Throwing Range: {STAT}   Flat ground: 2nd, 3rd, 4th columns from the left
+                   Roof: 2nd, 3rd, 4th, 5th columns from the left
+{FLAVOR}Although imps are skinny, they are well versed in zombie kung fu, zombie karate, and zombie taekwondo. Besides, they can also play the harmonica.
+
+[BOSS_DESCRIPTION]
+Dr. Dave is the new zombie overlord.
+{SHORTLINE}
+{KEYWORD}Toughness: {STAT}40000
+{KEYWORD}Attack Mode: {STAT}Release zombies, 
+Ice/Fireball (Instant death, range one row) - Use Jalapeno/Ice-shroom
+Crash (Instant death, range 2×3) - No solution, crushes the front row plants  
+{SHORTLINE}
+{FLAVOR}On a dark and stormy night, Dave killed Dr. Edgar and modified the mech, becoming the new king of zombies. As for why he turned into a zombie? “You’d have to ask me why I can crossbreed plants first,” Zombie King Dave said, “I experimented on myself.”
+
+[DOG_WALKING_ZOMBIE_DESCRIPTION]
+Description of Dog-walking Zombie
+
+[DOG_ZOMBIE_DESCRIPTION]
+Description of Zombie Dog
+
+[PROPELLER_ZOMBIE_DESCRIPTION]
+Description of Propeller Zombie
+
+[CRAZY_DAVE_201]
+Good evening, {PLAYER_NAME}.
+
+[CRAZY_DAVE_202]
+Those zombies won't ease their assault, will they?
+
+[CRAZY_DAVE_203]
+You'll notice the difference between fighting zombies at night as opposed to during the day.
+
+[CRAZY_DAVE_204]
+First off, you can't get sunlight from the sky.
+
+[CRAZY_DAVE_205]
+But you can still get sunlight through sunflowers.
+
+[CRAZY_DAVE_206]
+And you're in luck, you've got puff-shrooms.
+
+[CRAZY_DAVE_207]
+Plant as many of these mushrooms as you can, you'll make it through.
+
+[CRAZY_DAVE_301]
+Hey, you found my car keys!
+
+[CRAZY_DAVE_302]
+You know what this means......
+
+[CRAZY_DAVE_303]
+Crazy Dave's "Fancy Little Gadgets" is officially open! {MOUTH_SMALL_SMILE}
+
+[CRAZY_DAVE_304]
+Take a look! Have you spotted some items you like? {MOUTH_SMALL_SMILE}
+
+[CRAZY_DAVE_401]
+Have you played the "Whack-a-Zombie" game?
+
+[CRAZY_DAVE_402]
+It's like playing Whack-a-Mole.
+
+[CRAZY_DAVE_403]
+You see, those furry little moles are digging holes in your lawn, right?
+
+[CRAZY_DAVE_404]
+Yeah, just like that, but it's zombies, not moles.
+
+[CRAZY_DAVE_405]
+{SHOW_HAMMER}And it's a mallet, not a shovel.
+
+[CRAZY_DAVE_406]
+Of course, it's not me, it's you! {MOUTH_BIG_SMILE} {SCREAM}
+
+[CRAZY_DAVE_501]
+Looks like the zombies are giving up on attacking your front yard.
+
+[CRAZY_DAVE_502]
+Now they want to try your backyard.
+
+[CRAZY_DAVE_503]
+But most importantly, you can't use your mushrooms anymore! 
+
+[CRAZY_DAVE_504]
+Because they sleep during the day! 
+
+[CRAZY_DAVE_505]
+Isn't that just like the playboy lifestyle?
+
+  
+[CRAZY_DAVE_601]
+You found my magical gadget!! {SCREAM2}
+
+[CRAZY_DAVE_602]
+{SHOW_MONEYBAG}I must have it! I'll give you $1000!
+ 
+[CRAZY_DAVE_603]
+Great! Now the parts are mine! {SCREAM}
+
+[CRAZY_DAVE_604]
+Why did I spend so much money on your parts?
+
+[CRAZY_DAVE_605] {SHAKE}
+Because I'm crazy! {MOUTH_BIG_SMILE}
+
+[CRAZY_DAVE_606]
+Look at my little shop! You'll notice I've got some new items in!
+
+[CRAZY_DAVE_701]
+The zombies' attack plan is actually quite interesting. Sometimes they get very small.
+
+[CRAZY_DAVE_702]
+Small but cost-effective!
+
+[CRAZY_DAVE_703]
+Better protect your shins! {SCREAM}
+
+[CRAZY_DAVE_801]
+You know, they used to call me "Fog Man".
+
+[CRAZY_DAVE_802]
+Because I would linger in the fog and suddenly jump out from the crowd! {MOUTH_BIG_SMILE}
+
+[CRAZY_DAVE_803]
+Oh, that's all in the past now. {MOUTH_SMALL_SMILE}
+
+[CRAZY_DAVE_1101]
+Why has it suddenly become so dark?
+
+[CRAZY_DAVE_1102]
+Oh, this is not a good sign.
+
+[CRAZY_DAVE_1103]
+Well, okay, hope you survive tonight!
+
+[CRAZY_DAVE_1201]
+Wow—! They even found a way to your roof!
+
+[CRAZY_DAVE_1202]
+These zombies are very determined.
+
+[CRAZY_DAVE_1203]
+Considering the angle of your roof, you're going to need cabbages.
+
+[CRAZY_DAVE_1204]
+Remember this, and you'll be safe!
+
+[CRAZY_DAVE_1301]
+The Zen Garden, beautiful, right?
+
+[CRAZY_DAVE_1302]
+You can come to this garden anytime from the main menu.
+
+[CRAZY_DAVE_1303]
+But enough! It's time to defend your house!
+
+[CRAZY_DAVE_1304]
+I have to warn you...
+
+[CRAZY_DAVE_1305]
+You're going to hate the next level.
+
+[CRAZY_DAVE_1306]
+Why? Because next up are wave after wave of Bungee Zombies.
+
+[CRAZY_DAVE_1307]
+I hate those confusing bungee zombies!!! {SCREAM2}
+
+[CRAZY_DAVE_1308]
+I hate them!
+
+[CRAZY_DAVE_1309]
+Hate them with that passion!
+
+[CRAZY_DAVE_1310]
+And the ambition for revenge!
+
+[CRAZY_DAVE_1311]
+Wow—! Here comes the elite among them!
+
+[CRAZY_DAVE_1401]
+Hey, so far you've collected {MONEY} coins!
+
+[CRAZY_DAVE_1402]
+When you collect {UPGRADE_COST}, I'll sell you some handy items!
+
+[CRAZY_DAVE_1501]
+Hey! Want to add an extra slot for plants?
+
+[CRAZY_DAVE_1502]
+It'll cost you {UPGRADE_COST}, but you can choose 7 plants per level instead of 6!
+
+[CRAZY_DAVE_1503]
+{NO_CLICK}
+How does that sound?
+
+[CRAZY_DAVE_1510]
+Great! Then when you save up {UPGRADE_COST}, I'll upgrade you to 8 plant slots!
+
+[CRAZY_DAVE_1511]
+Just a moment...
+
+[CRAZY_DAVE_1520]
+Bummer, dude!
+
+[CRAZY_DAVE_1551]
+Hey! Want to add an extra plant slot?
+
+[CRAZY_DAVE_1552]
+It'll cost you {UPGRADE_COST}, but then you can choose 8 plants per level instead of 7!
+
+[CRAZY_DAVE_1553] {NO_CLICK}
+How does that sound?
+
+[CRAZY_DAVE_1560]
+Okay!
+
+[CRAZY_DAVE_1570]
+Bummer, dude!
+
+[UPGRADE_DIALOG_BODY]
+Upgrade to {SLOTS} plant slots?
+
+[CRAZY_DAVE_1601]
+Dude, those zombies just keep coming!
+
+[CRAZY_DAVE_1602]
+This time, I want to pick some plants for you!
+
+[CRAZY_DAVE_1603]
+I choose... these three!
+
+[CRAZY_DAVE_1700]
+{NO_CLICK}I'll give you ${SELL_PRICE}0 in exchange for {PLANT_TYPE}!
+
+[CRAZY_DAVE_2000]
+{NO_SOUND}{NO_CLICK}Plant these on your double shooters to turn them into gatling shooters! Gatling shooters fire 4 peas at a time!
+
+[CRAZY_DAVE_2001]
+{NO_SOUND}{NO_CLICK}Plant these on your sunflowers to turn them into twin sunflowers! Twin sunflowers provide twice the sunlight of regular sunflowers!
+
+[CRAZY_DAVE_2002]
+{NO_SOUND}{NO_CLICK}Plant these on your fume-shrooms to turn them into gloom-shrooms! Gloom-shrooms carry out rapid attacks within a small area!
+
+[CRAZY_DAVE_2003]
+{NO_SOUND}{NO_CLICK}Plant these on your lily pads to turn them into cattails! Cattails can attack any lane and can take down balloon zombies!
+
+[CRAZY_DAVE_2004]
+{NO_SOUND}{NO_CLICK}Plant these on your watermelon pults to turn them into "ice melons"! "Ice melons" have high attack power and can slow zombies nearby!
+
+[CRAZY_DAVE_2005]
+{NO_SOUND}{NO_CLICK}Plant these on your magnet-shrooms to turn them into gold magnets! Gold magnets help you collect coins and diamonds!
+
+[CRAZY_DAVE_2006]
+{NO_SOUND}{NO_CLICK}Plant these on your spikes to turn them into spike kings! Spike kings have double the attack power and are very durable!
+
+[CRAZY_DAVE_2007]
+{NO_SOUND}{NO_CLICK}Plant these on your cob cannons to fire a deadly attack by clicking on a cob cannon!
+
+[CRAZY_DAVE_2008]
+{NO_SOUND}{NO_CLICK}This imitator lets you have two of the same plant in the game!
+
+[CRAZY_DAVE_2009]
+{NO_SOUND}{NO_CLICK}This extra lawn mower will continue to protect the lane even after one lawn mower has been used!
+
+[CRAZY_DAVE_2010]
+{NO_SOUND}{NO_CLICK}This marigold sprout is planted in your Zen Garden! Remember to grow it mature, it will reward you generously!
+
+[CRAZY_DAVE_2011]
+{NO_SOUND}{NO_CLICK}The extra plant slot lets you choose 7 plants per level!
+
+[CRAZY_DAVE_2012]
+{NO_SOUND}{NO_CLICK}The extra plant slot lets you choose 8 plants per level!
+
+[CRAZY_DAVE_2013]
+{NO_SOUND}{NO_CLICK}The extra plant slot lets you choose 9 plants per level!
+
+[CRAZY_DAVE_2014]
+{NO_SOUND}{NO_CLICK}The extra plant slot lets you choose 10 plants per level!
+
+[CRAZY_DAVE_2015]
+{NO_CLICK}Activate all the fancy little gadgets priced!
+
+[CRAZY_DAVE_2016]
+{NO_CLICK} {SCREAM}Let's do it! I'm crazy—gone mad!!
+
+[CRAZY_DAVE_2017]
+{NO_CLICK}Our prices are unbelievably expensive!!!
+
+[CRAZY_DAVE_2018]
+{NO_CLICK}I eat things off the ground.
+
+[CRAZY_DAVE_2019]
+{NO_SOUND}{NO_CLICK}The golden watering can lets you water four plants at once.
+
+[CRAZY_DAVE_2020]
+{NO_SOUND}{NO_CLICK}The plants in your Zen Garden need fertilizer!
+
+[CRAZY_DAVE_2021]
+{NO_SOUND}{NO_CLICK}This gramophone lets you play music. Play it for the plants! It keeps them happy all day!
+
+[CRAZY_DAVE_2022]
+{NO_SOUND}{NO_CLICK}The plants in your Zen Garden need occasional bug spray to keep them happy all day.
+
+[CRAZY_DAVE_2023]
+{NO_SOUND}{NO_CLICK}Gardening gloves can move flower pots!
+
+[CRAZY_DAVE_2024]
+{NO_SOUND}{NO_CLICK}You'll need this cart to move plants between different types of gardens!
+
+[CRAZY_DAVE_2025]
+{NO_SOUND}{NO_CLICK}The pet snail helps you pick up coins dropped in the garden!
+
+[CRAZY_DAVE_2026]
+{NO_SOUND}
+{NO_CLICK}This pool cleaner can be used to enhance pond defense levels!
+
+[CRAZY_DAVE_2027]
+{NO_SOUND}{NO_CLICK}This roof cleaner can strengthen roof defense!
+
+[CRAZY_DAVE_2028]
+{NO_SOUND}{NO_CLICK}This rake can eliminate the first zombie that appears!
+
+[CRAZY_DAVE_2029]
+{NO_SOUND}{NO_CLICK}The aquarium can grow aquatic plants!
+
+[CRAZY_DAVE_2030]
+{NO_SOUND}{NO_CLICK}The Tree of Wisdom reveals secrets about zombies, as long as you let it grow tall enough!
+
+[CRAZY_DAVE_2031]
+{NO_SOUND}{NO_CLICK}Buy some Tree of Wisdom fertilizer to feed it and make it tall and strong!
+
+[CRAZY_DAVE_2032]
+{NO_SOUND}{NO_CLICK}The mushroom garden can be used to grow nocturnal plants!
+
+[CRAZY_DAVE_2033]
+{NO_SOUND}{NO_CLICK}Nut bandaging technique allows you to immediately cover and plant damaged nuts! Works for Tall-nuts and Pumpkins too!
+
+[CRAZY_DAVE_2034]
+{NO_SOUND}{NO_CLICK}Advance more levels to unlock more plants, and more types of zombies will appear in the game!
+
+[CRAZY_DAVE_2100]
+Hey, check this out, you found a watering can!
+
+[CRAZY_DAVE_2101]
+You've earned this highest honour, now I present you the Zen Garden!
+
+[CRAZY_DAVE_2102]
+Hey, I'm giving you two sprouts to get you started!
+
+[CRAZY_DAVE_2103]
+Grow them up, and they'll reward you well!
+
+[CRAZY_DAVE_2104]
+Have fun playing!
+
+[CRAZY_DAVE_2200]
+The zombies want me to help them practice invading houses
+
+[CRAZY_DAVE_2201]
+I told them, as long as the plants are not destroyed, it's fine.
+
+[CRAZY_DAVE_2202]
+So, I used cardboard to divide your lawn.
+
+[CRAZY_DAVE_2203]
+Have fun playing!
+
+[CRAZY_DAVE_2300]
+Oh oh, he's here.
+
+[CRAZY_DAVE_2301]
+You better be prepared.
+
+[CRAZY_DAVE_2302]
+This is going to be a big fight!
+
+[CRAZY_DAVE_2303]
+Listen up, then, I know his weakness is:
+
+[CRAZY_DAVE_2304]
+You must attack his pancreas!
+
+[CRAZY_DAVE_2305]
+Oh, no, that's a different one...
+
+[CRAZY_DAVE_2306]
+You must... uh... kick his...
+
+[CRAZY_DAVE_2307]
+Um...
+
+[CRAZY_DAVE_2308]
+You must press Up Up Down Down Left Right...
+
+[CRAZY_DAVE_2309]
+Uh...
+
+[CRAZY_DAVE_2310]
+Wait, I remember! It's... {MOUTH_SMALL_OH}
+
+[CRAZY_DAVE_2400]
+Hello, my neighbor!
+
+[CRAZY_DAVE_2401]
+My name is Crazy Dave.
+
+[CRAZY_DAVE_2402]
+But you can just call me Crazy Dave.
+
+[CRAZY_DAVE_2403]
+Listen up, I've got a surprise for you.
+
+[CRAZY_DAVE_2404]
+But first, you need to clean up your lawn.
+
+[CRAZY_DAVE_2405]
+Use your shovel to dig up those plants!
+
+[CRAZY_DAVE_2406]
+Start digging! {MOUTH_SMALL_OH} {SCREAM}
+
+[CRAZY_DAVE_2410]
+Okay, well done, now for your surprise...
+
+[CRAZY_DAVE_2411]
+We're going bowling! {MOUTH_SMALL_SMILE}
+
+[CRAZY_DAVE_2412] {SHOW_WALLNUT}
+Hey, grab this nut!
+
+[CRAZY_DAVE_2413]
+Why am I giving you a nut? {MOUTH_SMALL_OH}
+
+[CRAZY_DAVE_2414] {SHAKE}
+Because I'm cra~~~zy!!!!! {MOUTH_BIG_SMILE}
+
+[CRAZY_DAVE_2415]
+Now go! Bring me back a championship! {MOUTH_BIG_SMILE} {SCREAM}
+
+[CRAZY_DAVE_2500]
+My buddy, Freakus Kaster? Harvey, and I used to break vases when we were bored.
+
+[CRAZY_DAVE_2501]
+So, since Harvey isn't in town, you're up, Harvey no. 2!
+
+[CRAZY_DAVE_2502]
+Break them as you wish, Harvey! {SCREAM}
+
+[CRAZY_DAVE_2600]
+嘿，欢迎来到禅境花园，这里是
+我商店的禅境花园区。
+
+[CRAZY_DAVE_2601] 
+{SHOW_FERTILIZER}我会顺便给你一些化肥的！
+
+[CRAZY_DAVE_2602]
+看看周围，有没有什么你喜欢的
+东西！
+
+[CRAZY_DAVE_2700]
+哥们，你把这些花瓶都打破了，
+干得漂亮！
+
+[CRAZY_DAVE_2701]
+用那些垃圾罐，像我砸我后面的
+铲子时，砸他们吧！
+
+[CRAZY_DAVE_2702]
+来，我会给你更多花瓶的。
+
+[CRAZY_DAVE_2703]
+小心点，别砸的太快了。
+
+[CRAZY_DAVE_2704]
+僵尸的数量太多了，你处理不了
+这么多的，哈哈。
+
+[CRAZY_DAVE_2800]
+不错！
+
+[CRAZY_DAVE_2801]
+这应该他们最后一波了。
+
+[CRAZY_DAVE_2802]
+把他们砸掉，然后你的工作就完
+成了！
+
+[CRAZY_DAVE_3000]
+这就是破罐者。
+
+[CRAZY_DAVE_3001]
+有些关卡真的很难。
+
+[CRAZY_DAVE_3002]
+祝你好运！
+
+[CRAZY_DAVE_3100]
+嘿，我的邻居！我有一些新东西
+出售啦！
+
+[CRAZY_DAVE_3200]
+{SHOW_TREE_FOOD}嘿 {PLAYER_NAME}！这里是你的智慧树！我会
+给你一些肥料让你开始的。
+
+[CRAZY_DAVE_3300]
+{TIME_275}路的尽头，伙计！{DELAY_50}
+
+[CRAZY_DAVE_3301]
+{TIME_275}啊，你知道这个对话要来了。{DELAY_50}
+
+[CRAZY_DAVE_3302]
+{TIME_325} 想要玩到更多？你应该去弄一
+套完整版游戏。{DELAY_50}
+
+[CRAZY_DAVE_3303]
+{TIME_275}是的，我将要跟……树根一个高
+度了……{DELAY_50}
+
+[CRAZY_DAVE_3304]
+{TIME_325}如果你弄一套完整版游戏，我会
+给你更多植物！{DELAY_25}
+
+[CRAZY_DAVE_3305]
+{TIME_175}{SCREAM}{HANDING}像这个！{DELAY_50}
+
+[CRAZY_DAVE_3306]
+{TIME_175}{SCREAM}{HANDING}还有这个！{DELAY_50}
+
+[CRAZY_DAVE_3307]
+{TIME_275}{HANDING}过会儿，我还会添加这个！{DELAY_50}
+
+[CRAZY_DAVE_3308]
+{TIME_125}{SHORT_SOUND}{HANDING}为什么？{DELAY_50}
+
+[CRAZY_DAVE_3309]
+{TIME_225}{SHAKE}因为我很疯-狂-！！！！{MOUTH_BIG_SMILE}{DELAY_150}
+
+[CRAZY_DAVE_3310]
+{TIME_150}而且嘿……{DELAY_50}
+
+[CRAZY_DAVE_3311]
+{TIME_175}你想采取行动？{DELAY_50}
+
+[CRAZY_DAVE_3312]
+{TIME_200}{SCREAM}我要给你更多战斗！{DELAY_300}
+
+[CRAZY_DAVE_3313]
+{TIME_300}{SCREAM2}更多的25级的战斗！{DELAY_300}
+
+[CRAZY_DAVE_3314]
+{TIME_300}{SCREAM}40个迷你游戏&谜题！{DELAY_50}
+
+[CRAZY_DAVE_3315]
+{TIME_200}大地科塔！！！{DELAY_100}
+
+[CRAZY_DAVE_3316]
+{TIME_300}{SCREAM2}这足够把你的脑子吹到火星，再
+吹回来！{DELAY_300}
+
+[CRAZY_DAVE_3317]
+{TIME_150}呃，你还等什么呢？
+
+[CRAZY_DAVE_3400]
+{NO_CLICK}想让坚果得到急救， 很简单
+，种一个新坚果覆盖已受伤的
+！
+
+[MENU_BUTTON]
+Menu
+
+[ADVICE_MORE_ZOMBIES]
+More zombies are coming!
+
+[ADVICE_MORE_SCARY_POTS]
+More pots are coming!
+Current streak: {STREAK}
+
+[ADVICE_SCARY_POTTER_TUTORIAL]
+Temp- Dave put more pots on the lawn!
+{STREAK} after five waves
+
+[ADVICE_3_IN_A_ROW]
+More pots are coming!
+{STREAK} after three waves
+
+[LONGEST_STREAK]
+Longest streak: {STREAK}
+
+[ADVICE_MORE_IZOMBIE]
+Well done!
+Current streak: {STREAK}
+
+[ADVICE_CLICK_ON_SUN]
+Click to collect the falling sunlight!
+
+[ADVICE_GRAVEBUSTERS_ON_GRAVES]
+Grave Busters can only be planted on graves
+
+[ADVICE_LILYPAD_ON_WATER]
+Lily Pads can only be planted in water
+
+[ADVICE_TANGLEKELP_ON_WATER]
+Tangle Kelp can only be planted in water
+
+[ADVICE_SEASHROOM_ON_WATER]
+Sea-shrooms can only be planted in water
+
+[ADVICE_POTATO_MINE_ON_LILY]
+Potato mines cannot be planted on Lily Pads
+
+[ADVICE_NOT_PASSED_LINE]
+Nuts can only be placed to the left of the red line
+
+[ADVICE_I_ZOMBIE_NOT_PASSED_LINE]
+Place zombies to the right of the line
+
+[ADVICE_I_ZOMBIE_LEFT_OF_LINE]
+Place Bungee Zombies to the left of the line
+
+[ADVICE_ONLY_ON_REPEATERS]
+Can only be planted on Repeaters
+
+[ADVICE_ONLY_ON_MELONPULT]
+Can only be planted on Melon-pult
+
+[ADVICE_ONLY_ON_SUNFLOWER]
+Can only be planted on Sunflowers
+
+[ADVICE_ONLY_ON_SPIKEWEED]
+Can only be planted on Spikeweed
+
+[ADVICE_ONLY_ON_KERNELPULT]
+Can only be planted on Kernel-pults
+
+[ADVICE_ONLY_ON_MAGNETSHROOM]
+Can only be planted on Magnet-shrooms
+
+[ADVICE_ONLY_ON_FUMESHROOM]
+Can only be planted on Fume-shrooms
+
+[ADVICE_ONLY_ON_LILYPAD]
+Can only be planted on Lily Pads
+
+[ADVICE_WRONG_ART_TYPE]
+You planted the seed of {SEED} there
+
+[ADVICE_PLANT_NEED_POT1]
+You can only plant it in a pot
+
+[ADVICE_PLANT_NEED_POT2]
+Please plant a pot first
+
+[ADVICE_PLANT_NOT_ON_GRAVE]
+You can't plant on a grave
+
+[ADVICE_PLANT_NOT_ON_CRATER]
+You can't plant in a crater
+
+[ADVICE_CANT_PLANT_THERE]
+You can't plant there
+
+[ADVICE_PLANT_NOT_ON_WATER]
+Please plant Lily Pad first
+
+[ADVICE_PLANTING_NEED_SLEEPING]
+Coffee Beans can only be planted on sleeping mushrooms
+
+[ADVICE_PLANTING_NEEDS_GROUND]
+Spikeweed can only be planted on solid ground
+
+[ADVICE_MORE_SUNFLOWERS]
+The more Sunflowers you have, the faster you can plant!
+
+[ADVICE_SHOVEL_REFRESH]
+Shovel is still cooling down
+
+[ADVICE_HUGE_WAVE]
+
+
+[ADVICE_CLICK_PEASHOOTER]
+Click the Peashooter, then plant one more!
+
+[ADVICE_PLANT_SUNFLOWER1]
+Sunflower is an extremely important plant!
+
+[ADVICE_PLANT_SUNFLOWER2]
+Please plant at least three Sunflowers!
+
+[ADVICE_PLANT_SUNFLOWER3]
+Plant at least three Sunflowers to enhance your survival chance under zombie attack!
+
+[ADVICE_PLANT_SUNFLOWER4]
+Please plant at least three Sunflowers!
+
+[ADVICE_PLANT_SUNFLOWER5]
+Plant Sunflowers to increase your survival chance under zombie attack!
+
+[ADVICE_CLICK_SEED_PACKET]
+Click to pick up the seed!
+
+[ADVICE_ENOUGH_SUN]
+Great! You've collected enough for planting!
+
+[ADVICE_CLICK_ON_GRASS]
+Click on the grass to plant your seed!
+
+[ADVICE_PLANTED_PEASHOOTER]
+Well done!
+
+[ADVICE_ZOMBIE_ONSLAUGHT]
+Don't let the zombies get to your house!
+
+[ADVICE_CLICK_SHOVEL]
+Click to pick up the shovel!
+
+[ADVICE_CLICK_PLANT]
+Click to remove a plant!
+
+[ADVICE_KEEP_DIGGING]
+Keep digging until there are no plants on your lawn!
+
+[ADVICE_SURVIVE_FLAGS]
+Can you last until the {FLAGS}th wave?
+
+[ADVICE_SURVIVE_ENDLESS]
+How many waves can you withstand?
+
+[ADVICE_FILL_IN_WALLNUTS]
+Fill all outer lines with Wall-nuts!
+
+[ADVICE_FILL_IN_SPACES]
+Fill the outer lines!
+
+[ADVICE_FILL_IN_STARFRUIT]
+Fill the outer lines with Starfruit!
+
+[ADVICE_BEGHOULED_DRAG_TO_MATCH_3]
+Click and drag to match 3 of the same plants
+
+[ADVICE_BEGHOULED_TWIST_TO_MATCH_3]
+Click and twist to match 3 of the same plants
+
+[ADVICE_BEGHOULED_MATCH_3]
+Complete {SCORE} matches to finish the stage
+
+[ADVICE_BEGHOULED_NO_MOVES]
+No more matches left!
+
+[ADVICE_BEGHOULED_USE_CRATER_1]
+Zombies ate one of your plants!
+
+[ADVICE_BEGHOULED_USE_CRATER_2]
+Spend some sunlight to fill the crater on the ground!
+
+[ADVICE_BEGHOULED_SAVE_SUN]
+Store sun to upgrade your plants!
+
+[ADVICE_SLOT_MACHINE_PULL]
+Pull the lever to get new seeds!
+
+[ADVICE_SLOT_MACHINE_SPIN_AGAIN]
+Pull it again!
+
+[ADVICE_SLOT_MACHINE_COLLECT_SUN]
+Collect {SCORE} points of sunlight to pass
+
+[SLOT_MACHINE_PULL_TOOLTIP]
+Spend 25 sunlight to pull the slot machine
+
+[ADVICE_SLOT_MACHINE_3_OF_A_KIND]
+3 of the same plants! 3 free plants!
+
+[ADVICE_SLOT_MACHINE_2_OF_A_KIND]
+2 of the same pattern! Free plant is coming!
+
+[ADVICE_SLOT_MACHINE_2_SUNS]
+2 of the same pattern! Sunlight reward!
+
+[ADVICE_SLOT_MACHINE_2_DIAMONDS]
+Two of the same pattern! Diamonds!
+
+[ADVICE_SLOT_MACHINE_SUN_JACKPOT]
+Sunlight jackpot!
+
+[ADVICE_SLOT_MACHINE_DIAMOND_JACKPOT]
+Diamond jackpot!
+
+[SLOT_MACHINE_SUN_TOOLTIP]
+Sunlight
+
+[SLOT_MACHINE_DIAMOND_TOOLTIP]
+Diamond
+
+[ADVICE_BUNGEES_INCOMING]
+Bungee Zombies incoming!
+
+[ADVICE_CLICKED_ON_SUN]
+Keep collecting sunlight! You need them to plant more!
+
+[ADVICE_CLICKED_ON_COIN]
+Save money to buy cooler stuff!
+
+[ADVICE_SEED_REFRESH]
+It takes time to plant the same seed again
+
+[ADVICE_CANT_AFFORD_PLANT]
+You need more sunlight to do that!
+
+[ADVICE_PLANT_NEEDS_REPEATER]
+Please plant a Repeater first!
+
+[ADVICE_PLANT_NEEDS_MELONPULT]
+Please plant a Melon-pult first!
+
+[ADVICE_PLANT_NEEDS_SUNFLOWER]
+Please plant a Sunflower first!
+
+[ADVICE_PLANT_NEEDS_SPIKEWEED]
+Please plant Spikeweed first!
+
+[ADVICE_PLANT_NEEDS_KERNELPULT]
+Please plant a Kernel-pult first!
+
+[ADVICE_PLANT_NEEDS_MAGNETSHROOM]
+Please plant a Magnet-shroom first!
+
+[ADVICE_PLANT_NEEDS_FUMESHROOM]
+Please plant a Fume-shroom first!
+
+[ADVICE_PLANT_NEEDS_LILYPAD]
+Please plant a Lily Pad first!
+
+[PLAYERS_HOUSE]
+{PLAYER}'s house
+
+[PLAYERS_BACKYARD]
+{PLAYER}'s backyard
+
+[PLAYERS_ROOF]
+{PLAYER}'s roof
+
+[ADVICE_PORTAL_RELOCATING]
+Portal relocating...
+
+[ZEN_SELL_HEADER]
+Sure?
+
+[ZEN_SELL_LINES]
+Sell this plant to Crazy Dave?
+
+[DIALOG_WARNING]
+Warning
+
+[DIALOG_ZEN_GARDEN_FULL]
+Oh no! Your garden is too crowded!
+
+[DIALOG_BUTTON_OK]
+OK
+
+[DIALOG_BUTTON_CANCEL]
+Cancel
+
+[DIALOG_BUTTON_YES]
+Yes
+
+[DIALOG_BUTTON_NO]
+No
+
+[NEW_PLANT]
+You got a new plant!
+
+[NEXT_LEVEL_BUTTON]
+Next level!
+
+[CONTINUE_BUTTON]
+Continue
+
+[VIEW_ALMANAC_BUTTON]
+View Almanac
+
+[MAIN_MENU_BUTTON]
+Main menu
+
+[AWARD_MAIN_MENU_BUTTON]
+Main menu
+
+[REPICK_BUTTON]
+Repick
+
+[SHOVEL]
+Shovel
+
+[GOT_SHOVEL]
+You got a shovel!
+
+[SHOVEL_DESCRIPTION]
+Lets you dig up a plant to make room for another plant
+
+[FOUND_NOTE]
+You found a note:
+
+[SUBURBAN_ALMANAC]
+Suburban Almanac
+
+[FOUND_SUBURBAN_ALMANAC]
+You found the Suburban Almanac!
+
+[SUBURBAN_ALMANAC_DESCRIPTION]
+Records all plants and zombies you encounter
+
+[KEYS]
+Crazy Dave's car keys
+
+[FOUND_KEYS]
+You found Crazy Dave's car keys!
+
+[KEYS_DESCRIPTION]
+Now you can access Crazy Dave's shop!
+
+[VASE]
+Mysterious Vase
+
+[FOUND_VASE]
+You found a Mysterious Vase!
+
+[VASE_DESCRIPTION]
+Now you can play "Whack a Vase mode"!
+
+[WATERING_CAN]
+Watering Can
+
+[FOUND_WATERING_CAN]
+You found a Watering Can!
+
+[WATERING_CAN_DESCRIPTION]
+Now you can play "Zen Garden mode"!
+
+[TACO]
+Taco
+
+[FOUND_TACO]
+You found a Taco!
+
+[TACO_DESCRIPTION]
+What do you plan to do with this Taco?
+
+[WATERING_CAN_TOOLTIP]
+Water
+
+[FERTILIZER_TOOLTIP]
+Fertilize
+
+[TREE_FERTILIZER_TOOLTIP]
+Fertilize the tree
+
+[BUG_SPRAY_TOOLTIP]
+Insecticide
+
+[PHONOGRAPH_TOOLTIP]
+Music playback
+
+[CHOCOLATE_TOOLTIP]
+Chocolate
+
+[GLOVE_TOOLTIP]
+Move plants
+
+[MONEY_SIGN_TOOLTIP]
+Sell Flowers
+
+[WHEELBARROW_TOOLTIP]
+Transport plants
+
+[NEXT_GARDEN_TOOLTIP]
+Visit another garden
+
+[SHOVEL_TOOLTIP]
+Remove plants
+
+[BEGHOULED_REPEATER_UPGRADE_TOOLTIP] Upgrade all Peashooters to Repeater
+
+[BEGHOULED_FUMESHROOM_UPGRADE_TOOLTIP] Upgrade all Puff-shrooms to Fume-shroom
+
+[BEGHOULED_TALLNUT_UPGRADE_TOOLTIP] Upgrade all Wall-nuts to Tall-nut
+
+[BEGHOULED_SHUFFLE_TOOLTIP] Drag plants
+
+[BEGHOULED_CRATER_TOOLTIP] Fill craters
+
+[BEGHOULED_SEED_ALREADY_PURCHASED] Already purchased
+
+[BEGHOULED_NO_CRATERS] No craters to fill
+
+[FREE_PLANTING_CHEAT] Cheat: Free planting
+
+[WAITING_FOR_SEED] Reloading...
+
+[NOT_ENOUGH_SUN] Not enough Sun
+
+[REQUIRES_REPEATER] Requires Repeater
+
+[REQUIRES_MELONPULT] Requires Melon-pult
+
+[REQUIRES_SUNFLOWER] Requires Sunflower
+
+[REQUIRES_SPIKEWEED] Requires Spikeweed
+
+[REQUIRES_KERNELPULTS] Requires Kernel-pult
+
+[REQUIRES_MAGNETSHROOM] Requires Magnet-shroom
+
+[REQUIRES_FUMESHROOM] Requires Fume-shroom
+
+[REQUIRES_LILY_PAD] Requires Lily Pad
+
+[WAITING_TO_REFRESH] Cooling down
+
+[CLICK_TO_VIEW] Click to view the Almanac
+
+[LETS_ROCK_BUTTON] Let's Rock!
+
+[VIEW_LAWN] View Lawn
+
+[ALMANAC_BUTTON] Almanac
+
+[SHOP_BUTTON] Next plant page
+
+[CLOSE_BUTTON] Close
+
+[ALMANAC_INDEX] Almanac Index
+
+[VIEW_PLANTS] View Plants
+
+[VIEW_ZOMBIES] View Zombies
+
+[BACK_TO_MENU] Back to Menu
+
+[ROLL_CREDITS] Roll Credits
+
+[PAGE_X] Page {PAGE}
+
+[RESTART_BUTTON] Restart
+
+[NEW_GAME_BUTTON] New Game
+
+[LEAVE_BUTTON] Leave
+
+[QUIT_BUTTON] Quit Game
+
+[QUIT_MESSAGE] Are you sure you want to quit the game?
+
+[QUIT_HEADER] Quit
+
+[AWW_YEAH_BUTTON] Aww Yeah!
+
+[NAH_BUTTON] Nah!
+
+[MORE_SEEDS_HEADER] More Seeds?
+
+[MORE_SEEDS_BODY] Do you want to plant more types of seeds?
+
+[STORE_NEXT_LEVEL_BUTTON] Next Level
+
+[STORE_MAIN_MENU_BUTTON] Main Menu
+
+[STORE_BACK_TO_GAME] Back
+
+[STORE_BACK_TO_ZEN] Back
+
+[SEED_CHOOSER_UPGRADE_WARNING] Are you sure you want to use {UPGRADE_TO} without having {UPGRADE_FROM}?
+
+[SEED_CHOOSER_SEEING_STARS_WARNING] Are you sure to proceed without using Starfruit?
+
+[SEED_CHOOSER_LILY_WARNING] Are you sure to proceed without using Lily Pad?
+
+[SEED_CHOOSER_ART_WALLNUT_WARNING] Are you sure to proceed without using Wall-nut?
+
+[SEED_CHOOSER_ART_2_WARNING] Are you sure to proceed without using Starfruit, Umbrella Leaf, and Wall-nut?
+
+[SEED_CHOOSER_FLYER_WARNING] You didn't choose plants that can take down Balloon Zombies, are you sure you want to continue?
+
+[SEED_CHOOSER_SUN_WARNING] You didn't choose Sun-producing plants, are you sure you want to continue?
+
+[SEED_CHOOSER_NIGHT_SUN_WARNING] It's nighttime, you'll need more Sunflowers than daytime. Are you sure to proceed without using Sunflower?
+
+[SEED_CHOOSER_PUFFSHROOM_WARNING] This level is going to be really hard without Puff-shrooms. Are you sure to proceed without using Puff-shroom?
+
+[SEED_CHOOSER_POOL_WARNING] Are you sure to proceed without using any aquatic plants?
+
+[SEED_CHOOSER_ROOF_WARNING] Are you sure to proceed without using Flower Pot?
+
+[ADVICE_ALMOST_THERE] You're almost there!
+
+[ADVICE_BEGHOULED_ALMOST_THERE] Match 5 more pairs!
+
+[ZOMBIQUARIUM_SNORKEL_TOOLTIP] Purchase Snorkel Zombie
+
+[ZOMBIQUARIUM_TROPHY_TOOLTIP] Purchase a Trophy
+
+[ADVICE_ZOMBIQUARIUM_CLICK_TO_FEED] Click the tank to feed zombies
+
+[ADVICE_ZOMBIQUARIUM_COLLECT_SUN] You need {SCORE} Sun to beat this level
+
+[ZOMBIQUARIUM_DEATH_MESSAGE] All your pet zombies have died!
+
+[I_ZOMBIE_DEATH_MESSAGE] You've lost all your zombies!
+
+[ADVICE_ZOMBIQUARIUM_CLICK_TROPHY] Click the trophy to finish the level!
+
+[ADVICE_ZOMBIQUARIUM_BUY_SNORKEL] Click to buy more Snorkel Zombies!
+
+[TRY_AGAIN] Try Again
+
+[ONE_FLAG] 1 round
+
+[COUNT_FLAGS] {COUNT} rounds
+
+[SURVIVAL_DEATH_MESSAGE] You survived {FLAGS}, now meet your dreadful zombie demise!!!
+
+[ENDLESS_PUZZLE_DEATH_MESSAGE] You have consecutively passed {STREAK} levels
+
+[ENDLESS_STREAK] Streak: {STREAK}
+
+[LEVEL] Level
+
+[GAME_OVER] Game Over
+
+[PICK_AREA] Survival Mode
+
+[PICK_CHALLENGE] Adventure Mode
+
+[ONE_MORE_CHALLENGE_TOOLTIP] Complete more mini-games to unlock
+
+[ONE_MORE_CHALLENGE_TOOLTIP] Complete 1 more mini-game to unlock
+
+[ONE_MORE_SCARY_POTTER_TOOLTIP] Smash one more pot in Vasebreaker to unlock with a trophy
+
+[ONE_MORE_IZOMBIE_TOOLTIP] Complete one more level in I,Zombie to unlock with a trophy
+
+[ONE_MORE_SURVIVAL_TOOLTIP] Complete one more Survival Mode to unlock with a trophy
+
+[10_SURVIVAL_TOOLTIP] Earn 10 trophies in Survival Mode to unlock
+
+[FINISH_ADVENTURE_TOOLTIP] Complete Adventure Mode to unlock
+
+[SURVIVAL_DAY_NORMAL] Survival Day
+
+[SURVIVAL_NIGHT_NORMAL] Survival Night
+
+[SURVIVAL_POOL_NORMAL] Survival Pool
+
+[SURVIVAL_FOG_NORMAL] Survival Fog
+
+[SURVIVAL_ROOF_NORMAL] Survival Roof
+
+[SURVIVAL_DAY_HARD] Survival Day (Hard)
+
+[SURVIVAL_NIGHT_HARD] Survival Night (Hard)
+
+[SURVIVAL_POOL_HARD] Survival Pool (Hard)
+
+[SURVIVAL_FOG_HARD] Survival Fog (Hard)
+
+[SURVIVAL_ROOF_HARD] Survival Roof (Hard)
+
+[SURVIVAL_DAY_ENDLESS] Survival Day (Endless)
+
+[SURVIVAL_NIGHT_ENDLESS] Survival Night (Endless)
+
+[SURVIVAL_POOL_ENDLESS] Survival Pool (Endless)
+
+[SURVIVAL_FOG_ENDLESS] Survival Fog (Endless)
+
+[SURVIVAL_ROOF_ENDLESS] Survival Roof (Endless)
+
+[WAR_AND_PEAS] Dig Treasure with Submarine Weiwei
+
+[SEEING_STARS] Seeing Stars
+
+[CAN_YOU_DIG_IT] Can you dig it?
+
+[SCARY_POTTER_1] Scary Potter
+
+[SCARY_POTTER_2] Leave no pot unsmashed
+
+[SCARY_POTTER_3] The third pot
+
+[SCARY_POTTER_4] Chain Reaction
+
+[SCARY_POTTER_5] M for Metal
+
+[SCARY_POTTER_6] Shy Potter
+
+[SCARY_POTTER_7] Magic Tricks
+
+[SCARY_POTTER_8] Another Chain Reaction
+
+[SCARY_POTTER_9] Pot Ace
+
+[SCARY_POTTER_10] Scary Potter Facesmasher
+
+[SCARY_POTTER_ENDLESS] Endless Trial
+
+[SCARY_POTTER] Challenge Mode
+
+[PORTAL_COMBAT] Protect the Portal
+
+[BEGHOULED] Bejeweled
+
+[BEGHOULED_TWIST] Bejeweled Twist
+
+[WALL_NUT_BOWLING] Wall-nut Bowling
+
+[GRAVE_DANGER] Grave Danger
+
+[I_ZOMBIE] I, Zombie
+
+[WHACK_A_ZOMBIE] Whack a Zombie
+
+[SLOT_MACHINE] Slot Machine
+
+[ZOMBIQUARIUM] Zombiquarium
+
+[LITTLE_TROUBLE] Little Zombie, Big Trouble
+
+[BOBSLED_BONANZA] Bobsled Bonanza
+
+[ITS_RAINING_SEEDS] Hybrid Seed Rain by Submarine Weiwei
+
+[INVISIGHOUL] Invisible Ghouls
+
+[DARK_STORMY_NIGHT] Dark Stormy Night
+
+[AIR_RAID] Air Raid
+
+[COLUMN_AS_YOU_SEE_EM] Column as you see 'em
+
+[BUNGEE_BLITZ] Bungee Blitz
+
+[POGO_PARTY] Pogo Party
+
+[FINAL_BOSS] Dr. Zomboss's Revenge
+
+[LAST_STAND] Last Laughs
+
+[ART_CHALLENGE_WALL_NUT] Wall-nut Art Challenge
+
+[SUNNY_DAY] Sunny Day
+
+[UNSODDED] Unsodded
+
+[BIG_TIME] Big Time
+
+[ART_CHALLENGE_SUNFLOWER] The Art of Planting Sunflowers
+
+[ZOMBIES_ON_SPEED] Zombies on Speed
+
+[ICE_LEVEL] Ice Level
+
+[ZEN_GARDEN] Zen Garden
+
+[HIGH_GRAVITY] Extraordinary Gravity
+
+[WAR_AND_PEAS_2] Plants vs. Zombies 2
+
+[I_ZOMBIE_TOO] I, Zombie 2
+
+[WALL_NUT_BOWLING_EXTREME] Wall-nut Bowling 2
+
+[BEAT_GAME_MESSAGE1] You've earned the Golden Sunflower trophy
+
+[BEAT_GAME_MESSAGE2] Wow! You've collected all the goodies! Now it's time for the endless trials! And don't forget to stop by your Zen Garden from time to time to water and weed!
+
+[GOLD_SUNFLOWER_TROPHY] Gold Sunflower Trophy
+
+[SILVER_SUNFLOWER_TROPHY] Silver Sunflower Trophy
+
+[WIN_MESSAGE1] You have defeated the Zombie Boss
+
+[WIN_MESSAGE2] Congratulations! You've held off the zombie onslaught with the most stalwart defense! Your lawn is safe... for now!
+
+[GOT_TROPHY] You've got a trophy!
+
+[TROPHY] Trophy
+
+[NOW_YOU_CAN_PLAY] Now you can start! {MODE}!
+
+[CHALLENGE_UNLOCKED] You've unlocked a new mini-game!
+
+[GET_MORE_TROPHIES] Keep struggling for more trophies
+
+[SUN] Sun
+
+[MATCHES] Matches
+
+[MODE_LOCKED] Locked!
+
+[SURVIVAL_LOCKED_MESSAGE] Undertake more adventures to unlock Survival Mode.
+
+[MINIGAME_LOCKED_MESSAGE] Undertake more adventures to unlock Mini-Games.
+
+[PUZZLE_LOCKED_MESSAGE] Undertake more adventures to unlock Puzzle Mode.
+
+[CLICK_TO_START] Click to Start
+
+[LOADING] Loading…
+
+[CREDITS]
+Click to follow the author!
+
+[BACK_TO_GAME]
+Back to Game
+
+[RESTART_LEVEL]
+Restart
+
+[ADVICE_ZEN_GARDEN_PICK_UP_WATER]
+Click to pick up the watering can!
+
+[ADVICE_ZEN_GARDEN_WATER_PLANT]
+Click to water the sprout!
+
+[ADVICE_ZEN_GARDEN_KEEP_WATERING]
+Keep watering your plants, don't let them thirst!
+
+[ADVICE_ZEN_GARDEN_VISIT_STORE]
+Your plants need fertilizer to grow, go buy some from the store!
+
+[ADVICE_ZEN_GARDEN_FERTILIZE]
+Fertilize your plants and watch them grow!
+
+[ADVICE_ZEN_GARDEN_NEED_MORE_FERTILIZER]
+You need to fertilize all plants! Here, buy some more plants!
+
+[ADVICE_ZEN_GARDEN_CONTINUE_ADVENTURE]
+That's all you can do for now! Remember to come back when your plants need more care!
+
+[CHOOSE_SEED_TO_COPY]
+Choose a seed to copy
+
+[NOT_ALLOWED_ON_THIS_LEVEL]
+Not allowed on this level
+
+[FULL_VERSION_ONLY]
+Full Version Only
+
+[GET_FULL_VERSION_BODY]
+Collect all the props to use the most powerful plants!
+
+[GET_FULL_VERSION_TITLE]
+Props Collection Complete!
+
+[BUY_PVZ_TITLE]
+Go collect all the props!
+
+[BUY_PVZ_BODY]
+Do you want to purchase the full version?
+
+[GET_FULL_VERSION_YES_BUTTON]
+Purchase Full Version
+
+[GET_FULL_VERSION_NO_BUTTON]
+Maybe Later
+
+[FULL_VERSION_TO_BUY]
+This item will be unlocked after collecting all props!
+
+[CRAZY_DAVE_WANTS]
+Card Locked!
+
+[NOCTURNAL_WARNING]
+Nocturnal - sleeps during the day
+
+[NOT_RECOMMENDED_FOR_LEVEL]
+Not recommended for this level
+
+[CHOOSE_YOUR_PLANTS]
+Choose your plants
+
+[ADVICE_USE_SHOVEL_ON_POTS]
+Recommended to use a shovel on pots
+
+[ADVICE_DESTROY_POTS_TO_FINISH_LEVEL]
+Destroy all zombies and vases to finish the level!
+
+[SUBURBAN_ALMANAC_INDEX]
+Almanac - Index
+
+[SUBURBAN_ALMANAC_PLANTS]
+Almanac - Plants
+
+[SUBURBAN_ALMANAC_ZOMBIES]
+Almanac - Zombies
+
+[STORE_PAGE]
+Page {PAGE}, Total {NUM_PAGES} Pages
+
+[STORE_UPGRADE_SLOTS]
+{SLOTS} Slots
+
+[ADVICE_I_ZOMBIE_EAT_ALL_BRAINS]
+Pass this level by eating all the brains!
+
+[ADVICE_I_ZOMBIE_PLANTS_NOT_REAL]
+Don't panic, the plants are not real
+
+[SQUIRRELS]
+Squirrels
+
+[ADVICE_SQUIRRELS_ONE_LEFT]
+{COUNT} More Squirrels Left!
+
+[ADVICE_SQUIRRELS_LEFT]
+{COUNT} More Squirrels Left!
+
+[ADVICE_SQUIRREL_ZOMBIE]
+Oh, no! Find all the squirrels before the zombie enters your house!
+
+[BRAINS]
+Brains
+
+[COST]
+Cost
+
+[WAIT_TIME]
+Cooldown
+
+[WAIT_TIME_SHORT]
+Fast
+
+[WAIT_TIME_LONG]
+Medium
+
+[WAIT_TIME_VERY_LONG]
+Very Slow
+
+[ADVICE_PEASHOOTER_DIED]
+One of your Peashooters has died! Plant them further to the left!
+
+[ADVICE_FOUND_PLANT]
+You found a new plant for your Zen Garden!
+
+[ADVICE_FOUND_CHOCOLATE]
+You found some chocolate! Snails will get a boost after eating it!
+
+[ADVICE_STINKY_SLEEPING]
+Stinky the snail is sleeping! Click to wake him up!
+
+[START_ONSLAUGHT]
+Launch the Attack
+
+[CONTINUE_ONSLAUGHT]
+Continue the Onslaught
+
+[LAST_STAND_DEATH_MESSAGE]
+You survived with only {FLAGS}!!
+
+[SUCCESSFULLY_DEFENDED]
+Successfully Defended! {FLAGS}
+
+[FLAGS_COMPLETED]
+{FLAGS} Completed
+
+[I_ZOMBIE_1]
+I'm a Zombie!
+
+[I_ZOMBIE_2]
+I'm also a Zombie!
+
+[I_ZOMBIE_3]
+Can you shovel it?
+
+[I_ZOMBIE_4]
+Totally Nuts
+
+[I_ZOMBIE_5]
+Air Raid
+
+[I_ZOMBIE_6]
+I'm Rotten!
+
+[I_ZOMBIE_7]
+Zombie Waltz
+
+[I_ZOMBIE_8]
+Triple Play
+
+[I_ZOMBIE_9]
+All your brains are belong to me
+
+[I_ZOMBIE_ENDLESS]
+I Zombie Endless
+
+[UNLOCKED_I_ZOMBIE_LEVEL]
+You have unlocked a new I Zombie level!
+
+[UNLOCKED_VASEBREAKER_LEVEL]
+You have unlocked a new Vasebreaker level!
+
+[EARN_MORE_TROPHIES_FOR_ENDLESS_SURVIVAL]
+Earn more trophies in Survival Mode to unlock the ultimate Survival Mode
+
+[YOU_UNLOCKED_A_SURVIVAL]
+You have unlocked a new Survival mode
+
+[YOU_UNLOCKED_ENDLESS_SURVIVAL]
+You have unlocked Endless Survival mode
+
+[NOT_ENCOUNTERED_YET]
+(Not encountered yet)
+
+[CLICK_TO_CONTINUE]
+Click to Continue
+
+[SOLD_OUT]
+Sold Out
+
+[COMING_SOON]
+Coming Soon
+
+[ZEN_ONLY_AQUATIC_PLANTS]
+Here you can only plant aquatic plants, this is underwater!
+
+[RESTART_LEVEL_HEADER]
+Restart this level?
+
+[RESTART_PUZZLE_HEADER]
+Restart Puzzle Mode?
+
+[RESTART_CHALLENGE_HEADER]
+Restart Challenge Mode?
+
+[RESTART_SURVIVAL_HEADER]
+Restart Survival Mode?
+
+[RESTART_LEVEL_BODY]
+Do you want to try this level again?
+
+[RESTART_PUZZLE_BODY]
+Do you want to try this puzzle level again?
+
+[RESTART_CHALLENGE_BODY]
+Do you want to try this challenge again?
+
+[RESTART_SURVIVAL_BODY]
+Want to try this survival level again from the beginning?
+
+[SILVER_SUNFLOWER_TOOLTIP]
+Collect all the trophies in Mini-Games, Puzzle Mode, and Survival Mode to get a Golden Sunflower!
+
+[GOLD_SUNFLOWER_TOOLTIP]
+You've completed an adventure!
+
+[GOLD_SUNFLOWER_TOOLTIP_PLURAL]
+You've completed {COUNT} adventures!
+
+[TREE_OF_WISDOM_1]
+谢谢你给我施肥！继续施肥，我
+将给你有价值的信息！
+
+[TREE_OF_WISDOM_2]
+食人花和坚果，能够一起发挥
+最大的效用——这并不奇怪，因
+为他们上大学时是舍友。 
+
+[TREE_OF_WISDOM_3]
+如果你真的在听我说话，那就竖
+起耳朵听：种两排向日葵吧——
+我可是非常，非常认真的！
+ 
+[TREE_OF_WISDOM_4]
+潜水僵尸？真是讨厌！怎么处置
+他们？我的建议是：在睡莲上种
+植坚果，就是这样。
+
+[TREE_OF_WISDOM_5]
+嗯，试试在游戏时输入“futur
+e”……以期会晤来自“未来”
+的僵尸！
+
+[TREE_OF_WISDOM_6]
+究竟需要多少樱桃炸弹才能解决
+掉巨型僵尸？提示：多于一个，
+少于三个。进一步提示：两个。
+
+
+[TREE_OF_WISDOM_7]
+如果你想为自己的禅镜花园添加
+一些蘑菇，那么最好尝试一些晚
+上的关卡。
+
+[TREE_OF_WISDOM_8]
+我可不担心，毁灭蘑菇不会对草
+地造成永久破坏——大地会通过
+时间来治愈自己。
+
+[TREE_OF_WISDOM_9]
+有没有尝试过，点击主菜单上的
+花朵呢？试试看！我在这儿等着
+。
+
+[TREE_OF_WISDOM_10]
+传说被冰冻的僵尸吃得比较慢，
+我认为传说是有它的道理的。
+
+[TREE_OF_WISDOM_11]
+你听说过隐藏的僵尸雪人吗？有
+人说他喜欢躲在暗处。
+
+[TREE_OF_WISDOM_12]
+有什么比免费还要便宜的？没有
+！这就小喷菇，在所有夜晚关卡
+都必不可少！
+
+[TREE_OF_WISDOM_13]
+你想不想给你的禅境花园里，找
+一些水生植物？我用我的肚皮打
+赌，你会在池塘关卡里碰到好运
+。
+
+[TREE_OF_WISDOM_14]
+你注意到过吗？巨人僵尸有时候
+会用其他的僵尸，来砸你的植物
+？我也不知道这是怎么回事。
+
+[TREE_OF_WISDOM_15]
+臭臭蜗牛显然很喜欢他的巧克力
+。或许有点太过喜欢了，你知道
+吗？吃过一些巧克力后，他一刻
+也不愿静下来。 
+
+[TREE_OF_WISDOM_16]
+若你认为玩生存模式无尽版，只
+会出现水生植物的话，再好好想
+想吧！这里可是会有每种植物的
+。 
+
+[TREE_OF_WISDOM_17]
+ 人们总会这样问：你在哪里能
+找到巧克力呢？也许这样问更恰
+当：你在哪里会找不到巧克力？
+在每一种模式中都会掉落巧克力
+！ 
+
+[TREE_OF_WISDOM_18]
+ 墓碑吞噬者是吧？你最好在右
+侧那边有墓碑时，才选择他们。
+换了我就会这么做。
+
+[TREE_OF_WISDOM_19]
+ 我听说，水桶拥有一般僵尸五
+倍的防御。
+
+[TREE_OF_WISDOM_20] 
+我听说输入“mustache”，会给
+僵尸们带来惊人的改变！
+
+[TREE_OF_WISDOM_21]
+ 多个寒冰豌豆，能让僵尸们变
+得更慢吗？真相是残酷的：不会
+。
+
+[TREE_OF_WISDOM_22]
+我想你知道僵尸会从墓碑出现，
+对吧？用墓碑吞噬者来摆脱他们
+，没理由能阻止你这样做？
+
+[TREE_OF_WISDOM_23]
+ 若你想知道某关的剩余时间，
+数数关卡表上的旗帜。他们会很
+好地告诉你。
+
+[TREE_OF_WISDOM_24]
+屋顶清理车，经典道具，强烈推
+荐。最大的优点？它们会在跳跳
+舞会中多给你一次机会。
+
+[TREE_OF_WISDOM_25]
+ 给一个舞王僵尸喂催眠蘑菇，
+他会为你召唤伴舞僵尸吗？答案
+是肯定的！
+
+[TREE_OF_WISDOM_26]
+想快速致富吗？那就玩生存模式
+无尽版吧！然后记得把你的银行
+账号发送给我！
+
+[TREE_OF_WISDOM_27]
+ 你可能想过火炬树桩会弄灭冰
+豆。那么你是对的，因为你，我
+的朋友，是个聪明的家伙。
+
+[TREE_OF_WISDOM_28]
+ 这些可恨的植物僵尸！他们以
+为自己是谁，竟然敢向你的植物
+开火？坚果会让他们好好冷静
+一下．
+
+[TREE_OF_WISDOM_29]
+ 跳跳舞会和滑车当道，这两个
+游戏非常非常非常地难。想去掉
+上一句话中的一个“非常”吗？
+快使用窝瓜吧。 
+
+[TREE_OF_WISDOM_30]
+ 当你认为火爆辣椒一无是处的
+时候 ，让智慧树来告诉你，他
+们也能摧毁僵尸们的冰道！嘭！
+
+
+[TREE_OF_WISDOM_31]
+ 当你买了模仿者后，试着点击
+图鉴里左上角的小图表，以激活
+根枝的进入。
+
+[TREE_OF_WISDOM_32]
+ 在坚果保龄球游戏里，打倒
+越多，你能得到的硬币也就越多
+。
+
+[TREE_OF_WISDOM_33]
+请不要拍玻璃！ 或实际上，请
+便；右击水族馆花园或僵尸水族
+馆，来震那些水下生物
+
+[TREE_OF_WISDOM_34]
+ 当我还是一颗橡树种子的时候
+，我的爷爷告诉我：“孩子，如
+果你从右边开始动手，砸花瓶游
+戏会变得简单得多。”
+
+[TREE_OF_WISDOM_35]
+我是僵尸模式中，舞王僵尸看起
+来有点贵，但是在需要的时候，
+它绝对对得起你花的每一分钱。
+
+
+[TREE_OF_WISDOM_36]
+ 我做过一个梦，在梦里，香蒲
+的刺刺破了气球，，然后僵尸就
+摔在了地上。我不知道这个梦有
+什么含义。
+
+[TREE_OF_WISDOM_37]
+如果没有水族馆，想在禅境花园
+里种水生植物，恐怕不太可能呢
+。呃……我只是随便说说。
+
+[TREE_OF_WISDOM_38]
+ 矿工僵尸的这种钻地行为，简
+直就是违反自然法则的犯规，用
+磁力菇吸走他们的采矿锄！这才
+算公平。
+
+[TREE_OF_WISDOM_39]
+ 每一天都有新的挑战，都有新
+的机遇，哦，还有疯狂戴夫商店
+里新的金盏花。
+
+[TREE_OF_WISDOM_40]
+蘑菇园！嗯！它有什么作用？很
+明显，它只能够用来种蘑菇，就
+是这样！
+
+[TREE_OF_WISDOM_41]
+ 累了？郁闷了？架在高坚果上
+的梯子让你不爽了？ 一个磁力
+菇能快速的让这些消失！
+
+[TREE_OF_WISDOM_42]
+高坚果的高度赢得了大家的称赞
+，因为他们对付海豚骑士僵尸、
+跳跳僵尸很有一套。
+
+[TREE_OF_WISDOM_43]
+樱桃炸弹、火爆辣椒爆发出的力
+量，和把梯子从坚果上推倒的
+力量，前者要大得多。
+
+[TREE_OF_WISDOM_44]
+把全部的巧克力喂给臭臭蜗牛？
+确实很诱惑。他真的是非常喜欢
+巧克力。但是别忘了：禅境花园
+里的植物也喜欢巧克力！
+
+[TREE_OF_WISDOM_45]
+ 火炬树桩之火异常之猛烈，但
+是僵尸，铁栅栏，扶梯和投掷车
+可以承受热量
+
+[TREE_OF_WISDOM_46]
+若你在生存模式里依赖于升级植
+物，要注意你在草地上有越多的
+该植物，将使该植物变得更贵。
+
+
+[TREE_OF_WISDOM_47]
+小鬼在“我是僵尸”中看起来很
+弱。但当你清除了其他敌人的时
+候，他们会为那诱人的脑子变得
+极快。
+
+[TREE_OF_WISDOM_48] 
+如果你输入“trickedout”，不
+要惊讶，如果你割草机上发生了
+怪事。
+
+[TREE_OF_WISDOM_49]
+谢谢你喂我！我现在有点缺乏新
+的智慧了。但是如果你把我种的
+更高，我会拥有更多智慧的！
+
+ [TREE_OF_WISDOM_101] 
+呣，我确信我享用了些美味的?
+柿希?
+
+[TREE_OF_WISDOM_102]
+我觉得我以前看过云。
+
+[TREE_OF_WISDOM_103]
+别管我。我会在这慢慢长高的。
+
+
+[TREE_OF_WISDOM_104]
+我正疯狂代谢中！
+
+[TREE_OF_WISDOM_105]
+我老是不明白，动物们怎么也像
+你一样，喜欢整天到处走来走去
+。
+
+[TREE_OF_WISDOM_106]
+时间对我来说过得更慢！
+
+[TREE_OF_WISDOM_107]
+我想我是多年生的！
+
+[TREE_OF_WISDOM_108]
+我的木质部发麻了！
+
+[TREE_OF_WISDOM_109]
+你只要站在我身边，就能得到很
+多很多的智慧。
+
+[TREE_OF_WISDOM_110]
+我听说过“冬天”。不得不说我
+很期待呢。
+
+[TREE_OF_WISDOM_201]
+嗯嗯…… 阳光真是 美味啊！
+
+[TREE_OF_WISDOM_202]
+哦，不好意思……我刚释放了点
+氧气。
+
+[TREE_OF_WISDOM_203]
+天啊，我长叶子了！
+
+[TREE_OF_WISDOM_204]
+我感觉我要爆发了！
+
+[TREE_OF_WISDOM_205]
+眼下我缺少一些世间的知识！
+
+[TREE_OF_WISDOM_301]
+对于你为我在肥料上花销，我真
+的真的很感激，！
+
+[TREE_OF_WISDOM_302]
+那朵云看起来好像一个大水滴哦
+！
+
+[TREE_OF_WISDOM_303]
+你见过我的堂兄宇宙树了吗？很
+大！住在瑞典，有好多粉丝呢。
+
+
+[TREE_OF_WISDOM_304]
+我正在一所网上大学学习社会学
+，我真的学到了很多。
+
+[TREE_OF_WISDOM_305]
+经过我仔细的观察后，我推断出
+是地球围着太阳转，不是我们看
+到的那样，似乎是太阳绕着地球
+转。
+
+
+[TREE_OF_WISDOM_401]
+当你活得和我一样长时，你会睡
+得更少而更易产生幻觉。
+
+[TREE_OF_WISDOM_402]
+如果你弄不明白，什么是森林什
+么是树，只要记住。森林是树木
+个体的集合，反过来则不是。
+
+[TREE_OF_WISDOM_403]
+历史不停重复着他自己，但是某
+些细节总有所不同。
+
+[TREE_OF_WISDOM_404]
+如果说过去，现在和将来，同时
+存在作为一个“轮回”，那么经
+验上的“现在”，只能说是精心
+制作的幻觉？
+
+[TREE_OF_WISDOM_405]
+勇气易得，奉献难求。
+
+[TREE_OF_WISDOM_500]
+这些是久经考验的智慧……
+
+[TREE_OF_WISDOM_600]
+请给我点吃的吧！
+
+[TREE_OF_WISDOM_800]
+嘿，我都100英尺高了！庆祝下
+吧！输入“daisies”，让僵尸
+们死的时候留下一朵小菊花。
+
+[TREE_OF_WISDOM_900]
+啊哈！我500英尺高了！来点舞
+蹈吧！输入“dance”，让僵尸
+们都摇摆起来吧！
+
+[TREE_OF_WISDOM_1000]
+喔！我已经1000英尺高了！和我
+一起输入“pinata”，让僵尸们
+死的时候吐出糖果，来庆祝吧！
+
+
+[TREE_OF_WISDOM_1100]
+谢谢你的照料！我可以给你我所
+有的智慧，但是你也可以让我长
+的更高！
+
+[TREE_OF_WISDOM_HIEGHT] 
+{HEIGHT}
+
+[UNLOCKED_MINIGAMES]
+迷你游戏解锁！ 可从主菜单中进入该模式！
+
+[UNLOCKED_PUZZLE_MODE]
+解谜模式解锁！ 可从主菜单中进入该模式！
+
+[UNLOCKED_SURVIVAL_MODE]
+生存模式解锁！ 可从主菜单中进入该模式！
+
+[CREDITS_GAMENAME]
+植物大战僵尸
+
+[CREDITS_NAMES1]
+{CREDITS1}GEORGE FAN
+TOD SEMPLE
+RICH WERNER
+LAURA SHIGIHARA
+ENRIQUE CORTS
+MATT HOLMBERG
+STEPHEN NOTLEY
+
+[CREDITS_ROLES1]
+{CREDITS1}游戏设计
+PROGRAMMING
+ART 音乐 & 音效
+BACKGROUND ART 背景设计
+UI ART 界面设计
+WRITING  背景设计/界面设计/脚本
+
+ [CREDITS_NAMES2]
+{CREDITS2}SUKHBIR SIDHU
+MIKE RACIOPPI
+SHAWN CONARD， ED MILLER， ADAM MACDONNELL
+BRIAN FIETE， CHRIS HARGROVE， DAVID PARTON
+DAVID P。 WYCLIFF
+JASON KAPALKA， JOHN VECHEY， DAVE HAAS，
+DAVE ROBERTS， ED BROWN， LINDSEY KURZ，
+JEFF GATES， MYSTICSAGE， DAVE ROHRL，
+POPCAP BETA TESTERSPOPCAP 测试员
+
+[CREDITS_ROLES2]
+{CREDITS2}STUDIO DIRECTOR
+QA LEAD
+QA TESTING
+POPCAP FRAMEWORK
+MARMOT
+SALESMAN
+SPECIAL THANKS
+工作室监督；质监负责人；游戏检测；特别感谢
+
+[CREDITS_THANKS]
+谢谢参与游戏
+
+[CREDITS_REPLAY_BUTTON]
+重播
+
+[CREDITS_MAIN_MENU_BUTTON]
+主菜单
+
+[VISIT_TREE_HEADER]
+拜访智慧树？
+
+[VISIT_TREE_BODY]
+你想现在拜访智慧树吗？
+
+[CREDITS_PAUSE_HEADER]
+暂停播放播放制作名单
+
+[CREDITS_PAUSE_BODY]
+点击回到制作名单。
+ 
+你也可以以后由菜单选项观看制作名单。
+
+[CREDITS_RESUME_BUTTON]
+继续播放制作名单
+
+[GET_FULL_VERSION_BUTTON]
+购买完全版
+
+[UPSELL_PAUSE_HEADER]
+ 暂停
+
+[UPSELL_PAUSE_BODY]
+点击返回继续游戏。
+
+[UPSELL_RESUME_BUTTON]
+返回
+
+[INTRO_PRESENTS]
+PopCap Games 出品
+
+[CANT_USE_CODE]
+你的智慧树还不够高！
+
+[ADVENTURE_COMPLETE_HEADER]
+完成冒险
+
+[ADVENTURE_COMPLETE_BODY]
+新的迷你游戏, 解谜模式和生存模式, 都被解开了! 疯狂戴夫的店里也有新道具啦, 快去看看吧. 
+
+[ADVICE_NEED_WHEELBARROW]
+想要在花园之间搬运植物们，需要先在商店里买辆手推车！
+
+[AVAILABLE_IN_FULL_VERSION]
+此植物仅可在完全版中使用！
+
+
+[REPLAY_LEVEL_HEADER]
+Replay this level?
+
+[REPLAY_LEVEL_BODY]
+Replay level 3-4?

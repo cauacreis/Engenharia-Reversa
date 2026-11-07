@@ -22,6 +22,11 @@ pvz_launcher_assets/
 bepinex_x64.zip
 LauncherData/
 **/LauncherData/
+**/reports/*_ui/
+**/reports/extracted_ui/
+**/reports/vanilla_extracted_ui/
+**/reports/eng_extracted_ui/
+**/reports/hybrid_eng_pak/
 
 # Dados de save e perfis pessoais de jogadores (Proteção de privacidade)
 userdata/
