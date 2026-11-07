@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Threading;
 
 namespace PvZLauncher
@@ -30,9 +31,16 @@ namespace PvZLauncher
         private static WebClient activeClient;
         public static bool IsDownloading { get; private set; }
         public static string CurrentModId { get; private set; }
+        public static string CurrentModTitle { get; private set; }
         public static int ProgressPercentage { get; private set; }
         public static string StatusMessage { get; private set; }
         public static string DetailedProgress { get; private set; }
+        public static string DownloadSpeed { get; private set; }
+        public static long BytesReceived { get; private set; }
+        public static long TotalBytes { get; private set; }
+
+        private static DateTime lastSpeedTime;
+        private static long lastBytes;
 
         public static event Action ProgressUpdated;
         public static event Action<string, bool, string> DownloadCompleted;
@@ -56,140 +64,243 @@ namespace PvZLauncher
             catch { }
         }
 
+        public static void CancelDownload()
+        {
+            if (activeClient != null && IsDownloading)
+            {
+                try
+                {
+                    activeClient.CancelAsync();
+                }
+                catch { }
+            }
+        }
+
         public static void DownloadAndInstallMod(ModEntry mod)
         {
             if (IsDownloading) return;
-            if (string.IsNullOrEmpty(mod.DownloadUrl))
+            if (mod == null || string.IsNullOrEmpty(mod.DownloadUrl))
             {
                 StatusMessage = "URL de download não configurada para este mod.";
                 if (ProgressUpdated != null) ProgressUpdated();
+                if (DownloadCompleted != null) DownloadCompleted(mod != null ? mod.Id : "", false, "URL não encontrada.");
                 return;
             }
 
             IsDownloading = true;
             CurrentModId = mod.Id;
+            CurrentModTitle = mod.Title;
             ProgressPercentage = 0;
-            StatusMessage = "Iniciando download autônomo de " + mod.Title + "...";
-            DetailedProgress = "Conectando ao servidor oficial...";
+            BytesReceived = 0;
+            TotalBytes = 0;
+            DownloadSpeed = "Calculando...";
+            StatusMessage = "Conectando ao servidor oficial de " + mod.Title + "...";
+            DetailedProgress = "Preparando download autônomo...";
+            lastSpeedTime = DateTime.Now;
+            lastBytes = 0;
+
             if (ProgressUpdated != null) ProgressUpdated();
 
-            string tempZip = Path.Combine(DownloadsDir, mod.Id + ".zip");
-            if (File.Exists(tempZip))
+            ThreadPool.QueueUserWorkItem(delegate
             {
-                try { File.Delete(tempZip); } catch { }
-            }
-
-            activeClient = new WebClient();
-            activeClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-
-            activeClient.DownloadProgressChanged += (s, e) =>
-            {
-                ProgressPercentage = e.ProgressPercentage;
-                double mbReceived = e.BytesReceived / (1024.0 * 1024.0);
-                double mbTotal = e.TotalBytesToReceive / (1024.0 * 1024.0);
-                if (mbTotal > 0)
+                try
                 {
-                    DetailedProgress = string.Format("{0:0.0} MB / {1:0.0} MB ({2}%)", mbReceived, mbTotal, ProgressPercentage);
-                }
-                else
-                {
-                    DetailedProgress = string.Format("{0:0.0} MB baixados...", mbReceived);
-                }
-                StatusMessage = "Baixando " + mod.Title + "...";
-                if (ProgressUpdated != null) ProgressUpdated();
-            };
-
-            activeClient.DownloadFileCompleted += (s, e) =>
-            {
-                if (e.Error != null)
-                {
-                    IsDownloading = false;
-                    StatusMessage = "Falha no download: " + e.Error.Message;
-                    DetailedProgress = "Tente novamente mais tarde.";
-                    if (ProgressUpdated != null) ProgressUpdated();
-                    if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, e.Error.Message);
-                    return;
-                }
-
-                if (e.Cancelled)
-                {
-                    IsDownloading = false;
-                    StatusMessage = "Download cancelado.";
-                    if (ProgressUpdated != null) ProgressUpdated();
-                    if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, "Cancelado.");
-                    return;
-                }
-
-                // Extração em background thread
-                ThreadPool.QueueUserWorkItem(delegate
-                {
-                    try
+                    // 1. Resolve direct download URL if needed (e.g. GameJolt builds)
+                    string directUrl = ResolveDirectUrl(mod.DownloadUrl, mod.Id);
+                    if (string.IsNullOrEmpty(directUrl))
                     {
-                        StatusMessage = "Download concluído! Extraindo arquivos...";
-                        DetailedProgress = "Descompactando pacote do mod...";
-                        if (ProgressUpdated != null) ProgressUpdated();
+                        directUrl = mod.DownloadUrl;
+                    }
 
-                        string targetDir = Path.Combine(ModsDir, GetFolderForMod(mod.Id));
-                        if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+                    string tempZip = Path.Combine(DownloadsDir, mod.Id + ".zip");
+                    if (File.Exists(tempZip))
+                    {
+                        try { File.Delete(tempZip); } catch { }
+                    }
 
-                        // Se o arquivo baixado for um ZIP, extrai
-                        if (File.Exists(tempZip))
+                    activeClient = new WebClient();
+                    activeClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                    activeClient.Headers.Add("Referer", "https://github.com/");
+
+                    activeClient.DownloadProgressChanged += (s, e) =>
+                    {
+                        ProgressPercentage = e.ProgressPercentage;
+                        BytesReceived = e.BytesReceived;
+                        TotalBytes = e.TotalBytesToReceive;
+
+                        DateTime now = DateTime.Now;
+                        double elapsedSec = (now - lastSpeedTime).TotalSeconds;
+                        if (elapsedSec >= 0.5)
                         {
-                            using (ZipArchive archive = ZipFile.OpenRead(tempZip))
+                            long diffBytes = e.BytesReceived - lastBytes;
+                            double speedMbs = (diffBytes / (1024.0 * 1024.0)) / Math.Max(elapsedSec, 0.1);
+                            DownloadSpeed = string.Format("{0:0.0} MB/s", speedMbs);
+                            lastSpeedTime = now;
+                            lastBytes = e.BytesReceived;
+                        }
+
+                        double mbReceived = e.BytesReceived / (1024.0 * 1024.0);
+                        double mbTotal = e.TotalBytesToReceive / (1024.0 * 1024.0);
+                        if (mbTotal > 0)
+                        {
+                            DetailedProgress = string.Format("{0:0.0} MB de {1:0.0} MB ({2}%)  |  {3}", mbReceived, mbTotal, ProgressPercentage, DownloadSpeed);
+                        }
+                        else
+                        {
+                            DetailedProgress = string.Format("{0:0.0} MB baixados  |  {1}", mbReceived, DownloadSpeed);
+                        }
+                        StatusMessage = "Baixando arquivos oficiais...";
+                        if (ProgressUpdated != null) ProgressUpdated();
+                    };
+
+                    activeClient.DownloadFileCompleted += (s, e) =>
+                    {
+                        if (e.Error != null)
+                        {
+                            IsDownloading = false;
+                            StatusMessage = "Falha no download: " + e.Error.Message;
+                            DetailedProgress = "Verifique sua conexão e tente novamente.";
+                            if (ProgressUpdated != null) ProgressUpdated();
+                            if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, e.Error.Message);
+                            return;
+                        }
+
+                        if (e.Cancelled)
+                        {
+                            IsDownloading = false;
+                            StatusMessage = "Download cancelado.";
+                            DetailedProgress = "Operação abortada pelo usuário.";
+                            if (ProgressUpdated != null) ProgressUpdated();
+                            if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, "Cancelado.");
+                            return;
+                        }
+
+                        // Extração em background
+                        ThreadPool.QueueUserWorkItem(delegate
+                        {
+                            try
                             {
-                                foreach (ZipArchiveEntry entry in archive.Entries)
+                                StatusMessage = "Download concluído! Descompactando arquivos...";
+                                DetailedProgress = "Extraindo pacote do mod no diretório seguro...";
+                                ProgressPercentage = 95;
+                                if (ProgressUpdated != null) ProgressUpdated();
+
+                                string targetDir = Path.Combine(ModsDir, GetFolderForMod(mod.Id));
+                                if (!Directory.Exists(targetDir)) Directory.CreateDirectory(targetDir);
+
+                                if (File.Exists(tempZip))
                                 {
-                                    string destinationPath = Path.Combine(targetDir, entry.FullName);
-                                    string dir = Path.GetDirectoryName(destinationPath);
-                                    if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-                                    if (!string.IsNullOrEmpty(entry.Name))
+                                    using (ZipArchive archive = ZipFile.OpenRead(tempZip))
                                     {
-                                        entry.ExtractToFile(destinationPath, true);
+                                        foreach (ZipArchiveEntry entry in archive.Entries)
+                                        {
+                                            string destinationPath = Path.Combine(targetDir, entry.FullName);
+                                            string dir = Path.GetDirectoryName(destinationPath);
+                                            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+                                            if (!string.IsNullOrEmpty(entry.Name))
+                                            {
+                                                entry.ExtractToFile(destinationPath, true);
+                                            }
+                                        }
                                     }
+
+                                    try { File.Delete(tempZip); } catch { }
                                 }
+
+                                string foundExe = FindModExecutable(targetDir, mod.Id);
+                                if (!string.IsNullOrEmpty(foundExe))
+                                {
+                                    mod.ExecutablePath = foundExe;
+                                }
+
+                                IsDownloading = false;
+                                ProgressPercentage = 100;
+                                StatusMessage = "Instalação concluída com sucesso!";
+                                DetailedProgress = "Mod verificado e pronto para jogar.";
+                                if (ProgressUpdated != null) ProgressUpdated();
+                                if (DownloadCompleted != null) DownloadCompleted(mod.Id, true, null);
                             }
+                            catch (Exception ex)
+                            {
+                                IsDownloading = false;
+                                StatusMessage = "Erro ao extrair: " + ex.Message;
+                                DetailedProgress = "Verifique o espaço em disco e tente novamente.";
+                                if (ProgressUpdated != null) ProgressUpdated();
+                                if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, ex.Message);
+                            }
+                        });
+                    };
 
-                            // Limpa arquivo temporário
-                            try { File.Delete(tempZip); } catch { }
-                        }
+                    activeClient.DownloadFileAsync(new Uri(directUrl), tempZip);
+                }
+                catch (Exception ex)
+                {
+                    IsDownloading = false;
+                    StatusMessage = "Erro ao iniciar download: " + ex.Message;
+                    DetailedProgress = ex.Message;
+                    if (ProgressUpdated != null) ProgressUpdated();
+                    if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, ex.Message);
+                }
+            });
+        }
 
-                        // Localiza o executável instalado
-                        string foundExe = FindModExecutable(targetDir, mod.Id);
-                        if (!string.IsNullOrEmpty(foundExe))
-                        {
-                            mod.ExecutablePath = foundExe;
-                        }
+        private static string ResolveDirectUrl(string url, string modId)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
 
-                        IsDownloading = false;
-                        ProgressPercentage = 100;
-                        StatusMessage = "Instalação concluída com sucesso!";
-                        DetailedProgress = "Mod configurado e pronto para jogar.";
-                        if (ProgressUpdated != null) ProgressUpdated();
-                        if (DownloadCompleted != null) DownloadCompleted(mod.Id, true, null);
-                    }
-                    catch (Exception ex)
+            string buildId = null;
+            if (url.Contains("gamejolt.com/site-api/web/discover/games/builds/get-download-url/"))
+            {
+                int idx = url.LastIndexOf('/');
+                if (idx >= 0) buildId = url.Substring(idx + 1).Trim();
+            }
+            else if (modId == "dlc_edition" || url.Contains("1009738"))
+            {
+                buildId = "1913641";
+            }
+            else if (modId == "pvz2_pc_port" || url.Contains("873582"))
+            {
+                buildId = "1526510";
+            }
+
+            if (!string.IsNullOrEmpty(buildId))
+            {
+                try
+                {
+                    string apiUrl = "https://gamejolt.com/site-api/web/discover/games/builds/get-download-url/" + buildId;
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(apiUrl);
+                    req.Method = "POST";
+                    req.ContentType = "application/json";
+                    req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+                    req.Referer = "https://gamejolt.com/";
+                    byte[] body = Encoding.UTF8.GetBytes("{}");
+                    req.ContentLength = body.Length;
+                    using (Stream s = req.GetRequestStream())
                     {
-                        IsDownloading = false;
-                        StatusMessage = "Erro ao extrair: " + ex.Message;
-                        DetailedProgress = "Verifique o espaço em disco e tente novamente.";
-                        if (ProgressUpdated != null) ProgressUpdated();
-                        if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, ex.Message);
+                        s.Write(body, 0, body.Length);
                     }
-                });
-            };
 
-            try
-            {
-                activeClient.DownloadFileAsync(new Uri(mod.DownloadUrl), tempZip);
+                    using (HttpWebResponse resp = (HttpWebResponse)req.GetResponse())
+                    using (StreamReader reader = new StreamReader(resp.GetResponseStream()))
+                    {
+                        string json = reader.ReadToEnd();
+                        int uIdx = json.IndexOf("\"url\":\"", StringComparison.OrdinalIgnoreCase);
+                        if (uIdx >= 0)
+                        {
+                            int start = uIdx + 7;
+                            int end = json.IndexOf("\"", start);
+                            if (end > start)
+                            {
+                                return json.Substring(start, end - start).Replace("\\/", "/");
+                            }
+                        }
+                    }
+                }
+                catch { }
             }
-            catch (Exception ex)
-            {
-                IsDownloading = false;
-                StatusMessage = "Erro ao iniciar download: " + ex.Message;
-                if (ProgressUpdated != null) ProgressUpdated();
-                if (DownloadCompleted != null) DownloadCompleted(mod.Id, false, ex.Message);
-            }
+
+            return url;
         }
 
         private static string GetFolderForMod(string modId)
@@ -212,7 +323,6 @@ namespace PvZLauncher
         {
             if (!Directory.Exists(folder)) return null;
 
-            // Nomes prioritários
             string[] preferred = new string[] {
                 "pvz_widescreen.exe",
                 "PlantsVsZombies_DLC.exe",
@@ -231,12 +341,10 @@ namespace PvZLauncher
                 string direct = Path.Combine(folder, name);
                 if (File.Exists(direct)) return direct;
 
-                // Busca recursiva
                 string[] files = Directory.GetFiles(folder, name, SearchOption.AllDirectories);
                 if (files.Length > 0) return files[0];
             }
 
-            // Fallback: qualquer .exe que não seja uninstaller
             string[] allExes = Directory.GetFiles(folder, "*.exe", SearchOption.AllDirectories);
             foreach (string exe in allExes)
             {

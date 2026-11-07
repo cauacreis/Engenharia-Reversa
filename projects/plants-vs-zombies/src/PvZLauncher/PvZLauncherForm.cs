@@ -10,10 +10,25 @@ namespace PvZLauncher
 {
     public class PvZLauncherForm : Form
     {
+        public enum OverlayState
+        {
+            None,
+            Downloading,
+            Completed,
+            Failed
+        }
+
         private List<ModEntry> mods;
         private string activeTab = "pvz1"; // "pvz1" ou "pvz2"
         private int selectedIndex = 0;
         private int hoveredIndex = -1;
+
+        // Modal Overlay State
+        private OverlayState currentOverlay = OverlayState.None;
+        private ModEntry activeMod = null;
+        private ModEntry completedMod = null;
+        private string completedModTitle = "";
+        private string failureReason = "";
 
         // Assets
         private Bitmap bmpTopLeft, bmpTopMiddle, bmpTopRight;
@@ -34,6 +49,11 @@ namespace PvZLauncher
         private Rectangle btnCloseRect;
         private Rectangle statusBarRect;
 
+        // Modal Overlay Rectangles
+        private Rectangle overlayDialogRect;
+        private Rectangle overlayBtnPrimaryRect;
+        private Rectangle overlayBtnSecondaryRect;
+
         // Button hover & press states
         private Rectangle pressedButton = Rectangle.Empty;
         private Rectangle hoveredButton = Rectangle.Empty;
@@ -49,6 +69,8 @@ namespace PvZLauncher
         private Font btnFont;
         private Font statusFont;
         private Font detailFont;
+        private Font modalHeaderFont;
+        private Font modalSubFont;
 
         // Window drag state
         private bool isDragging = false;
@@ -100,27 +122,29 @@ namespace PvZLauncher
                 if (this.IsDisposed) return;
                 try
                 {
-                    if (this.InvokeRequired)
-                    {
-                        this.BeginInvoke(new Action(delegate
-                        {
-                            LoadMods();
-                            this.Invalidate();
-                            if (success)
-                            {
-                                MessageBox.Show(this, "Mod baixado e instalado com sucesso! Clique em JOGAR para iniciar.", "Instalação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                            else
-                            {
-                                MessageBox.Show(this, "Erro durante a instalação autônoma: " + error, "Falha no Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
-                        }));
-                    }
-                    else
+                    this.BeginInvoke(new Action(delegate
                     {
                         LoadMods();
+                        if (success)
+                        {
+                            currentOverlay = OverlayState.Completed;
+                            completedMod = mods.Find(m => m.Id == modId);
+                            completedModTitle = (completedMod != null) ? completedMod.Title : modId;
+                            try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
+                            try
+                            {
+                                trayIcon.ShowBalloonTip(4000, "Plants vs. Zombies", "Mod instalado com sucesso! Pronto para jogar na Steam.", ToolTipIcon.Info);
+                            }
+                            catch { }
+                        }
+                        else
+                        {
+                            currentOverlay = OverlayState.Failed;
+                            failureReason = error ?? "Erro desconhecido durante o download.";
+                            try { System.Media.SystemSounds.Hand.Play(); } catch { }
+                        }
                         this.Invalidate();
-                    }
+                    }));
                 }
                 catch { }
             };
@@ -166,6 +190,8 @@ namespace PvZLauncher
             try { btnFont = new Font("Arial", 11, FontStyle.Bold); } catch { btnFont = SystemFonts.DefaultFont; }
             try { statusFont = new Font("Arial", 9, FontStyle.Bold); } catch { statusFont = SystemFonts.DefaultFont; }
             try { detailFont = new Font("Arial", 8, FontStyle.Regular); } catch { detailFont = SystemFonts.DefaultFont; }
+            try { modalHeaderFont = new Font("Arial", 15, FontStyle.Bold); } catch { modalHeaderFont = SystemFonts.DefaultFont; }
+            try { modalSubFont = new Font("Arial", 11, FontStyle.Bold); } catch { modalSubFont = SystemFonts.DefaultFont; }
         }
 
         private void SetupLayout()
@@ -187,6 +213,11 @@ namespace PvZLauncher
             btnCloseRect = new Rectangle(btnX, 345, btnW, btnH);
 
             statusBarRect = new Rectangle(45, 448, 675, 48);
+
+            // Modal overlay centered
+            overlayDialogRect = new Rectangle(100, 115, 560, 310);
+            overlayBtnPrimaryRect = new Rectangle(180, 360, 180, 44);
+            overlayBtnSecondaryRect = new Rectangle(380, 360, 160, 44);
         }
 
         private void SetupTrayIcon()
@@ -284,16 +315,29 @@ namespace PvZLauncher
                     }
                 }
 
+                // If currently downloading this mod, draw active progress fill on row background!
+                bool isThisDownloading = (DownloaderManager.IsDownloading && DownloaderManager.CurrentModId == mod.Id);
+                if (isThisDownloading && DownloaderManager.ProgressPercentage > 0)
+                {
+                    int fillW = (int)((rowRect.Width - 4) * (DownloaderManager.ProgressPercentage / 100.0));
+                    if (fillW > 0)
+                    {
+                        using (SolidBrush dlRowFill = new SolidBrush(Color.FromArgb(45, 60, 190, 70)))
+                        {
+                            g.FillRectangle(dlRowFill, rowRect.X + 2, rowRect.Y + 2, fillW, rowRect.Height - 4);
+                        }
+                    }
+                }
+
                 // Draw Custom Vector Thematic Badge Icon
                 DrawThematicBadgeIcon(g, mod.ThemeKey, rowRect.X + 18, rowRect.Y + rowRect.Height / 2);
 
                 // Right Badges (Calculated from right edge to avoid collision)
                 // 1. Status Badge (INSTALADO / BAIXAR / BAIXANDO...)
-                bool isThisDownloading = (DownloaderManager.IsDownloading && DownloaderManager.CurrentModId == mod.Id);
-                string statusText = isThisDownloading ? (DownloaderManager.ProgressPercentage + "%") : (mod.IsInstalled ? "INSTALADO" : "BAIXAR");
+                string statusText = isThisDownloading ? ("BAIXANDO " + DownloaderManager.ProgressPercentage + "%") : (mod.IsInstalled ? "INSTALADO" : "BAIXAR");
                 Color badgeBg = isThisDownloading ? Color.FromArgb(40, 140, 210) : (mod.IsInstalled ? Color.FromArgb(60, 145, 60) : Color.FromArgb(190, 120, 30));
 
-                int bw = 74;
+                int bw = isThisDownloading ? 96 : 74;
                 int bh = 20;
                 int bx = rowRect.Right - bw - 6;
                 int by = rowRect.Y + 8;
@@ -361,6 +405,268 @@ namespace PvZLauncher
 
             // 7. Bottom Status Bar & Steam Tracking Banner
             DrawStatusBar(g);
+
+            // 8. If an overlay is active, render the prominent PopCap Modal on top!
+            if (currentOverlay != OverlayState.None)
+            {
+                DrawModalOverlay(g);
+            }
+        }
+
+        private void DrawModalOverlay(Graphics g)
+        {
+            // 1. Semi-transparent wash over background
+            using (SolidBrush darkWash = new SolidBrush(Color.FromArgb(185, 0, 0, 0)))
+            {
+                g.FillRectangle(darkWash, 0, 0, this.Width, this.Height);
+            }
+
+            // 2. Stone sunken card with authentic PopCap border
+            using (SolidBrush cardBg = new SolidBrush(Color.FromArgb(248, 28, 22, 17)))
+            using (Pen goldBorder = new Pen(Color.FromArgb(220, 180, 80), 3))
+            using (Pen darkInner = new Pen(Color.FromArgb(12, 8, 6), 2))
+            {
+                g.FillRectangle(cardBg, overlayDialogRect);
+                g.DrawRectangle(goldBorder, overlayDialogRect);
+                g.DrawRectangle(darkInner, overlayDialogRect.X + 3, overlayDialogRect.Y + 3, overlayDialogRect.Width - 6, overlayDialogRect.Height - 6);
+            }
+
+            // Draw 4 corner gold studs
+            DrawStud(g, overlayDialogRect.X + 8, overlayDialogRect.Y + 8);
+            DrawStud(g, overlayDialogRect.Right - 16, overlayDialogRect.Y + 8);
+            DrawStud(g, overlayDialogRect.X + 8, overlayDialogRect.Bottom - 16);
+            DrawStud(g, overlayDialogRect.Right - 16, overlayDialogRect.Bottom - 16);
+
+            // 3. Render content according to overlay state
+            if (currentOverlay == OverlayState.Downloading)
+            {
+                DrawDownloadingModal(g);
+            }
+            else if (currentOverlay == OverlayState.Completed)
+            {
+                DrawCompletedModal(g);
+            }
+            else if (currentOverlay == OverlayState.Failed)
+            {
+                DrawFailedModal(g);
+            }
+        }
+
+        private void DrawDownloadingModal(Graphics g)
+        {
+            string title = "INSTALANDO MOD AUTONOMAMENTE";
+            SizeF ts = g.MeasureString(title, modalHeaderFont);
+            float tx = overlayDialogRect.X + (overlayDialogRect.Width - ts.Width) / 2f;
+            float ty = overlayDialogRect.Y + 22f;
+
+            using (Brush bShadow = new SolidBrush(Color.Black))
+            using (Brush bGold = new SolidBrush(Color.FromArgb(255, 235, 140)))
+            {
+                g.DrawString(title, modalHeaderFont, bShadow, tx + 1, ty + 1);
+                g.DrawString(title, modalHeaderFont, bGold, tx, ty);
+            }
+
+            string modTitle = DownloaderManager.CurrentModTitle ?? (activeMod != null ? activeMod.Title : "Carregando mod...");
+            SizeF ms = g.MeasureString(modTitle, modalSubFont);
+            float mx = overlayDialogRect.X + (overlayDialogRect.Width - ms.Width) / 2f;
+            float my = overlayDialogRect.Y + 54f;
+
+            using (Brush bWhite = new SolidBrush(Color.FromArgb(240, 235, 215)))
+            {
+                g.DrawString(modTitle, modalSubFont, bWhite, mx, my);
+            }
+
+            // Big Prominent Progress Bar
+            int barX = overlayDialogRect.X + 40;
+            int barY = overlayDialogRect.Y + 95;
+            int barW = overlayDialogRect.Width - 80;
+            int barH = 28;
+
+            using (SolidBrush barBg = new SolidBrush(Color.FromArgb(16, 12, 10)))
+            using (Pen barBorder = new Pen(Color.FromArgb(75, 60, 42), 2))
+            {
+                g.FillRectangle(barBg, barX, barY, barW, barH);
+                g.DrawRectangle(barBorder, barX, barY, barW, barH);
+            }
+
+            int pct = DownloaderManager.ProgressPercentage;
+            if (pct > 0)
+            {
+                int fillW = (int)((barW - 4) * (Math.Min(pct, 100) / 100.0));
+                if (fillW > 0)
+                {
+                    using (LinearGradientBrush fillB = new LinearGradientBrush(new Rectangle(barX + 2, barY + 2, fillW, barH - 4), Color.FromArgb(75, 215, 90), Color.FromArgb(45, 165, 60), LinearGradientMode.Vertical))
+                    {
+                        g.FillRectangle(fillB, barX + 2, barY + 2, fillW, barH - 4);
+                    }
+                    // Top shine highlight
+                    using (Pen shineP = new Pen(Color.FromArgb(120, 255, 255, 255), 1))
+                    {
+                        g.DrawLine(shineP, barX + 3, barY + 3, barX + fillW, barY + 3);
+                    }
+                }
+            }
+
+            // Percentage inside progress bar
+            string pctText = pct + "%";
+            TextRenderer.DrawText(g, pctText, btnFont, new Rectangle(barX, barY, barW, barH), Color.White, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+
+            // Detailed Speed & Size stats
+            string details = DownloaderManager.DetailedProgress ?? "Iniciando transferência...";
+            SizeF ds = g.MeasureString(details, itemFont);
+            float dx = overlayDialogRect.X + (overlayDialogRect.Width - ds.Width) / 2f;
+            float dy = barY + barH + 16f;
+
+            using (Brush bCyan = new SolidBrush(Color.FromArgb(130, 235, 190)))
+            {
+                g.DrawString(details, itemFont, bCyan, dx, dy);
+            }
+
+            // Status message
+            string status = DownloaderManager.StatusMessage ?? "Processando...";
+            SizeF ss = g.MeasureString(status, detailFont);
+            float sx = overlayDialogRect.X + (overlayDialogRect.Width - ss.Width) / 2f;
+            float sy = dy + 22f;
+
+            using (Brush bStatus = new SolidBrush(Color.FromArgb(210, 200, 180)))
+            {
+                g.DrawString(status, detailFont, bStatus, sx, sy);
+            }
+
+            // Buttons: [ SEGUNDO PLANO ] e [ CANCELAR ]
+            overlayBtnPrimaryRect = new Rectangle(overlayDialogRect.X + 80, overlayDialogRect.Bottom - 62, 220, 42);
+            overlayBtnSecondaryRect = new Rectangle(overlayDialogRect.X + 320, overlayDialogRect.Bottom - 62, 160, 42);
+
+            DrawPvZButton(g, overlayBtnPrimaryRect, "SEGUNDO PLANO", false);
+            DrawPvZButton(g, overlayBtnSecondaryRect, "CANCELAR", false);
+        }
+
+        private void DrawCompletedModal(Graphics g)
+        {
+            string title = "INSTALAÇÃO CONCLUÍDA!";
+            SizeF ts = g.MeasureString(title, titleFont);
+            float tx = overlayDialogRect.X + (overlayDialogRect.Width - ts.Width) / 2f;
+            float ty = overlayDialogRect.Y + 22f;
+
+            using (Brush bShadow = new SolidBrush(Color.Black))
+            using (Brush bGold = new SolidBrush(Color.FromArgb(255, 235, 140)))
+            {
+                g.DrawString(title, titleFont, bShadow, tx + 1, ty + 1);
+                g.DrawString(title, titleFont, bGold, tx, ty);
+            }
+
+            // Large victory badge icon (Center)
+            int badgeCy = overlayDialogRect.Y + 70;
+            int badgeCx = overlayDialogRect.X + overlayDialogRect.Width / 2;
+            using (Brush bGreen = new SolidBrush(Color.FromArgb(60, 185, 75)))
+            using (Pen pGreen = new Pen(Color.FromArgb(25, 100, 35), 2))
+            using (Pen checkPen = new Pen(Color.White, 3))
+            {
+                g.FillEllipse(bGreen, badgeCx - 18, badgeCy - 18, 36, 36);
+                g.DrawEllipse(pGreen, badgeCx - 18, badgeCy - 18, 36, 36);
+                // Checkmark
+                g.DrawLine(checkPen, badgeCx - 8, badgeCy, badgeCx - 2, badgeCy + 6);
+                g.DrawLine(checkPen, badgeCx - 2, badgeCy + 6, badgeCx + 8, badgeCy - 5);
+            }
+
+            string modTitle = completedModTitle ?? (completedMod != null ? completedMod.Title : "Mod");
+            string lineSuccess = string.Format("O mod \"{0}\" foi instalado com 100% de sucesso!", modTitle);
+            SizeF ms = g.MeasureString(lineSuccess, itemFont);
+            float mx = overlayDialogRect.X + (overlayDialogRect.Width - ms.Width) / 2f;
+            float my = overlayDialogRect.Y + 104f;
+
+            using (Brush bWhite = new SolidBrush(Color.FromArgb(250, 245, 230)))
+            {
+                g.DrawString(lineSuccess, itemFont, bWhite, mx, my);
+            }
+
+            // Features checklist with crisp custom vector checkmarks
+            string[] perks = new string[] {
+                "Todos os arquivos foram baixados e extraídos com integridade",
+                "Executável vinculado e compatível com contagem de horas da Steam (AppID: 3590)",
+                "Sandbox seguro de saves ativado sem conflito com o jogo original"
+            };
+
+            float perkY = my + 26f;
+            using (Brush perkB = new SolidBrush(Color.FromArgb(170, 235, 180)))
+            using (Brush dotB = new SolidBrush(Color.FromArgb(60, 185, 75)))
+            using (Pen chkP = new Pen(Color.White, 1.5f))
+            {
+                foreach (string p in perks)
+                {
+                    SizeF ps = g.MeasureString(p, descFont);
+                    int totalW = 14 + 8 + (int)ps.Width;
+                    int px = overlayDialogRect.X + (overlayDialogRect.Width - totalW) / 2;
+                    int py = (int)perkY;
+
+                    // Mini check circle
+                    g.FillEllipse(dotB, px, py + 2, 12, 12);
+                    g.DrawLine(chkP, px + 2, py + 7, px + 5, py + 10);
+                    g.DrawLine(chkP, px + 5, py + 10, px + 10, py + 4);
+
+                    g.DrawString(p, descFont, perkB, px + 20, perkY);
+                    perkY += 21f;
+                }
+            }
+
+            // Buttons: [ JOGAR AGORA ] (Gold) e [ CONCLUÍDO ] (Stone)
+            overlayBtnPrimaryRect = new Rectangle(overlayDialogRect.X + 90, overlayDialogRect.Bottom - 62, 190, 42);
+            overlayBtnSecondaryRect = new Rectangle(overlayDialogRect.X + 300, overlayDialogRect.Bottom - 62, 170, 42);
+
+            DrawPvZButton(g, overlayBtnPrimaryRect, "JOGAR AGORA", true);
+            DrawPvZButton(g, overlayBtnSecondaryRect, "CONCLUÍDO", false);
+        }
+
+        private void DrawFailedModal(Graphics g)
+        {
+            string title = "FALHA NA INSTALAÇÃO";
+            SizeF ts = g.MeasureString(title, titleFont);
+            float tx = overlayDialogRect.X + (overlayDialogRect.Width - ts.Width) / 2f;
+            float ty = overlayDialogRect.Y + 24f;
+
+            using (Brush bRed = new SolidBrush(Color.FromArgb(235, 75, 75)))
+            {
+                g.DrawString(title, titleFont, Brushes.Black, tx + 1, ty + 1);
+                g.DrawString(title, titleFont, bRed, tx, ty);
+            }
+
+            string line1 = "Ocorreu um erro durante o download ou extração autônoma dos arquivos:";
+            SizeF s1 = g.MeasureString(line1, itemFont);
+            float x1 = overlayDialogRect.X + (overlayDialogRect.Width - s1.Width) / 2f;
+            float y1 = overlayDialogRect.Y + 70f;
+
+            using (Brush bWhite = new SolidBrush(Color.FromArgb(240, 230, 220)))
+            {
+                g.DrawString(line1, itemFont, bWhite, x1, y1);
+            }
+
+            string errText = failureReason ?? "Erro de rede ou permissão.";
+            Rectangle errRect = new Rectangle(overlayDialogRect.X + 30, (int)y1 + 30, overlayDialogRect.Width - 60, 60);
+            using (SolidBrush ebBg = new SolidBrush(Color.FromArgb(20, 14, 12)))
+            using (Pen ebPen = new Pen(Color.FromArgb(80, 50, 40), 1))
+            {
+                g.FillRectangle(ebBg, errRect);
+                g.DrawRectangle(ebPen, errRect);
+                TextRenderer.DrawText(g, errText, descFont, errRect, Color.FromArgb(255, 170, 170), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak);
+            }
+
+            overlayBtnPrimaryRect = new Rectangle(overlayDialogRect.X + 80, overlayDialogRect.Bottom - 62, 210, 42);
+            overlayBtnSecondaryRect = new Rectangle(overlayDialogRect.X + 310, overlayDialogRect.Bottom - 62, 170, 42);
+
+            DrawPvZButton(g, overlayBtnPrimaryRect, "TENTAR NOVAMENTE", true);
+            DrawPvZButton(g, overlayBtnSecondaryRect, "FECHAR", false);
+        }
+
+        private void DrawStud(Graphics g, int x, int y)
+        {
+            using (Brush studB = new SolidBrush(Color.FromArgb(230, 190, 80)))
+            using (Pen studP = new Pen(Color.FromArgb(140, 100, 30), 1))
+            using (Brush studHi = new SolidBrush(Color.FromArgb(255, 245, 180)))
+            {
+                g.FillEllipse(studB, x, y, 8, 8);
+                g.DrawEllipse(studP, x, y, 8, 8);
+                g.FillEllipse(studHi, x + 2, y + 2, 3, 3);
+            }
         }
 
         private void DrawCategoryTabs(Graphics g)
@@ -780,6 +1086,22 @@ namespace PvZLauncher
         {
             base.OnMouseDown(e);
 
+            // Modal overlay intercepts all clicks
+            if (currentOverlay != OverlayState.None)
+            {
+                if (overlayBtnPrimaryRect.Contains(e.Location))
+                {
+                    pressedButton = overlayBtnPrimaryRect;
+                    this.Invalidate();
+                }
+                else if (overlayBtnSecondaryRect.Contains(e.Location))
+                {
+                    pressedButton = overlayBtnSecondaryRect;
+                    this.Invalidate();
+                }
+                return;
+            }
+
             if (e.Button == MouseButtons.Left && e.Y < 60)
             {
                 isDragging = true;
@@ -836,6 +1158,21 @@ namespace PvZLauncher
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            if (currentOverlay != OverlayState.None)
+            {
+                Rectangle oldHov = hoveredButton;
+                if (overlayBtnPrimaryRect.Contains(e.Location)) hoveredButton = overlayBtnPrimaryRect;
+                else if (overlayBtnSecondaryRect.Contains(e.Location)) hoveredButton = overlayBtnSecondaryRect;
+                else hoveredButton = Rectangle.Empty;
+
+                if (hoveredButton != Rectangle.Empty) this.Cursor = Cursors.Hand;
+                else this.Cursor = Cursors.Default;
+
+                if (oldHov != hoveredButton) this.Invalidate();
+                return;
+            }
+
             if (isDragging)
             {
                 Point diff = Point.Subtract(Cursor.Position, new Size(dragCursorPoint));
@@ -885,6 +1222,22 @@ namespace PvZLauncher
             Rectangle wasPressed = pressedButton;
             pressedButton = Rectangle.Empty;
 
+            // Handle Overlay Modal button clicks
+            if (currentOverlay != OverlayState.None)
+            {
+                if (wasPressed == overlayBtnPrimaryRect && overlayBtnPrimaryRect.Contains(e.Location))
+                {
+                    HandleOverlayPrimaryClick();
+                }
+                else if (wasPressed == overlayBtnSecondaryRect && overlayBtnSecondaryRect.Contains(e.Location))
+                {
+                    HandleOverlaySecondaryClick();
+                }
+
+                this.Invalidate();
+                return;
+            }
+
             if (wasPressed == btnPlayRect && btnPlayRect.Contains(e.Location))
             {
                 LaunchOrInstallSelectedMod();
@@ -911,6 +1264,84 @@ namespace PvZLauncher
             this.Invalidate();
         }
 
+        private void HandleOverlayPrimaryClick()
+        {
+            if (currentOverlay == OverlayState.Downloading)
+            {
+                // [ SEGUNDO PLANO ]: Minimiza modal para continuar navegando no launcher
+                currentOverlay = OverlayState.None;
+                this.Invalidate();
+            }
+            else if (currentOverlay == OverlayState.Completed)
+            {
+                // [ JOGAR AGORA ]: Inicia o mod recém-instalado imediatamente!
+                currentOverlay = OverlayState.None;
+                ModEntry toLaunch = completedMod ?? activeMod;
+                if (toLaunch != null)
+                {
+                    LaunchMod(toLaunch);
+                }
+            }
+            else if (currentOverlay == OverlayState.Failed)
+            {
+                // [ TENTAR NOVAMENTE ]
+                if (activeMod != null)
+                {
+                    StartDownloadForMod(activeMod);
+                }
+                else
+                {
+                    currentOverlay = OverlayState.None;
+                }
+            }
+        }
+
+        private void HandleOverlaySecondaryClick()
+        {
+            if (currentOverlay == OverlayState.Downloading)
+            {
+                // [ CANCELAR ]
+                DownloaderManager.CancelDownload();
+                currentOverlay = OverlayState.None;
+                this.Invalidate();
+            }
+            else if (currentOverlay == OverlayState.Completed)
+            {
+                // [ CONCLUÍDO / OK ]
+                currentOverlay = OverlayState.None;
+                this.Invalidate();
+            }
+            else if (currentOverlay == OverlayState.Failed)
+            {
+                // [ FECHAR ]
+                currentOverlay = OverlayState.None;
+                this.Invalidate();
+            }
+        }
+
+        private void StartDownloadForMod(ModEntry mod)
+        {
+            if (mod == null) return;
+            if (DownloaderManager.IsDownloading)
+            {
+                if (DownloaderManager.CurrentModId == mod.Id)
+                {
+                    currentOverlay = OverlayState.Downloading;
+                    this.Invalidate();
+                }
+                else
+                {
+                    MessageBox.Show("Já existe um download em andamento. Aguarde a conclusão.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                return;
+            }
+
+            activeMod = mod;
+            currentOverlay = OverlayState.Downloading;
+            DownloaderManager.DownloadAndInstallMod(mod);
+            this.Invalidate();
+        }
+
         private void CycleLanguage()
         {
             List<ModEntry> displayed = GetDisplayedMods();
@@ -927,16 +1358,19 @@ namespace PvZLauncher
             if (selectedIndex < 0 || selectedIndex >= displayed.Count) return;
             ModEntry mod = displayed[selectedIndex];
 
-            // 1. Se NÃO estiver instalado, baixa e instala de forma 100% autônoma!
             if (!mod.IsInstalled)
             {
-                if (DownloaderManager.IsDownloading) return;
-                DownloaderManager.DownloadAndInstallMod(mod);
-                this.Invalidate();
+                StartDownloadForMod(mod);
                 return;
             }
 
-            // 2. Se já estiver instalado, executa o jogo
+            LaunchMod(mod);
+        }
+
+        private void LaunchMod(ModEntry mod)
+        {
+            if (mod == null) return;
+
             try
             {
                 LanguageManager.ApplyLanguageForMod(mod);
@@ -955,7 +1389,6 @@ namespace PvZLauncher
                     gameProc = PvZ2RunnerManager.LaunchPvZ2Mod(mod);
                     if (gameProc == null)
                     {
-                        // Usuário cancelou ou emulador não iniciado
                         this.Show();
                         trayIcon.Visible = false;
                         return;
@@ -1012,11 +1445,7 @@ namespace PvZLauncher
             }
             else
             {
-                if (!DownloaderManager.IsDownloading)
-                {
-                    DownloaderManager.DownloadAndInstallMod(mod);
-                    this.Invalidate();
-                }
+                StartDownloadForMod(mod);
             }
         }
     }
