@@ -67,6 +67,57 @@ namespace PvZLauncher
             InitFonts();
             SetupLayout();
             SetupTrayIcon();
+            SetupDownloaderEvents();
+        }
+
+        private void SetupDownloaderEvents()
+        {
+            DownloaderManager.ProgressUpdated += delegate
+            {
+                if (this.IsDisposed) return;
+                try
+                {
+                    if (this.InvokeRequired)
+                    {
+                        this.BeginInvoke(new Action(delegate { this.Invalidate(); }));
+                    }
+                    else
+                    {
+                        this.Invalidate();
+                    }
+                }
+                catch { }
+            };
+
+            DownloaderManager.DownloadCompleted += delegate(string modId, bool success, string error)
+            {
+                if (this.IsDisposed) return;
+                try
+                {
+                    if (this.InvokeRequired)
+                    {
+                        this.BeginInvoke(new Action(delegate
+                        {
+                            LoadMods();
+                            this.Invalidate();
+                            if (success)
+                            {
+                                MessageBox.Show(this, "Mod baixado e instalado com sucesso! Clique em JOGAR para iniciar.", "Instalação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show(this, "Erro durante a instalação autônoma: " + error, "Falha no Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        LoadMods();
+                        this.Invalidate();
+                    }
+                }
+                catch { }
+            };
         }
 
         private void LoadAssets()
@@ -89,15 +140,7 @@ namespace PvZLauncher
         private void LoadMods()
         {
             mods = ModManager.GetAvailableMods();
-            selectedIndex = 0;
-            for (int i = 0; i < mods.Count; i++)
-            {
-                if (mods[i].Id == "dlc_edition" && mods[i].IsInstalled)
-                {
-                    selectedIndex = i;
-                    break;
-                }
-            }
+            if (selectedIndex >= mods.Count) selectedIndex = 0;
         }
 
         private void InitFonts()
@@ -222,9 +265,11 @@ namespace PvZLauncher
                 DrawThematicBadgeIcon(g, mod.ThemeKey, rowRect.X + 18, rowRect.Y + rowRect.Height / 2);
 
                 // Right Badges (Calculated from right edge to avoid collision)
-                // 1. Status Badge (INSTALADO / BAIXAR)
-                string statusText = mod.IsInstalled ? "INSTALADO" : "BAIXAR";
-                Color badgeBg = mod.IsInstalled ? Color.FromArgb(60, 145, 60) : Color.FromArgb(190, 120, 30);
+                // 1. Status Badge (INSTALADO / BAIXAR / BAIXANDO...)
+                bool isThisDownloading = (DownloaderManager.IsDownloading && DownloaderManager.CurrentModId == mod.Id);
+                string statusText = isThisDownloading ? (DownloaderManager.ProgressPercentage + "%") : (mod.IsInstalled ? "INSTALADO" : "BAIXAR");
+                Color badgeBg = isThisDownloading ? Color.FromArgb(40, 140, 210) : (mod.IsInstalled ? Color.FromArgb(60, 145, 60) : Color.FromArgb(190, 120, 30));
+                
                 int bw = 72;
                 int bh = 20;
                 int bx = rowRect.Right - bw - 6;
@@ -265,12 +310,22 @@ namespace PvZLauncher
                 TextRenderer.DrawText(g, mod.Description, descFont, descRect, dColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
             }
 
-            // 4. Draw Language & Info Bar under list
+            // 4. Draw Language & Info Bar under list (Shows live progress bar during downloads!)
             DrawLanguageInfoBar(g);
 
             // 5. Draw Authentic Action Buttons
             ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
-            string playBtnText = (current != null && current.IsInstalled) ? "JOGAR" : "INSTALAR";
+            
+            string playBtnText = "JOGAR";
+            if (DownloaderManager.IsDownloading && current != null && current.Id == DownloaderManager.CurrentModId)
+            {
+                playBtnText = "BAIXANDO " + DownloaderManager.ProgressPercentage + "%";
+            }
+            else if (current != null && !current.IsInstalled)
+            {
+                playBtnText = "INSTALAR";
+            }
+
             LanguageOption curLang = current != null ? LanguageManager.GetCurrentLanguage(current.Id) : new LanguageOption { ShortName = "PT-BR" };
             string langBtnText = "IDIOMA (" + curLang.ShortName + ")";
             string actionBtnText = (current != null && current.IsInstalled) ? "EXPLORAR" : "BAIXAR";
@@ -289,7 +344,7 @@ namespace PvZLauncher
         {
             switch (themeKey)
             {
-                case "sun": // Golden Sunflower
+                case "sun":
                     using (Brush petalB = new SolidBrush(Color.FromArgb(255, 200, 20)))
                     using (Pen petalP = new Pen(Color.FromArgb(200, 130, 0), 1))
                     using (Brush centerB = new SolidBrush(Color.FromArgb(160, 90, 0)))
@@ -300,7 +355,7 @@ namespace PvZLauncher
                     }
                     break;
 
-                case "dlc": // Zombie Head / Tombstone
+                case "dlc":
                     using (Brush zombieB = new SolidBrush(Color.FromArgb(80, 140, 90)))
                     using (Pen zombieP = new Pen(Color.FromArgb(30, 70, 40), 1))
                     using (Brush eyeB = new SolidBrush(Color.FromArgb(220, 40, 40)))
@@ -312,7 +367,7 @@ namespace PvZLauncher
                     }
                     break;
 
-                case "trophy": // Golden Trophy
+                case "trophy":
                     using (Brush cupB = new SolidBrush(Color.FromArgb(240, 210, 50)))
                     using (Pen cupP = new Pen(Color.FromArgb(170, 130, 10), 1))
                     using (Brush stemB = new SolidBrush(Color.FromArgb(180, 140, 20)))
@@ -330,7 +385,7 @@ namespace PvZLauncher
                     }
                     break;
 
-                case "hybrid": // DNA / Atom Orb
+                case "hybrid":
                     using (Brush hybridB = new SolidBrush(Color.FromArgb(60, 160, 180)))
                     using (Pen hybridP = new Pen(Color.FromArgb(30, 100, 120), 1))
                     using (Pen lineP = new Pen(Color.White, 2))
@@ -341,7 +396,7 @@ namespace PvZLauncher
                     }
                     break;
 
-                case "fusion": // Radiant Lightning Bolt
+                case "fusion":
                     using (Brush boltB = new SolidBrush(Color.FromArgb(255, 230, 40)))
                     using (Pen boltP = new Pen(Color.FromArgb(180, 140, 0), 1))
                     {
@@ -369,6 +424,52 @@ namespace PvZLauncher
                 g.DrawRectangle(borderP, langInfoRect);
             }
 
+            // Se houver download ativo, desenha barra de progresso autônoma!
+            if (DownloaderManager.IsDownloading)
+            {
+                string status = DownloaderManager.StatusMessage;
+                string details = DownloaderManager.DetailedProgress;
+                int pct = DownloaderManager.ProgressPercentage;
+
+                using (Brush b1 = new SolidBrush(Color.FromArgb(255, 230, 110)))
+                {
+                    g.DrawString(status, statusFont, b1, langInfoRect.X + 8, langInfoRect.Y + 4);
+                }
+
+                // Desenha barra de progresso estilizada em pedra
+                int barX = langInfoRect.X + 8;
+                int barY = langInfoRect.Y + 23;
+                int barW = langInfoRect.Width - 16;
+                int barH = 14;
+
+                using (SolidBrush barBg = new SolidBrush(Color.FromArgb(20, 15, 10)))
+                using (Pen barBorder = new Pen(Color.FromArgb(70, 55, 35), 1))
+                {
+                    g.FillRectangle(barBg, barX, barY, barW, barH);
+                    g.DrawRectangle(barBorder, barX, barY, barW, barH);
+                }
+
+                if (pct > 0)
+                {
+                    int fillW = (int)((barW - 2) * (Math.Min(pct, 100) / 100.0));
+                    if (fillW > 0)
+                    {
+                        using (SolidBrush fillB = new SolidBrush(Color.FromArgb(60, 190, 70)))
+                        {
+                            g.FillRectangle(fillB, barX + 1, barY + 1, fillW, barH - 2);
+                        }
+                    }
+                }
+
+                using (Brush b2 = new SolidBrush(Color.FromArgb(240, 230, 200)))
+                {
+                    SizeF s = g.MeasureString(details, detailFont);
+                    g.DrawString(details, detailFont, b2, barX + barW - s.Width - 4, barY + 1);
+                }
+                return;
+            }
+
+            // Modo normal: Detalhes do idioma
             ModEntry current = (selectedIndex >= 0 && selectedIndex < mods.Count) ? mods[selectedIndex] : null;
             LanguageOption curLang = current != null ? LanguageManager.GetCurrentLanguage(current.Id) : new LanguageOption { Code = "pt-BR", DisplayName = "Português (Brasil)", Description = "Tradução comunitária ativa." };
 
@@ -385,9 +486,6 @@ namespace PvZLauncher
 
         private void Draw9SliceDialog(Graphics g, int x, int y, int w, int h)
         {
-            // Exact dimensions from asset inspection:
-            // TopLeft: 107x97, TopRight: 120x97
-            // BottomLeft: 107x114, BottomRight: 120x114
             int leftW = 107;
             int rightW = 120;
             int topH = 97;
@@ -421,12 +519,10 @@ namespace PvZLauncher
             bool isPressed = (pressedButton == r);
             bool isHovered = (hoveredButton == r);
 
-            // Draw button background textures
             g.DrawImage(bmpBtnLeft, r.X, r.Y, lw, r.Height);
             g.DrawImage(bmpBtnMiddle, new Rectangle(r.X + lw, r.Y, mw, r.Height));
             g.DrawImage(bmpBtnRight, r.X + lw + mw, r.Y, rw, r.Height);
 
-            // Highlight glow on hover
             if (isHovered && !isPressed)
             {
                 using (SolidBrush hovGlow = new SolidBrush(Color.FromArgb(40, 255, 255, 200)))
@@ -457,7 +553,6 @@ namespace PvZLauncher
                 g.DrawRectangle(p, statusBarRect);
             }
 
-            // Anti-aliased glowing green LED dot
             int ledX = statusBarRect.X + 12;
             int ledY = statusBarRect.Y + 12;
             using (Brush ledGlow = new SolidBrush(Color.FromArgb(80, 230, 80)))
@@ -487,7 +582,6 @@ namespace PvZLauncher
         {
             base.OnMouseDown(e);
 
-            // Drag window on header area
             if (e.Button == MouseButtons.Left && e.Y < 80)
             {
                 isDragging = true;
@@ -496,7 +590,6 @@ namespace PvZLauncher
                 return;
             }
 
-            // Click list items
             if (listRect.Contains(e.Location))
             {
                 int itemHeight = listRect.Height / Math.Max(mods.Count, 1);
@@ -509,7 +602,6 @@ namespace PvZLauncher
                 return;
             }
 
-            // Button pressed visual state
             if (btnPlayRect.Contains(e.Location)) { pressedButton = btnPlayRect; this.Invalidate(); }
             else if (btnLangRect.Contains(e.Location)) { pressedButton = btnLangRect; this.Invalidate(); }
             else if (btnActionRect.Contains(e.Location)) { pressedButton = btnActionRect; this.Invalidate(); }
@@ -527,7 +619,6 @@ namespace PvZLauncher
                 return;
             }
 
-            // Check list item hovering
             int oldHover = hoveredIndex;
             if (listRect.Contains(e.Location))
             {
@@ -540,7 +631,6 @@ namespace PvZLauncher
                 hoveredIndex = -1;
             }
 
-            // Check button hovering
             Rectangle oldBtnHover = hoveredButton;
             if (btnPlayRect.Contains(e.Location)) hoveredButton = btnPlayRect;
             else if (btnLangRect.Contains(e.Location)) hoveredButton = btnLangRect;
@@ -567,7 +657,7 @@ namespace PvZLauncher
 
             if (wasPressed == btnPlayRect && btnPlayRect.Contains(e.Location))
             {
-                LaunchSelectedMod();
+                LaunchOrInstallSelectedMod();
             }
             else if (wasPressed == btnLangRect && btnLangRect.Contains(e.Location))
             {
@@ -599,33 +689,33 @@ namespace PvZLauncher
             this.Invalidate();
         }
 
-        private void LaunchSelectedMod()
+        private void LaunchOrInstallSelectedMod()
         {
             if (selectedIndex < 0 || selectedIndex >= mods.Count) return;
             ModEntry mod = mods[selectedIndex];
 
+            // 1. Se NÃO estiver instalado, baixa e instala de forma 100% autônoma!
             if (!mod.IsInstalled)
             {
-                ActionSelectedMod();
+                if (DownloaderManager.IsDownloading) return;
+                DownloaderManager.DownloadAndInstallMod(mod);
+                this.Invalidate();
                 return;
             }
 
+            // 2. Se já estiver instalado, executa o jogo
             try
             {
-                // 1. Aplica o idioma selecionado (injeta ou remove LawnStrings.txt)
                 LanguageManager.ApplyLanguageForMod(mod);
                 LanguageOption lang = LanguageManager.GetCurrentLanguage(mod.Id);
 
-                // 2. Prepara e isola os saves
                 SaveManager.PrepareSavesForMod(mod.Id);
 
-                // 3. Esconde o launcher e ativa o tray icon
                 this.Hide();
                 trayIcon.Visible = true;
                 string balloonMsg = string.Format("Rodando {0} [{1}].\nHoras da Steam contabilizando!", mod.Title, lang.DisplayName);
                 trayIcon.ShowBalloonTip(3000, "Plants vs. Zombies", balloonMsg, ToolTipIcon.Info);
 
-                // 4. Inicia o processo do mod
                 ProcessStartInfo psi = new ProcessStartInfo();
                 psi.FileName = mod.ExecutablePath;
                 psi.WorkingDirectory = Path.GetDirectoryName(mod.ExecutablePath);
@@ -636,10 +726,8 @@ namespace PvZLauncher
                     gameProc.WaitForExit();
                 }
 
-                // 5. Jogo fechou: sincroniza os saves de volta
                 SaveManager.SyncSavesAfterModExit(mod.Id);
 
-                // 6. Encerra o launcher
                 trayIcon.Visible = false;
                 Application.Exit();
             }
@@ -658,6 +746,7 @@ namespace PvZLauncher
 
             if (mod.IsInstalled)
             {
+                // Se instalado, abre pasta no Windows Explorer
                 try
                 {
                     string folder = Path.GetDirectoryName(mod.ExecutablePath);
@@ -667,13 +756,11 @@ namespace PvZLauncher
             }
             else
             {
-                if (!string.IsNullOrEmpty(mod.DownloadUrl))
+                // Se não instalado, baixa autonomamente também!
+                if (!DownloaderManager.IsDownloading)
                 {
-                    try
-                    {
-                        Process.Start(mod.DownloadUrl);
-                    }
-                    catch { }
+                    DownloaderManager.DownloadAndInstallMod(mod);
+                    this.Invalidate();
                 }
             }
         }

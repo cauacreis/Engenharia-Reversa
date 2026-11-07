@@ -37,8 +37,9 @@ namespace PvZLauncher
             });
 
             // 2. PVZ DLC EDITION
-            string dlcPath = Path.Combine(Path.Combine(ModsBaseDir, "DLC_Edition"), "PlantsVsZombies_DLC.exe");
-            if (!File.Exists(dlcPath))
+            string dlcDir = Path.Combine(ModsBaseDir, "DLC_Edition");
+            string dlcPath = DownloaderManager.FindModExecutable(dlcDir, "dlc_edition");
+            if (string.IsNullOrEmpty(dlcPath) || !File.Exists(dlcPath))
             {
                 string rootDlc = Path.Combine(AppDir, "PlantsVsZombies_DLC.exe");
                 if (File.Exists(rootDlc)) dlcPath = rootDlc;
@@ -58,49 +59,55 @@ namespace PvZLauncher
                 ThemeKey = "dlc"
             });
 
-            // 3. PVZ COMMUNITY EDITION (Widescreen 16:9 + 60fps)
-            string cePath = Path.Combine(Path.Combine(ModsBaseDir, "Community_Edition"), "PvZ_CE.exe");
+            // 3. PVZ WIDESCREEN / COMMUNITY EDITION (16:9 60FPS)
+            string wsDir = Path.Combine(ModsBaseDir, "Widescreen_Edition");
+            string wsPath = DownloaderManager.FindModExecutable(wsDir, "community_edition");
+
             mods.Add(new ModEntry
             {
                 Id = "community_edition",
-                Title = "Plants vs. Zombies: Community Edition",
-                Description = "Mod open-source que adiciona suporte nativo a monitores 16:9 Widescreen e 60 FPS fluidos.",
-                ExecutablePath = cePath,
-                DownloadUrl = "https://github.com/PvZ-Community-Edition/PvZ-Community-Edition/releases",
-                Version = "1.1.0",
-                LatestVersion = "1.1.0",
+                Title = "Plants vs. Zombies: Widescreen (16:9 60FPS)",
+                Description = "Mod oficial que adiciona suporte nativo a 16:9 Widescreen e 60 FPS com motor PopCap otimizado.",
+                ExecutablePath = wsPath,
+                DownloadUrl = "https://github.com/HenryJk/PvZWidescreen/releases/download/v1.1.2/PvZWidescreen_1.1.2.zip",
+                Version = "1.1.2",
+                LatestVersion = "1.1.2",
                 SupportsSteamAchievements = true,
                 IsCustomEngine = false,
                 ThemeKey = "trophy"
             });
 
-            // 4. PVZ HYBRID EDITION (杂交版)
-            string hybridPath = Path.Combine(Path.Combine(ModsBaseDir, "Hybrid_Edition"), "PlantsVsZombies_Hybrid.exe");
+            // 4. PVZ HYBRID EDITION (杂交版 v2.6.1)
+            string hybridDir = Path.Combine(ModsBaseDir, "Hybrid_Edition");
+            string hybridPath = DownloaderManager.FindModExecutable(hybridDir, "hybrid");
+
             mods.Add(new ModEntry
             {
                 Id = "hybrid",
                 Title = "Plants vs. Zombies: Hybrid Edition (杂交版)",
                 Description = "Fenômeno global criado por SubmarineWeizei com cruzamento de plantas e poderes combinados.",
                 ExecutablePath = hybridPath,
-                DownloadUrl = "https://github.com/SubmarineWeizei/PvZ_Hybrid/releases",
-                Version = "2.6.0",
-                LatestVersion = "2.6.0",
+                DownloadUrl = "https://github.com/nextisme/Plants.vs.Zombies-hybrid/releases/download/PvZ-hybrid-2.6.1/v.2.6.1.zip",
+                Version = "2.6.1",
+                LatestVersion = "2.6.1",
                 SupportsSteamAchievements = false,
                 IsCustomEngine = true,
                 ThemeKey = "hybrid"
             });
 
-            // 5. PVZ FUSION EDITION (融合版)
-            string fusionPath = Path.Combine(Path.Combine(ModsBaseDir, "Fusion_Edition"), "PlantsVsZombies_Fusion.exe");
+            // 5. PVZ FUSION EDITION (融合版 Multi-lang v4.0.5)
+            string fusionDir = Path.Combine(ModsBaseDir, "Fusion_Edition");
+            string fusionPath = DownloaderManager.FindModExecutable(fusionDir, "fusion");
+
             mods.Add(new ModEntry
             {
                 Id = "fusion",
                 Title = "Plants vs. Zombies: Fusion Edition (融合版)",
                 Description = "Mod sensação de Lan Pao Pao permitindo fundir qualquer planta em tempo real no gramado.",
                 ExecutablePath = fusionPath,
-                DownloadUrl = "https://github.com/LanPaoPao/PvZ_Fusion/releases",
-                Version = "2.1.4",
-                LatestVersion = "2.1.4",
+                DownloadUrl = "https://github.com/Teyliu/PVZF-Translation/releases/download/4.0.5_alpha/PvZ.Fusion.Multi-lang.4.0.5.2.Alpha.by.Blooms.zip",
+                Version = "4.0.5",
+                LatestVersion = "4.0.5",
                 SupportsSteamAchievements = false,
                 IsCustomEngine = true,
                 ThemeKey = "fusion"

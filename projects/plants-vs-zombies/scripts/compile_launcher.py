@@ -11,6 +11,7 @@ def compile_launcher():
         os.path.join(src_dir, "ModEntry.cs"),
         os.path.join(src_dir, "ModManager.cs"),
         os.path.join(src_dir, "LanguageManager.cs"),
+        os.path.join(src_dir, "DownloaderManager.cs"),
         os.path.join(src_dir, "SaveManager.cs"),
         os.path.join(src_dir, "PvZResources.cs"),
         os.path.join(src_dir, "PvZLauncherForm.cs"),
@@ -30,6 +31,8 @@ def compile_launcher():
         "/reference:System.Core.dll",
         "/reference:System.Drawing.dll",
         "/reference:System.Windows.Forms.dll",
+        "/reference:System.IO.Compression.FileSystem.dll",
+        "/reference:System.IO.Compression.dll",
     ] + icon_arg + cs_files
     
     print("Compiling PvZ Multi-Mod Launcher...")

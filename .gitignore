@@ -20,6 +20,8 @@ extracted_bin/
 pvz_mod/
 pvz_launcher_assets/
 bepinex_x64.zip
+LauncherData/
+**/LauncherData/
 
 # Dados de save e perfis pessoais de jogadores (Proteção de privacidade)
 userdata/

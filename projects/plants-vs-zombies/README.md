@@ -26,15 +26,20 @@ Subprojeto dedicado à engenharia reversa do executável original PopCap (`Plant
      - **Chinês Original 🇨🇳 & Traduções Fan (Hybrid / Fusion):** Gerenciamento e aplicação de patches comunitários de tradução.
    - Botão interativo `IDIOMA (PT-BR)` na interface que alterna o idioma com feedback visual instantâneo e persistência em `LauncherData/config.ini`.
 
-5. **Gerenciamento e Download Sob Demanda:**
-   - Catálogo integrado com suporte a Vanilla GOTY, DLC Edition, Community Edition, Hybrid Edition e Fusion Edition.
-   - Verificação automática de atualizações e download direto das fontes oficiais.
+5. **Download & Instalação 100% Autônoma (Zero Navegador / Zero 404):**
+   - Ao clicar em `INSTALAR` ou `BAIXAR`, o launcher **não abre o navegador**.
+   - O download ocorre em background diretamente das fontes oficiais do GitHub e repositórios da comunidade.
+   - Barra de progresso dinâmica em tempo real (MB baixados e porcentagem) integrada à interface de pedra.
+   - Descompactação automática de pacotes ZIP para `LauncherData/Mods/<ModId>/`.
+   - Auto-descoberta do executável do mod e vinculação instantânea.
+   - O botão muda automaticamente para `JOGAR` assim que a instalação é finalizada.
 
 ## Estrutura do Subprojeto
 
 - `src/PvZLauncher/`: Código-fonte completo em C# (.NET 4.0 / WinForms):
   - `ModEntry.cs`: Definição de metadados, links de download, flags e chaves temáticas.
   - `ModManager.cs`: Catálogo dos principais mods confiáveis da comunidade.
+  - `DownloaderManager.cs`: Motor de download assíncrono, descompactação autônoma e auto-detecção de executáveis.
   - `LanguageManager.cs`: Motor de tradução dinâmica, injeção de `LawnStrings.txt` e persistência de idioma.
   - `SaveManager.cs`: Sistema de sincronização bidirecional, sandboxing e backups.
   - `PvZResources.cs`: Texturas autênticas de pedra e botões incorporadas.
