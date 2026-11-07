@@ -14,6 +14,7 @@ namespace PvZLauncher
         public string LatestVersion { get; set; }
         public bool SupportsSteamAchievements { get; set; }
         public bool IsCustomEngine { get; set; }
+        public string ThemeKey { get; set; } // "sun", "dlc", "trophy", "hybrid", "fusion"
 
         public bool IsInstalled
         {

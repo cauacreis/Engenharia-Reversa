@@ -10,6 +10,7 @@ def compile_launcher():
     cs_files = [
         os.path.join(src_dir, "ModEntry.cs"),
         os.path.join(src_dir, "ModManager.cs"),
+        os.path.join(src_dir, "LanguageManager.cs"),
         os.path.join(src_dir, "SaveManager.cs"),
         os.path.join(src_dir, "PvZResources.cs"),
         os.path.join(src_dir, "PvZLauncherForm.cs"),

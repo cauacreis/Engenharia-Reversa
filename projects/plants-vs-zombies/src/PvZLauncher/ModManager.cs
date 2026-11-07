@@ -19,7 +19,6 @@ namespace PvZLauncher
             string vanillaPath = Path.Combine(AppDir, "PlantsVsZombies_ORIGINAL_BACKUP.exe");
             if (!File.Exists(vanillaPath))
             {
-                // Fallback check
                 string fallback = Path.Combine(AppDir, "PlantsVsZombies_vanilla.exe");
                 if (File.Exists(fallback)) vanillaPath = fallback;
             }
@@ -27,13 +26,14 @@ namespace PvZLauncher
             mods.Add(new ModEntry
             {
                 Id = "vanilla",
-                Title = "🌻 Plants vs. Zombies (Original Steam GOTY)",
-                Description = "Versão clássica pura de 2009. Total compatibilidade com conquistas da Steam e sincronização na nuvem.",
+                Title = "Plants vs. Zombies (Steam GOTY)",
+                Description = "Versão clássica pura de 2009. Total compatibilidade com conquistas da Steam e nuvem.",
                 ExecutablePath = vanillaPath,
                 Version = "1.2.0",
                 LatestVersion = "1.2.0",
                 SupportsSteamAchievements = true,
-                IsCustomEngine = false
+                IsCustomEngine = false,
+                ThemeKey = "sun"
             });
 
             // 2. PVZ DLC EDITION
@@ -47,14 +47,15 @@ namespace PvZLauncher
             mods.Add(new ModEntry
             {
                 Id = "dlc_edition",
-                Title = "🧟 Plants vs. Zombies: DLC Edition (v2.7.2)",
-                Description = "Aclamada expansão oficial da comunidade GameJolt. Novos mundos, novas plantas, minigames e zumbis inéditos.",
+                Title = "Plants vs. Zombies: DLC Edition (v2.7.2)",
+                Description = "Aclamada expansão oficial da comunidade GameJolt. Novos mundos, plantas e zumbis inéditos.",
                 ExecutablePath = dlcPath,
                 DownloadUrl = "https://gamejolt.com/games/pvzdlceditionmod/1009738",
                 Version = "2.7.2",
                 LatestVersion = "2.7.2",
                 SupportsSteamAchievements = true,
-                IsCustomEngine = false
+                IsCustomEngine = false,
+                ThemeKey = "dlc"
             });
 
             // 3. PVZ COMMUNITY EDITION (Widescreen 16:9 + 60fps)
@@ -62,14 +63,15 @@ namespace PvZLauncher
             mods.Add(new ModEntry
             {
                 Id = "community_edition",
-                Title = "🏆 Plants vs. Zombies: Community Edition (16:9 60FPS)",
-                Description = "Mod open-source que adiciona suporte nativo a monitores 16:9 Widescreen, 60 FPS fluidos e correções de bugs da engine.",
+                Title = "Plants vs. Zombies: Community Edition",
+                Description = "Mod open-source que adiciona suporte nativo a monitores 16:9 Widescreen e 60 FPS fluidos.",
                 ExecutablePath = cePath,
                 DownloadUrl = "https://github.com/PvZ-Community-Edition/PvZ-Community-Edition/releases",
                 Version = "1.1.0",
                 LatestVersion = "1.1.0",
                 SupportsSteamAchievements = true,
-                IsCustomEngine = false
+                IsCustomEngine = false,
+                ThemeKey = "trophy"
             });
 
             // 4. PVZ HYBRID EDITION (杂交版)
@@ -77,14 +79,15 @@ namespace PvZLauncher
             mods.Add(new ModEntry
             {
                 Id = "hybrid",
-                Title = "🧬 Plants vs. Zombies: Hybrid Edition (杂交版)",
-                Description = "Fenômeno global criado por SubmarineWeizei. Permite plantas híbridas com poderes cruzados simultâneos.",
+                Title = "Plants vs. Zombies: Hybrid Edition (杂交版)",
+                Description = "Fenômeno global criado por SubmarineWeizei com cruzamento de plantas e poderes combinados.",
                 ExecutablePath = hybridPath,
                 DownloadUrl = "https://github.com/SubmarineWeizei/PvZ_Hybrid/releases",
                 Version = "2.6.0",
                 LatestVersion = "2.6.0",
                 SupportsSteamAchievements = false,
-                IsCustomEngine = true
+                IsCustomEngine = true,
+                ThemeKey = "hybrid"
             });
 
             // 5. PVZ FUSION EDITION (融合版)
@@ -92,14 +95,15 @@ namespace PvZLauncher
             mods.Add(new ModEntry
             {
                 Id = "fusion",
-                Title = "⚡ Plants vs. Zombies: Fusion Edition (融合版)",
-                Description = "Mod sensação de Lan Pao Pao. Permite fundir qualquer planta diretamente no gramado em tempo real durante a batalha.",
+                Title = "Plants vs. Zombies: Fusion Edition (融合版)",
+                Description = "Mod sensação de Lan Pao Pao permitindo fundir qualquer planta em tempo real no gramado.",
                 ExecutablePath = fusionPath,
                 DownloadUrl = "https://github.com/LanPaoPao/PvZ_Fusion/releases",
                 Version = "2.1.4",
                 LatestVersion = "2.1.4",
                 SupportsSteamAchievements = false,
-                IsCustomEngine = true
+                IsCustomEngine = true,
+                ThemeKey = "fusion"
             });
 
             return mods;

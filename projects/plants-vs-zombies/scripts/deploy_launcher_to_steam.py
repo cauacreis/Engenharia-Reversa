@@ -40,7 +40,16 @@ target_launcher = os.path.join(steam_pvz, "PlantsVsZombies.exe")
 print(f"Deploying compiled launcher to {target_launcher}...")
 shutil.copy2(launcher_src, target_launcher)
 
-# 5. Ensure steam_appid.txt
+# 5. Ensure Languages directory and PT-BR strings
+lang_target_dir = os.path.join(steam_pvz, "LauncherData", "Languages", "pt-BR")
+os.makedirs(lang_target_dir, exist_ok=True)
+ptbr_src = os.path.join(subproject_dir, "src", "PvZLauncher", "Languages", "pt-BR", "LawnStrings.txt")
+if os.path.exists(ptbr_src):
+    ptbr_dest = os.path.join(lang_target_dir, "LawnStrings.txt")
+    print(f"Deploying PT-BR language pack to {ptbr_dest}...")
+    shutil.copy2(ptbr_src, ptbr_dest)
+
+# 6. Ensure steam_appid.txt
 appid_file = os.path.join(steam_pvz, "steam_appid.txt")
 with open(appid_file, "w") as f:
     f.write("3590")
