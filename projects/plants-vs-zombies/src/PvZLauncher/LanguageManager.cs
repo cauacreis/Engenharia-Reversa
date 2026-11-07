@@ -242,6 +242,48 @@ namespace PvZLauncher
                     string localDevEng = Path.Combine(AppDir, @"projects\plants-vs-zombies\src\PvZLauncher\Languages\en-US\LawnStrings_hybrid.txt");
                     if (File.Exists(localDevEng)) try { File.Copy(localDevEng, enUsHybrid, true); } catch { }
                 }
+
+                // Pré-popula traduções e steam_appid.txt nos mods já existentes
+                string modsDir = Path.Combine(Path.Combine(AppDir, "LauncherData"), "Mods");
+                if (Directory.Exists(modsDir))
+                {
+                    // 1. DLC Edition
+                    string dlcProp = Path.Combine(Path.Combine(modsDir, "DLC_Edition"), "properties");
+                    if (Directory.Exists(Path.Combine(modsDir, "DLC_Edition")))
+                    {
+                        if (!Directory.Exists(dlcProp)) Directory.CreateDirectory(dlcProp);
+                        string dlcLawn = Path.Combine(dlcProp, "LawnStrings.txt");
+                        if (!File.Exists(dlcLawn) && File.Exists(ptBrTarget)) File.Copy(ptBrTarget, dlcLawn, true);
+                        try { File.WriteAllText(Path.Combine(Path.Combine(modsDir, "DLC_Edition"), "steam_appid.txt"), "3590\n"); } catch { }
+                    }
+
+                    // 2. Widescreen Edition
+                    string wsBase = Path.Combine(modsDir, "Widescreen_Edition");
+                    if (Directory.Exists(wsBase))
+                    {
+                        string[] wsExes = Directory.GetFiles(wsBase, "pvz_widescreen.exe", SearchOption.AllDirectories);
+                        if (wsExes.Length > 0)
+                        {
+                            string wsDir = Path.GetDirectoryName(wsExes[0]);
+                            string wsProp = Path.Combine(wsDir, "properties");
+                            if (!Directory.Exists(wsProp)) Directory.CreateDirectory(wsProp);
+                            string wsLawn = Path.Combine(wsProp, "LawnStrings.txt");
+                            if (!File.Exists(wsLawn) && File.Exists(ptBrTarget)) File.Copy(ptBrTarget, wsLawn, true);
+                            try { File.WriteAllText(Path.Combine(wsDir, "steam_appid.txt"), "3590\n"); } catch { }
+                        }
+                    }
+
+                    // 3. Hybrid Edition
+                    string hybridGame = Path.Combine(Path.Combine(modsDir, "Hybrid_Edition"), "Game");
+                    if (Directory.Exists(hybridGame))
+                    {
+                        string hyProp = Path.Combine(hybridGame, "properties");
+                        if (!Directory.Exists(hyProp)) Directory.CreateDirectory(hyProp);
+                        string hyLawn = Path.Combine(hyProp, "LawnStrings.txt");
+                        if (!File.Exists(hyLawn) && File.Exists(ptBrHybrid)) File.Copy(ptBrHybrid, hyLawn, true);
+                        try { File.WriteAllText(Path.Combine(hybridGame, "steam_appid.txt"), "3590\n"); } catch { }
+                    }
+                }
             }
             catch { }
         }

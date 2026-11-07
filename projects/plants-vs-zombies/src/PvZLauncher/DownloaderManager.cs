@@ -350,14 +350,29 @@ namespace PvZLauncher
                 if (candidates.Length > 0) return candidates[0];
             }
 
+            if (modId == "fusion")
+            {
+                string[] candidates = Directory.GetFiles(folder, "PlantsVsZombiesRH.exe", SearchOption.AllDirectories);
+                if (candidates.Length > 0) return candidates[0];
+            }
+
+            if (modId == "pvz2_tat")
+            {
+                string[] candidates = Directory.GetFiles(folder, "*tat*.exe", SearchOption.AllDirectories);
+                if (candidates.Length > 0) return candidates[0];
+            }
+
             string[] preferred = new string[] {
                 "pvz_widescreen.exe",
                 "PlantsVsZombies_DLC.exe",
                 "PlantsVsZombies_Hybrid.exe",
+                "PlantsVsZombiesRH.exe",
                 "PlantsVsZombies_Fusion.exe",
+                "PvZ_Fusion.exe",
                 "PvZ2.exe",
                 "PlantsVsZombies2.exe",
                 "PlantsVsZombies2_TAT.exe",
+                "pvz2tat.exe",
                 "pvz2_pc.exe",
                 "PlantsVsZombies.exe",
                 "pvzHE-Launcher.exe",

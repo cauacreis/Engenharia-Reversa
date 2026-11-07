@@ -1452,6 +1452,7 @@ namespace PvZLauncher
 
                     string[] candidateNames = new string[] {
                         "PlantsVsZombies",
+                        "PlantsVsZombiesRH",
                         "PlantsVsZombies_ORIGINAL_BACKUP",
                         "PlantsVsZombies_vanilla",
                         "PlantsVsZombies_DLC",
@@ -1459,9 +1460,11 @@ namespace PvZLauncher
                         "PlantsVsZombies_Hybrid",
                         "pvzHE-Launcher",
                         "PlantsVsZombies_Fusion",
+                        "PvZ_Fusion",
                         "PvZ2",
                         "PlantsVsZombies2",
                         "PlantsVsZombies2_TAT",
+                        "pvz2tat",
                         "popcapgame1",
                         "dnplayer",
                         "HD-Player",
