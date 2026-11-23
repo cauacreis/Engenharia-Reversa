@@ -1,0 +1,30 @@
+{
+  "name": "saneago-quest",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Aplicação web gamificada estilo Duolingo para revisão intensiva do Processo Seletivo de Estágio SANEAGO (Edital 001/2026 - Banca Universidade Patativa do Assaré).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "validate:questions": "tsx scripts/validateQuestions.ts"
+  },
+  "dependencies": {
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}

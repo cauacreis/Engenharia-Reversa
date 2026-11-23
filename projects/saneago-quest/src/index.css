@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-abyss: #0B1117;
+  --bg-surface: #131C26;
+  --bg-elevated: #1D2A38;
+  --border-subtle: #28384A;
+  --text-primary: #E8F1F8;
+  --text-secondary: #92A8BE;
+  --unit-portugues: #58CC02;
+  --unit-matematica: #FF9600;
+  --unit-informatica: #00B8FF;
+  --unit-saneago: #14B8A6;
+}
+
+@layer base {
+  html {
+    background-color: var(--bg-abyss);
+    color: var(--text-primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 12% 8%, rgba(0, 184, 255, 0.08), transparent 36%),
+      radial-gradient(circle at 88% 24%, rgba(20, 184, 166, 0.08), transparent 38%),
+      radial-gradient(circle at 50% 90%, rgba(88, 204, 2, 0.06), transparent 40%);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+  }
+
+  code, pre, kbd {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #00B8FF;
+    outline-offset: 2px;
+  }
+}
+
+/* Custom dark scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #28384A;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #384E66;
+}
+
+/* Subtle hydro grid texture for hero panels */
+.hydro-grid-bg {
+  background-image:
+    linear-gradient(to right, rgba(40, 56, 74, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(40, 56, 74, 0.25) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(1.16);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.16);
+    opacity: 0;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 2.1s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
