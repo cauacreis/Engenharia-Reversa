@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { Check, Lock, Play, Sparkles, Star, Trophy } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { LessonMeta, UnitId, UnitMeta } from '../../types/quiz';
 import { TactileButton } from '../ui/TactileButton';
 
@@ -10,7 +11,7 @@ interface WindingPathProps {
   isLessonCompleted: (lessonId: string) => boolean;
   getLessonBestAccuracy: (lessonId: string) => number | undefined;
   simuladoUnlocked: boolean;
-  onSelectLesson: (lesson: LessonMeta) => void;
+  onSelectLesson: (lesson: LessonMeta, options?: { forceBriefing?: boolean }) => void;
   onStartSimulado: (unitId: UnitId) => void;
   onGenerateUnitAI: (unitId: UnitId) => void;
 }
@@ -35,7 +36,36 @@ export function WindingPath({
   onStartSimulado,
   onGenerateUnitAI,
 }: WindingPathProps) {
-  const totalNodes = lessons.length + 1; // 3 lições + 1 troféu simulado
+  const [openTooltipId, setOpenTooltipId] = useState<string | null>(null);
+  const pathRootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openTooltipId) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        pathRootRef.current &&
+        !pathRootRef.current.contains(event.target as Node)
+      ) {
+        setOpenTooltipId(null);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenTooltipId(null);
+      }
+    };
+
+    window.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [openTooltipId]);
+
+  const totalNodes = lessons.length + 1; // 4 lições + 1 troféu simulado
   const rowHeight = 112;
   const centerX = 160;
   const svgHeight = totalNodes * rowHeight;
@@ -50,7 +80,10 @@ export function WindingPath({
   )?.id;
 
   return (
-    <div className="relative mx-auto w-full max-w-[340px] py-4 select-none">
+    <div
+      ref={pathRootRef}
+      className="relative mx-auto w-full max-w-[340px] py-4 select-none"
+    >
       {/* Conector sinuoso SVG por trás dos nós */}
       <svg
         viewBox={`0 0 320 ${svgHeight}`}
@@ -95,14 +128,17 @@ export function WindingPath({
           const isCurrent = lesson.id === firstPlayableLessonId;
           const bestAccuracy = getLessonBestAccuracy(lesson.id);
           const offsetX = getSinOffset(idx);
+          const isTooltipOpen = openTooltipId === lesson.id;
 
           return (
             <div
               key={lesson.id}
               style={{ height: `${rowHeight}px`, transform: `translateX(${offsetX}px)` }}
-              className="relative flex flex-col items-center justify-center"
+              className={`relative flex flex-col items-center justify-center ${
+                isTooltipOpen ? 'z-30' : 'z-10'
+              }`}
             >
-              {isCurrent && (
+              {isCurrent && !isTooltipOpen && (
                 <motion.div
                   initial={{ y: -4, opacity: 0 }}
                   animate={{ y: [0, -5, 0], opacity: 1 }}
@@ -125,12 +161,17 @@ export function WindingPath({
                 <button
                   type="button"
                   disabled={!unlocked}
-                  onClick={() => onSelectLesson(lesson)}
+                  onClick={() =>
+                    setOpenTooltipId((prev) =>
+                      prev === lesson.id ? null : lesson.id
+                    )
+                  }
+                  aria-expanded={isTooltipOpen}
                   aria-label={`${lesson.title} (${completed ? 'Concluída' : unlocked ? 'Disponível' : 'Bloqueada'})`}
                   style={
                     unlocked
                       ? {
-                          backgroundColor: completed ? unit.accentColor : unit.accentColor,
+                          backgroundColor: unit.accentColor,
                           borderColor: unit.shadeColor,
                           color: '#071520',
                         }
@@ -167,6 +208,86 @@ export function WindingPath({
                 >
                   {lesson.order}. {lesson.title}
                 </p>
+              </div>
+
+              {/* Tooltip / Popover estilo Duolingo com escolha entre Praticar ou Estudar Teoria */}
+              <div
+                style={{ left: `calc(50% - ${offsetX}px)` }}
+                className="pointer-events-none absolute top-[112px] z-40 w-[280px] sm:w-[300px] -translate-x-1/2"
+              >
+                <AnimatePresence>
+                  {isTooltipOpen && unlocked && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.96 }}
+                      transition={{ type: 'spring', stiffness: 360, damping: 28 }}
+                      style={{ borderColor: `${unit.accentColor}88` }}
+                      className="pointer-events-auto relative rounded-2xl border-2 bg-[#131C26] p-4 shadow-[0_14px_34px_rgba(0,0,0,0.65)] space-y-3 text-left"
+                    >
+                      <span
+                        style={{
+                          left: `calc(50% + ${offsetX}px)`,
+                          borderColor: `${unit.accentColor}88`,
+                        }}
+                        className="absolute -top-2 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border-l-2 border-t-2 bg-[#131C26]"
+                      />
+
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="space-y-0.5 min-w-0">
+                          <p
+                            className="font-display text-[11px] font-extrabold uppercase tracking-wider"
+                            style={{ color: unit.accentColor }}
+                          >
+                            Lição {lesson.order}
+                          </p>
+                          <h4 className="font-display text-sm font-extrabold text-[#E8F1F8] leading-snug">
+                            {lesson.title}
+                          </h4>
+                        </div>
+                        <span className="shrink-0 rounded-lg bg-[#FFC800]/15 border border-[#FFC800]/40 px-2 py-0.5 font-mono text-[11px] font-bold text-[#FFC800]">
+                          +{lesson.xpReward} XP
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-[#92A8BE] leading-relaxed">
+                        {lesson.subtitle}
+                      </p>
+
+                      <div className="space-y-2 pt-0.5">
+                        <TactileButton
+                          size="sm"
+                          fullWidth
+                          customBg={unit.accentColor}
+                          customShade={unit.shadeColor}
+                          customText="#071520"
+                          onClick={() => {
+                            setOpenTooltipId(null);
+                            onSelectLesson(lesson, { forceBriefing: false });
+                          }}
+                        >
+                          <Play className="h-3.5 w-3.5 fill-current" />
+                          <span>
+                            {completed ? 'Praticar Novamente' : 'Começar Lição'}
+                          </span>
+                        </TactileButton>
+
+                        <TactileButton
+                          size="sm"
+                          variant="outline"
+                          fullWidth
+                          onClick={() => {
+                            setOpenTooltipId(null);
+                            onSelectLesson(lesson, { forceBriefing: true });
+                          }}
+                        >
+                          <span aria-hidden="true">📖</span>
+                          <span>Estudar Teoria Primeiro</span>
+                        </TactileButton>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
           );

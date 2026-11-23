@@ -7,6 +7,7 @@ interface UnitBannerProps {
   completedLessonsCount: number;
   simuladoUnlocked: boolean;
   onStartSimulado: (unitId: UnitId) => void;
+  onOpenGuide: (unitId: UnitId) => void;
 }
 
 const UNIT_ICONS: Record<UnitId, typeof BookOpen> = {
@@ -21,6 +22,7 @@ export function UnitBanner({
   completedLessonsCount,
   simuladoUnlocked,
   onStartSimulado,
+  onOpenGuide,
 }: UnitBannerProps) {
   const Icon = UNIT_ICONS[unit.id];
   const percent = Math.round((completedLessonsCount / unit.lessonCount) * 100);
@@ -71,30 +73,43 @@ export function UnitBanner({
             <span style={{ color: unit.accentColor }}>{percent}%</span>
           </div>
 
-          <TactileButton
-            size="sm"
-            variant={simuladoUnlocked ? 'gold' : 'outline'}
-            disabled={!simuladoUnlocked}
-            onClick={() => onStartSimulado(unit.id)}
-            title={
-              simuladoUnlocked
-                ? `Iniciar Simulado Cronometrado de ${unit.shortTitle}`
-                : `Conclua as ${unit.lessonCount} lições desta unidade para liberar`
-            }
-          >
-            {simuladoUnlocked ? (
-              <>
-                <Trophy className="h-4 w-4" />
-                <span>Simulado ({unit.simuladoDurationMinutes}m)</span>
-              </>
-            ) : (
-              <>
-                <Lock className="h-4 w-4" />
-                <Timer className="h-3.5 w-3.5" />
-                <span>Simulado bloqueado</span>
-              </>
-            )}
-          </TactileButton>
+          <div className="flex flex-wrap sm:flex-nowrap gap-2">
+            <TactileButton
+              size="sm"
+              variant="outline"
+              onClick={() => onOpenGuide(unit.id)}
+              style={{ borderColor: `${unit.accentColor}75` }}
+              title={`Abrir Guia Teórico completo de ${unit.shortTitle}`}
+            >
+              <span aria-hidden="true">📖</span>
+              <span>Guia Teórico</span>
+            </TactileButton>
+
+            <TactileButton
+              size="sm"
+              variant={simuladoUnlocked ? 'gold' : 'outline'}
+              disabled={!simuladoUnlocked}
+              onClick={() => onStartSimulado(unit.id)}
+              title={
+                simuladoUnlocked
+                  ? `Iniciar Simulado Cronometrado de ${unit.shortTitle}`
+                  : `Conclua as ${unit.lessonCount} lições desta unidade para liberar`
+              }
+            >
+              {simuladoUnlocked ? (
+                <>
+                  <Trophy className="h-4 w-4" />
+                  <span>Simulado ({unit.simuladoDurationMinutes}m)</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="h-4 w-4" />
+                  <Timer className="h-3.5 w-3.5" />
+                  <span>Simulado bloqueado</span>
+                </>
+              )}
+            </TactileButton>
+          </div>
         </div>
       </div>
     </section>

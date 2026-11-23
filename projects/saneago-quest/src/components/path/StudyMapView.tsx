@@ -10,11 +10,12 @@ import { UnitBanner } from './UnitBanner';
 import { WindingPath } from './WindingPath';
 
 interface StudyMapViewProps {
-  onStartLesson: (lesson: LessonMeta) => void;
+  onStartLesson: (lesson: LessonMeta, options?: { forceBriefing?: boolean }) => void;
   onStartUnitSimulado: (unitId: UnitId) => void;
   onStartGeneralSimulado: () => void;
   onStartMistakeReview: () => void;
   onGenerateUnitAI: (unitId: UnitId) => void;
+  onOpenUnitGuide: (unitId: UnitId) => void;
   onNavigateTab: (tab: AppTab) => void;
 }
 
@@ -30,6 +31,7 @@ export function StudyMapView({
   onStartGeneralSimulado,
   onStartMistakeReview,
   onGenerateUnitAI,
+  onOpenUnitGuide,
   onNavigateTab,
 }: StudyMapViewProps) {
   const {
@@ -131,6 +133,7 @@ export function StudyMapView({
                   completedLessonsCount={completedCount}
                   simuladoUnlocked={simuladoUnlocked}
                   onStartSimulado={onStartUnitSimulado}
+                  onOpenGuide={onOpenUnitGuide}
                 />
 
                 <WindingPath

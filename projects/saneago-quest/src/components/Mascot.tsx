@@ -1,6 +1,7 @@
+import { useId } from 'react';
 import { motion } from 'framer-motion';
 
-export type MascotMood = 'idle' | 'happy' | 'combo' | 'sad' | 'thinking';
+export type MascotMood = 'idle' | 'happy' | 'combo' | 'sad' | 'thinking' | 'teaching';
 
 interface MascotProps {
   mood?: MascotMood;
@@ -25,8 +26,14 @@ export function Mascot({
   accentColor = '#00B8FF',
   className = '',
 }: MascotProps) {
+  const uid = useId().replace(/:/g, '');
+  const bodyGradId = `pingoBodyGrad-${uid}`;
+  const helmetGradId = `pingoHelmetGrad-${uid}`;
+  const visorGradId = `pingoVisorGrad-${uid}`;
+
   const px = SIZE_MAP[size];
   const isCelebratory = mood === 'happy' || mood === 'combo';
+  const isTeaching = mood === 'teaching';
 
   const bodyAnimation =
     mood === 'combo'
@@ -37,6 +44,8 @@ export function Mascot({
       ? { y: [0, 2, 0], rotate: [0, -4, 0] }
       : mood === 'thinking'
       ? { y: [0, -3, 0], rotate: [0, 3, -3, 0] }
+      : isTeaching
+      ? { y: [0, -5, 0], rotate: [0, 2, -2, 0] }
       : { y: [0, -4, 0] };
 
   const bodyTransition =
@@ -48,6 +57,8 @@ export function Mascot({
       ? { repeat: Infinity, duration: 2.2, ease: 'easeInOut' }
       : mood === 'thinking'
       ? { repeat: Infinity, duration: 1.8, ease: 'easeInOut' }
+      : isTeaching
+      ? { repeat: Infinity, duration: 2.6, ease: 'easeInOut' }
       : { repeat: Infinity, duration: 3.1, ease: 'easeInOut' };
 
   return (
@@ -67,6 +78,8 @@ export function Mascot({
                 ? 'radial-gradient(circle, rgba(255,75,75,0.42) 0%, transparent 70%)'
                 : mood === 'combo'
                 ? 'radial-gradient(circle, rgba(255,200,0,0.48) 0%, rgba(0,184,255,0.28) 55%, transparent 75%)'
+                : isTeaching
+                ? `radial-gradient(circle, ${accentColor}66 0%, rgba(20,184,166,0.25) 60%, transparent 75%)`
                 : 'radial-gradient(circle, rgba(0,184,255,0.4) 0%, rgba(20,184,166,0.2) 60%, transparent 75%)',
           }}
         />
@@ -94,6 +107,18 @@ export function Mascot({
           </>
         )}
 
+        {/* Badge de ideia/aula no modo teaching */}
+        {isTeaching && (
+          <motion.div
+            animate={{ y: [-2, -7, -2], rotate: [-6, 6, -6], scale: [0.95, 1.08, 0.95] }}
+            transition={{ repeat: Infinity, duration: 2.1, ease: 'easeInOut' }}
+            aria-hidden="true"
+            className="absolute -top-1 -right-1 z-20 flex h-5 w-5 items-center justify-center rounded-full border border-[#FFE15A]/70 bg-[#0B1117] text-[11px] shadow-md"
+          >
+            💡
+          </motion.div>
+        )}
+
         <motion.svg
           viewBox="0 0 120 120"
           width={px}
@@ -104,17 +129,17 @@ export function Mascot({
           className="relative z-10 overflow-visible drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)]"
         >
           <defs>
-            <linearGradient id="pingoBodyGrad" x1="25%" y1="15%" x2="80%" y2="92%">
+            <linearGradient id={bodyGradId} x1="25%" y1="15%" x2="80%" y2="92%">
               <stop offset="0%" stopColor="#35D7FF" />
               <stop offset="55%" stopColor="#009DE0" />
               <stop offset="100%" stopColor="#0D7E8C" />
             </linearGradient>
-            <linearGradient id="pingoHelmetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id={helmetGradId} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFE15A" />
               <stop offset="65%" stopColor="#FFC800" />
               <stop offset="100%" stopColor="#D19D00" />
             </linearGradient>
-            <linearGradient id="pingoVisorGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id={visorGradId} x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#071926" stopOpacity="0.92" />
               <stop offset="100%" stopColor="#0E2C40" stopOpacity="0.88" />
             </linearGradient>
@@ -126,7 +151,7 @@ export function Mascot({
           {/* Corpo em formato de gota d'água */}
           <path
             d="M60 18 C75 40 94 58 94 79 C94 98 79 109 60 109 C41 109 26 98 26 79 C26 58 45 40 60 18 Z"
-            fill="url(#pingoBodyGrad)"
+            fill={`url(#${bodyGradId})`}
             stroke="#78E4FF"
             strokeWidth="2.5"
           />
@@ -146,7 +171,7 @@ export function Mascot({
             {/* Copa do capacete */}
             <path
               d="M31 44 C32 23 45 14 60 14 C75 14 88 23 89 44 Z"
-              fill="url(#pingoHelmetGrad)"
+              fill={`url(#${helmetGradId})`}
               stroke="#FFF0A6"
               strokeWidth="2"
             />
@@ -180,8 +205,8 @@ export function Mascot({
             width="54"
             height="24"
             rx="10"
-            fill="url(#pingoVisorGrad)"
-            stroke={mood === 'sad' ? '#FF5E5E' : '#00D4FF'}
+            fill={`url(#${visorGradId})`}
+            stroke={mood === 'sad' ? '#FF5E5E' : isTeaching ? accentColor : '#00D4FF'}
             strokeWidth="2"
           />
 
@@ -254,6 +279,14 @@ export function Mascot({
               x2="67"
               y2="87"
               stroke="#D6F7FF"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          ) : isTeaching ? (
+            <path
+              d="M51 86 Q60 93 69 86"
+              fill="none"
+              stroke="#E8F1F8"
               strokeWidth="3"
               strokeLinecap="round"
             />

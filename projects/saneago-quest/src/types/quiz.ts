@@ -203,3 +203,42 @@ export interface QuizSummaryData {
   timedOut?: boolean;
   reviewItems?: SimuladoReviewItem[];
 }
+
+export interface GuideKeyRule {
+  title: string;
+  mnemonic: string;
+  explanation: string;
+  formula?: string;
+}
+
+export interface GuideComparisonExample {
+  correct: string;
+  wrong: string;
+  explanation: string;
+}
+
+export interface GuideCheatSheetTable {
+  title: string;
+  headers: string[];
+  rows: string[][];
+  monoColumns?: number[];
+}
+
+export interface LessonGuide {
+  lessonId: string;
+  unitId: UnitId;
+  title: string;
+  summary: string;
+  mascotWelcome: string;
+  keyRules: GuideKeyRule[];
+  examples: GuideComparisonExample[];
+  cheatSheetTable?: GuideCheatSheetTable;
+}
+
+export interface UnitGuideOverview {
+  unitId: UnitId;
+  title: string;
+  intro: string;
+  examTip: string;
+  mascotSpeech: string;
+}

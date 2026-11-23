@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
+  getLessonsByUnit,
   getQuestionById,
   getQuestionsByLesson,
   getQuestionsByUnit,
@@ -12,6 +13,7 @@ import { GameProgressProvider, useGameProgress } from './hooks/useGameProgress';
 import { BottomNav } from './components/layout/BottomNav';
 import { TopStatsBar } from './components/layout/TopStatsBar';
 import { StudyMapView } from './components/path/StudyMapView';
+import { UnitGuideModal } from './components/path/UnitGuideModal';
 import { ActiveQuizConfig, QuizSession } from './components/quiz/QuizSession';
 import { ErrorAnalyticsView } from './components/extra/ErrorAnalyticsView';
 import { SimuladoHubView } from './components/extra/SimuladoHubView';
@@ -39,6 +41,8 @@ function SaneagoQuestShell() {
   const {
     progress,
     mistakeIds,
+    isLessonUnlocked,
+    isLessonCompleted,
     isUnitSimuladoUnlocked,
     isGeneralSimuladoUnlocked,
   } = useGameProgress();
@@ -48,6 +52,7 @@ function SaneagoQuestShell() {
   const [quizSeed, setQuizSeed] = useState(0);
   const [noHeartsModalOpen, setNoHeartsModalOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [guideModalUnitId, setGuideModalUnitId] = useState<UnitId | null>(null);
   const [, setKeyBadgeRefresh] = useState(0);
 
   const [aiGenState, setAiGenState] = useState<{
@@ -108,13 +113,16 @@ function SaneagoQuestShell() {
   );
 
   const handleStartLesson = useCallback(
-    (lesson: LessonMeta) => {
+    (lesson: LessonMeta, options?: { forceBriefing?: boolean }) => {
       if (progress.hearts <= 0) {
         setNoHeartsModalOpen(true);
         return;
       }
       const lessonQuestions = getQuestionsByLesson(lesson.id);
       if (lessonQuestions.length === 0) return;
+
+      const isFirstTime = !isLessonCompleted(lesson.id);
+      const initialShowBriefing = Boolean(options?.forceBriefing || isFirstTime);
 
       const unitMeta = getUnitMeta(lesson.unitId);
       setQuizSeed((s) => s + 1);
@@ -123,10 +131,31 @@ function SaneagoQuestShell() {
         title: `${unitMeta.shortTitle} • ${lesson.title}`,
         unitId: lesson.unitId,
         lessonId: lesson.id,
+        initialShowBriefing,
         questions: lessonQuestions,
       });
     },
-    [progress.hearts]
+    [isLessonCompleted, progress.hearts]
+  );
+
+  const handlePracticeFromUnitGuide = useCallback(
+    (unitId: UnitId, preferredLessonId?: string) => {
+      setGuideModalUnitId(null);
+      const unitLessons = getLessonsByUnit(unitId);
+      const targetLesson =
+        (preferredLessonId && isLessonUnlocked(preferredLessonId)
+          ? unitLessons.find((l) => l.id === preferredLessonId)
+          : undefined) ??
+        unitLessons.find(
+          (l) => isLessonUnlocked(l.id) && !isLessonCompleted(l.id)
+        ) ??
+        unitLessons[0];
+
+      if (targetLesson) {
+        handleStartLesson(targetLesson);
+      }
+    },
+    [handleStartLesson, isLessonCompleted, isLessonUnlocked]
   );
 
   const handleStartUnitSimulado = useCallback((unitId: UnitId) => {
@@ -218,6 +247,7 @@ function SaneagoQuestShell() {
       setQuizSeed((s) => s + 1);
       setActiveQuiz({
         ...activeQuiz,
+        initialShowBriefing: false,
         questions: shuffleArray(activeQuiz.questions),
       });
       return;
@@ -232,6 +262,7 @@ function SaneagoQuestShell() {
       setQuizSeed((s) => s + 1);
       setActiveQuiz({
         ...activeQuiz,
+        initialShowBriefing: false,
         questions: getQuestionsByLesson(activeQuiz.lessonId),
       });
     } else if (activeQuiz.mode === 'simulado') {
@@ -290,6 +321,7 @@ function SaneagoQuestShell() {
                   mode: 'lesson',
                 })
               }
+              onOpenUnitGuide={setGuideModalUnitId}
               onNavigateTab={setActiveTab}
             />
           )}
@@ -321,6 +353,13 @@ function SaneagoQuestShell() {
           {activeTab === 'prova' && <ExamDayView />}
         </main>
       </div>
+
+      {/* Modal Guia Teórico da Unidade */}
+      <UnitGuideModal
+        unitId={guideModalUnitId}
+        onClose={() => setGuideModalUnitId(null)}
+        onPracticeNow={handlePracticeFromUnitGuide}
+      />
 
       {/* Modal Gerador IA */}
       <AIQuestionGeneratorModal

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Clock, Heart, HeartCrack, RotateCcw, ShieldCheck, X } from 'lucide-react';
+import { getGuidesByUnit, getLessonGuide } from '../../data/lessonGuides';
 import { getUnitMeta } from '../../data/questions';
 import { useGameProgress } from '../../hooks/useGameProgress';
 import { useSoundEffects } from '../../hooks/useSoundEffects';
@@ -10,10 +12,17 @@ import {
   SimuladoReviewItem,
   UnitId,
 } from '../../types/quiz';
+import { Mascot } from '../Mascot';
+import {
+  CheatSheetTableCard,
+  ExamplesComparisonList,
+  KeyRulesList,
+} from '../guide/GuideBlocks';
 import { Modal } from '../ui/Modal';
 import { ProgressBar } from '../ui/ProgressBar';
 import { TactileButton } from '../ui/TactileButton';
 import { FeedbackBanner } from './FeedbackBanner';
+import { LessonBriefingStep } from './LessonBriefingStep';
 import { LessonSummary } from './LessonSummary';
 import { FillBlankRenderer } from './renderers/FillBlankRenderer';
 import { MatchPairsRenderer } from './renderers/MatchPairsRenderer';
@@ -28,6 +37,7 @@ export interface ActiveQuizConfig {
   simuladoScope?: UnitId | 'geral';
   durationMinutes?: number;
   isAIGeneratedSession?: boolean;
+  initialShowBriefing?: boolean;
   questions: Question[];
 }
 
@@ -106,6 +116,24 @@ export function QuizSession({
   const currentQuestion = config.questions[currentIndex];
   const isLastQuestion = currentIndex === config.questions.length - 1;
   const isSimulado = config.mode === 'simulado';
+
+  const lessonGuide = getLessonGuide(config.lessonId ?? currentQuestion?.lessonId);
+  const unitFallbackGuides =
+    !lessonGuide && currentQuestion ? getGuidesByUnit(currentQuestion.unitId) : [];
+  const hasCheatSheet =
+    !isSimulado && (Boolean(lessonGuide) || unitFallbackGuides.length > 0);
+
+  const [showBriefing, setShowBriefing] = useState<boolean>(
+    Boolean(config.initialShowBriefing && !isSimulado && lessonGuide)
+  );
+  const [showCheatSheet, setShowCheatSheet] = useState(false);
+
+  const handleFinishBriefing = useCallback(() => {
+    setShowBriefing(false);
+    const now = Date.now();
+    startedAtRef.current = now;
+    questionStartedAtRef.current = now;
+  }, []);
 
   const unitAccent = config.unitId
     ? getUnitMeta(config.unitId).accentColor
@@ -397,9 +425,19 @@ export function QuizSession({
     reviewItems,
   ]);
 
-  // Atalho Enter para confirmar ou continuar
+  // Atalho Enter para confirmar ou continuar + Escape para fechar Cola Teórica
   useEffect(() => {
-    if (summary || showExitModal) return;
+    if (showCheatSheet) {
+      const onEsc = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          setShowCheatSheet(false);
+        }
+      };
+      window.addEventListener('keydown', onEsc);
+      return () => window.removeEventListener('keydown', onEsc);
+    }
+
+    if (summary || showExitModal || showBriefing) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Enter') return;
       if (feedbackState?.checked) {
@@ -412,7 +450,16 @@ export function QuizSession({
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [canConfirmAnswer, feedbackState?.checked, handleConfirm, handleContinue, showExitModal, summary]);
+  }, [
+    canConfirmAnswer,
+    feedbackState?.checked,
+    handleConfirm,
+    handleContinue,
+    showBriefing,
+    showCheatSheet,
+    showExitModal,
+    summary,
+  ]);
 
   if (summary) {
     return (
@@ -435,11 +482,24 @@ export function QuizSession({
 
   const unitMeta = getUnitMeta(currentQuestion.unitId);
 
+  if (showBriefing && lessonGuide) {
+    return (
+      <LessonBriefingStep
+        guide={lessonGuide}
+        unitMeta={unitMeta}
+        lessonTitle={config.title}
+        questionCount={config.questions.length}
+        onStartQuestions={handleFinishBriefing}
+        onExit={onExit}
+      />
+    );
+  }
+
   return (
     <div className="min-h-dvh flex flex-col bg-[#0B1117]">
       {/* Barra Superior do Quiz */}
       <header className="sticky top-0 z-20 border-b border-[#28384A] bg-[#0B1117]/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-4xl items-center gap-4 px-4 py-3.5 sm:px-6">
+        <div className="mx-auto flex max-w-4xl items-center gap-2.5 sm:gap-4 px-4 py-3.5 sm:px-6">
           <button
             type="button"
             onClick={() => setShowExitModal(true)}
@@ -455,6 +515,19 @@ export function QuizSession({
             color={unitAccent}
             combo={!isSimulado ? combo : 0}
           />
+
+          {!isSimulado && hasCheatSheet && (
+            <button
+              type="button"
+              onClick={() => setShowCheatSheet(true)}
+              aria-label="Abrir Cola Teórica desta lição"
+              title="Consultar regras e macetes desta lição"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#28384A] bg-[#131C26] px-2.5 sm:px-3 py-1.5 font-display text-xs font-extrabold text-[#C7D7E6] hover:border-[#00B8FF]/60 hover:text-white transition-colors"
+            >
+              <span aria-hidden="true">📖</span>
+              <span className="hidden sm:inline">Cola Teórica</span>
+            </button>
+          )}
 
           {isSimulado ? (
             <div
@@ -696,6 +769,121 @@ export function QuizSession({
           </div>
         </div>
       </Modal>
+
+      {/* Modal de Cola Teórica durante o treino (desativado no Simulado) */}
+      <AnimatePresence>
+        {showCheatSheet && !isSimulado && hasCheatSheet && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Cola Teórica da Lição"
+          >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCheatSheet(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 14 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 14 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+              className="relative z-10 flex max-h-[88dvh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border-2 border-[#28384A] bg-[#131C26] shadow-2xl"
+            >
+              <div
+                className="h-1.5 w-full shrink-0"
+                style={{ backgroundColor: unitMeta.accentColor }}
+              />
+
+              <div className="shrink-0 border-b border-[#28384A] px-4 py-3.5 sm:px-6 flex items-center justify-between gap-3">
+                <div className="space-y-0.5 min-w-0">
+                  <span
+                    className="inline-block rounded-lg px-2 py-0.5 font-display text-[11px] font-extrabold uppercase tracking-wider"
+                    style={{
+                      backgroundColor: unitMeta.softBg,
+                      color: unitMeta.accentColor,
+                    }}
+                  >
+                    📖 Cola Teórica • {unitMeta.shortTitle}
+                  </span>
+                  <h2 className="font-display text-lg font-extrabold text-[#E8F1F8] truncate">
+                    {lessonGuide ? lessonGuide.title : `Resumo de ${unitMeta.title}`}
+                  </h2>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowCheatSheet(false)}
+                  aria-label="Fechar Cola Teórica"
+                  className="rounded-xl p-1.5 text-[#92A8BE] hover:bg-[#1D2A38] hover:text-white transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 space-y-5">
+                {(lessonGuide ? [lessonGuide] : unitFallbackGuides).map((guide) => (
+                  <div key={guide.lessonId} className="space-y-4">
+                    <div className="rounded-2xl border border-[#28384A] bg-[#0B1117]/80 p-4 space-y-3">
+                      <Mascot
+                        mood="teaching"
+                        size="sm"
+                        accentColor={unitMeta.accentColor}
+                        speechTitle="Pingo • Lembrete Rápido"
+                        speech={guide.mascotWelcome}
+                      />
+                      <p className="text-xs sm:text-sm text-[#C7D7E6] leading-relaxed">
+                        {guide.summary}
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="font-display text-xs font-extrabold uppercase tracking-wider text-[#92A8BE]">
+                        Regras de Ouro
+                      </h3>
+                      <KeyRulesList
+                        rules={guide.keyRules}
+                        accentColor={unitMeta.accentColor}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="font-display text-xs font-extrabold uppercase tracking-wider text-[#92A8BE]">
+                        Certo vs. Errado
+                      </h3>
+                      <ExamplesComparisonList examples={guide.examples} />
+                    </div>
+
+                    {guide.cheatSheetTable && (
+                      <CheatSheetTableCard
+                        table={guide.cheatSheetTable}
+                        accentColor={unitMeta.accentColor}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <div className="shrink-0 border-t border-[#28384A] bg-[#131C26] px-4 py-3 sm:px-6 flex justify-end">
+                <TactileButton
+                  variant="primary"
+                  size="sm"
+                  customBg={unitMeta.accentColor}
+                  customShade={unitMeta.shadeColor}
+                  customText="#071520"
+                  onClick={() => setShowCheatSheet(false)}
+                >
+                  Voltar à Questão
+                </TactileButton>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
