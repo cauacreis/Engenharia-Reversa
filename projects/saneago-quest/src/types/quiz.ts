@@ -18,6 +18,7 @@ export interface BaseQuestion {
   prompt: string;
   /** Micro-macete exibido imediatamente após confirmar a resposta no modo treino/revisão e no gabarito do simulado */
   tip: string;
+  isAIGenerated?: boolean;
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {
@@ -93,6 +94,55 @@ export interface MistakeRecord {
   questionId: string;
   wrongCount: number;
   lastWrongAt: string;
+  lastUserAnswer?: string;
+  correctAnswer?: string;
+  topic?: string;
+  unitId?: UnitId;
+  promptSnapshot?: string;
+  tipSnapshot?: string;
+}
+
+export interface PerformanceBucket {
+  attempts: number;
+  correct: number;
+  totalTimeMs: number;
+}
+
+export interface TopicStatBucket extends PerformanceBucket {
+  unitId: UnitId;
+  topic: string;
+}
+
+export interface AnswerAttemptLog {
+  questionId: string;
+  unitId: UnitId;
+  topic: string;
+  isCorrect: boolean;
+  timeMs: number;
+  userAnswer: string;
+  correctAnswer: string;
+  timestamp: string;
+}
+
+export interface GroqDiagnosisReport {
+  detectedPattern: string;
+  keyRuleSummary: string;
+  priorityTopics: string[];
+  focusUnitId: UnitId;
+  actionPlanSteps: string[];
+  generatedAt: string;
+  source: 'groq' | 'offline-fallback';
+  modelUsed?: string;
+}
+
+export interface SavedAIQuestionPack {
+  id: string;
+  title: string;
+  scope: UnitId | 'geral' | 'corretivo';
+  mode: 'lesson' | 'simulado';
+  createdAt: string;
+  modelUsed?: string;
+  questions: Question[];
 }
 
 export interface SimuladoRecord {
@@ -120,6 +170,10 @@ export interface UserProgress {
   simuladoHistory: SimuladoRecord[];
   examChecklist: Record<string, boolean>;
   soundEnabled: boolean;
+  unitStats: Record<UnitId, PerformanceBucket>;
+  topicStats: Record<string, TopicStatBucket>;
+  recentAttempts: AnswerAttemptLog[];
+  lastDiagnosis: GroqDiagnosisReport | null;
 }
 
 export type AppTab = 'trilha' | 'erros' | 'simulados' | 'prova';

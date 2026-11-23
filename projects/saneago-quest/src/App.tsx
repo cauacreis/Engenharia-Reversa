@@ -7,15 +7,21 @@ import {
   QUESTIONS,
   UNITS,
 } from './data/questions';
+import { findAIQuestionById } from './services/groqTutorService';
 import { GameProgressProvider, useGameProgress } from './hooks/useGameProgress';
 import { BottomNav } from './components/layout/BottomNav';
 import { TopStatsBar } from './components/layout/TopStatsBar';
 import { StudyMapView } from './components/path/StudyMapView';
 import { ActiveQuizConfig, QuizSession } from './components/quiz/QuizSession';
-import { MistakeBankView } from './components/extra/MistakeBankView';
+import { ErrorAnalyticsView } from './components/extra/ErrorAnalyticsView';
 import { SimuladoHubView } from './components/extra/SimuladoHubView';
 import { ExamDayView } from './components/extra/ExamDayView';
+import {
+  AIQuestionGeneratorModal,
+  GeneratorScope,
+} from './components/extra/AIQuestionGeneratorModal';
 import { Modal } from './components/ui/Modal';
+import { SettingsModal } from './components/ui/SettingsModal';
 import { TactileButton } from './components/ui/TactileButton';
 import { AppTab, LessonMeta, Question, UnitId } from './types/quiz';
 import { HeartCrack, RotateCcw } from 'lucide-react';
@@ -41,6 +47,20 @@ function SaneagoQuestShell() {
   const [activeQuiz, setActiveQuiz] = useState<ActiveQuizConfig | null>(null);
   const [quizSeed, setQuizSeed] = useState(0);
   const [noHeartsModalOpen, setNoHeartsModalOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [, setKeyBadgeRefresh] = useState(0);
+
+  const [aiGenState, setAiGenState] = useState<{
+    open: boolean;
+    scope: GeneratorScope;
+    count: number;
+    mode: 'lesson' | 'simulado';
+  }>({
+    open: false,
+    scope: 'geral',
+    count: 20,
+    mode: 'simulado',
+  });
 
   const unlockedSimuladosCount = useMemo(() => {
     const unitCount = UNITS.filter((u) => isUnitSimuladoUnlocked(u.id)).length;
@@ -50,7 +70,7 @@ function SaneagoQuestShell() {
   const buildMistakeReviewConfig = useCallback(
     (filterUnitId?: UnitId): ActiveQuizConfig | null => {
       let pool = mistakeIds
-        .map((id) => getQuestionById(id))
+        .map((id) => getQuestionById(id) ?? findAIQuestionById(id))
         .filter((q): q is Question => Boolean(q))
         .filter((q) => !filterUnitId || q.unitId === filterUnitId);
 
@@ -143,8 +163,66 @@ function SaneagoQuestShell() {
     });
   }, []);
 
+  const handleStartGeneratedSession = useCallback(
+    (params: {
+      title: string;
+      mode: 'lesson' | 'simulado';
+      scope: UnitId | 'geral';
+      durationMinutes?: number;
+      questions: Question[];
+    }) => {
+      if (params.mode === 'lesson' && progress.hearts <= 0) {
+        setNoHeartsModalOpen(true);
+        return;
+      }
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: params.mode,
+        title: params.title,
+        unitId: params.scope === 'geral' ? undefined : params.scope,
+        simuladoScope: params.mode === 'simulado' ? params.scope : undefined,
+        durationMinutes: params.durationMinutes,
+        isAIGeneratedSession: true,
+        questions: params.questions,
+      });
+    },
+    [progress.hearts]
+  );
+
+  const handleStartCustomTraining = useCallback(
+    (params: { title: string; questions: Question[]; unitId?: UnitId }) => {
+      if (progress.hearts <= 0) {
+        setNoHeartsModalOpen(true);
+        return;
+      }
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: 'lesson',
+        title: params.title,
+        unitId: params.unitId,
+        isAIGeneratedSession: true,
+        questions: params.questions,
+      });
+    },
+    [progress.hearts]
+  );
+
   const handleRetryActiveQuiz = useCallback(() => {
     if (!activeQuiz) return;
+    if (activeQuiz.isAIGeneratedSession) {
+      if (activeQuiz.mode === 'lesson' && progress.hearts <= 0) {
+        setActiveQuiz(null);
+        setNoHeartsModalOpen(true);
+        return;
+      }
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        ...activeQuiz,
+        questions: shuffleArray(activeQuiz.questions),
+      });
+      return;
+    }
+
     if (activeQuiz.mode === 'lesson' && activeQuiz.lessonId) {
       if (progress.hearts <= 0) {
         setActiveQuiz(null);
@@ -187,7 +265,7 @@ function SaneagoQuestShell() {
 
   return (
     <div className="min-h-dvh flex flex-col bg-[#0B1117]">
-      <TopStatsBar />
+      <TopStatsBar onOpenSettings={() => setSettingsOpen(true)} />
 
       <div className="mx-auto flex w-full max-w-6xl flex-1">
         <BottomNav
@@ -204,24 +282,63 @@ function SaneagoQuestShell() {
               onStartUnitSimulado={handleStartUnitSimulado}
               onStartGeneralSimulado={handleStartGeneralSimulado}
               onStartMistakeReview={() => handleStartMistakeReview()}
+              onGenerateUnitAI={(unitId) =>
+                setAiGenState({
+                  open: true,
+                  scope: unitId,
+                  count: 5,
+                  mode: 'lesson',
+                })
+              }
               onNavigateTab={setActiveTab}
             />
           )}
 
           {activeTab === 'erros' && (
-            <MistakeBankView onStartMistakeReview={handleStartMistakeReview} />
+            <ErrorAnalyticsView
+              onStartMistakeReview={handleStartMistakeReview}
+              onStartCustomTraining={handleStartCustomTraining}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
           )}
 
           {activeTab === 'simulados' && (
             <SimuladoHubView
               onStartUnitSimulado={handleStartUnitSimulado}
               onStartGeneralSimulado={handleStartGeneralSimulado}
+              onOpenAIGenerator={(scope = 'geral', count = 20) =>
+                setAiGenState({
+                  open: true,
+                  scope,
+                  count,
+                  mode: 'simulado',
+                })
+              }
+              onStartSavedAIPack={handleStartGeneratedSession}
             />
           )}
 
           {activeTab === 'prova' && <ExamDayView />}
         </main>
       </div>
+
+      {/* Modal Gerador IA */}
+      <AIQuestionGeneratorModal
+        open={aiGenState.open}
+        initialScope={aiGenState.scope}
+        initialCount={aiGenState.count}
+        initialMode={aiGenState.mode}
+        onClose={() => setAiGenState((prev) => ({ ...prev, open: false }))}
+        onStartGeneratedSession={handleStartGeneratedSession}
+        onOpenSettings={() => setSettingsOpen(true)}
+      />
+
+      {/* Modal Configurações (Chave Groq & Meta Diária) */}
+      <SettingsModal
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
+        onKeyStatusChanged={() => setKeyBadgeRefresh((n) => n + 1)}
+      />
 
       {/* Modal de bloqueio quando o usuário tenta abrir lição com 0 corações */}
       <Modal

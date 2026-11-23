@@ -27,6 +27,7 @@ export interface ActiveQuizConfig {
   lessonId?: string;
   simuladoScope?: UnitId | 'geral';
   durationMinutes?: number;
+  isAIGeneratedSession?: boolean;
   questions: Question[];
 }
 
@@ -66,10 +67,11 @@ export function QuizSession({
   const {
     progress,
     loseHeart,
-    recordMistake,
+    recordAnswerAttempt,
     resolveMistake,
     gainHeart,
     completeLesson,
+    completePracticeSession,
     completeMistakeReview,
     completeSimulado,
   } = useGameProgress();
@@ -96,6 +98,7 @@ export function QuizSession({
   const [showExitModal, setShowExitModal] = useState(false);
 
   const startedAtRef = useRef<number>(Date.now());
+  const questionStartedAtRef = useRef<number>(Date.now());
   const totalTimeSec = (config.durationMinutes ?? 10) * 60;
   const [remainingSeconds, setRemainingSeconds] = useState<number>(totalTimeSec);
   const finalizingRef = useRef(false);
@@ -116,6 +119,7 @@ export function QuizSession({
     setSelectedTf(null);
     setExamPairMap({});
     setFeedbackState(null);
+    questionStartedAtRef.current = Date.now();
   }, []);
 
   const finalizeSession = useCallback(
@@ -139,7 +143,9 @@ export function QuizSession({
       let xpEarned = finalCorrect * 10 + finalMaxCombo * 2;
       if (config.mode === 'lesson') {
         xpEarned += 15;
-        if (config.lessonId) {
+        if (config.isAIGeneratedSession || !config.lessonId) {
+          completePracticeSession(xpEarned);
+        } else {
           completeLesson({
             lessonId: config.lessonId,
             correctCount: finalCorrect,
@@ -182,7 +188,14 @@ export function QuizSession({
         reviewItems: config.mode === 'simulado' ? finalReviewItems : undefined,
       });
     },
-    [completeLesson, completeMistakeReview, completeSimulado, config, playComplete]
+    [
+      completeLesson,
+      completeMistakeReview,
+      completePracticeSession,
+      completeSimulado,
+      config,
+      playComplete,
+    ]
   );
 
   // Cronômetro regressivo exclusivo do modo Simulado
@@ -267,6 +280,17 @@ export function QuizSession({
       return;
     }
 
+    const elapsedQuestionMs = Date.now() - questionStartedAtRef.current;
+    const correctSummary = getCorrectLabel(currentQuestion);
+
+    recordAnswerAttempt({
+      question: currentQuestion,
+      isCorrect,
+      timeMs: elapsedQuestionMs,
+      userAnswer: userSummary,
+      correctAnswer: correctSummary,
+    });
+
     if (isSimulado) {
       const nextCorrect = isCorrect ? correctCount + 1 : correctCount;
       const nextCombo = isCorrect ? combo + 1 : 0;
@@ -276,7 +300,7 @@ export function QuizSession({
         {
           question: currentQuestion,
           userAnswerSummary: userSummary,
-          correctAnswerSummary: getCorrectLabel(currentQuestion),
+          correctAnswerSummary: correctSummary,
           isCorrect,
         },
       ];
@@ -319,7 +343,6 @@ export function QuizSession({
     } else {
       playWrong();
       setCombo(0);
-      recordMistake(currentQuestion.id);
       if (config.mode === 'lesson') {
         loseHeart();
       }
@@ -348,7 +371,7 @@ export function QuizSession({
     progress.hearts,
     progress.maxHearts,
     progress.mistakes,
-    recordMistake,
+    recordAnswerAttempt,
     resetInputs,
     resolveMistake,
     reviewItems,
@@ -532,7 +555,13 @@ export function QuizSession({
               onPracticeFirstMistake={() => {
                 playWrong();
                 setCombo(0);
-                recordMistake(currentQuestion.id);
+                recordAnswerAttempt({
+                  question: currentQuestion,
+                  isCorrect: false,
+                  timeMs: Date.now() - questionStartedAtRef.current,
+                  userAnswer: 'Associação incorreta na tentativa',
+                  correctAnswer: getCorrectLabel(currentQuestion),
+                });
                 if (config.mode === 'lesson') {
                   loseHeart();
                 }
@@ -541,6 +570,13 @@ export function QuizSession({
                 playPairMatch();
                 let recovered = false;
                 if (!hadAnyMistake) {
+                  recordAnswerAttempt({
+                    question: currentQuestion,
+                    isCorrect: true,
+                    timeMs: Date.now() - questionStartedAtRef.current,
+                    userAnswer: getCorrectLabel(currentQuestion),
+                    correctAnswer: getCorrectLabel(currentQuestion),
+                  });
                   const nextCombo = combo + 1;
                   setCorrectCount((prev) => prev + 1);
                   setCombo(nextCombo);
@@ -577,6 +613,7 @@ export function QuizSession({
             tip={currentQuestion.tip}
             isLastQuestion={isLastQuestion}
             recoveredHeart={feedbackState.recoveredHeart}
+            combo={combo}
             onContinue={handleContinue}
           />
         ) : (

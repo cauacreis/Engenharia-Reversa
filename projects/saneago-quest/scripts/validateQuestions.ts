@@ -6,12 +6,12 @@ if (UNITS.length !== 4) {
   errors.push(`Esperado 4 unidades, encontrado ${UNITS.length}`);
 }
 
-if (LESSONS.length !== 12) {
-  errors.push(`Esperado 12 lições, encontrado ${LESSONS.length}`);
+if (LESSONS.length !== 16) {
+  errors.push(`Esperado 16 lições, encontrado ${LESSONS.length}`);
 }
 
-if (QUESTIONS.length < 40) {
-  errors.push(`Esperado pelo menos 40 questões, encontrado ${QUESTIONS.length}`);
+if (QUESTIONS.length !== 80) {
+  errors.push(`Esperado exatamente 80 questões estáticas, encontrado ${QUESTIONS.length}`);
 }
 
 const unitIds = new Set(UNITS.map((u) => u.id));
@@ -20,8 +20,8 @@ const questionIds = new Set<string>();
 
 for (const unit of UNITS) {
   const unitQuestions = QUESTIONS.filter((q) => q.unitId === unit.id);
-  if (unitQuestions.length < 10) {
-    errors.push(`Unidade ${unit.id} possui apenas ${unitQuestions.length} questões (mínimo 10).`);
+  if (unitQuestions.length !== 20) {
+    errors.push(`Unidade ${unit.id} possui ${unitQuestions.length} questões (esperado 20).`);
   }
   const types = new Set(unitQuestions.map((q) => q.type));
   for (const requiredType of ['multiple-choice', 'fill-blank', 'true-false', 'match-pairs'] as const) {
@@ -33,8 +33,8 @@ for (const unit of UNITS) {
 
 for (const lesson of LESSONS) {
   const count = QUESTIONS.filter((q) => q.lessonId === lesson.id).length;
-  if (count === 0) {
-    errors.push(`Lição ${lesson.id} não possui questões.`);
+  if (count !== 5) {
+    errors.push(`Lição ${lesson.id} possui ${count} questões (esperado 5).`);
   }
 }
 

@@ -4,7 +4,7 @@ Aplicação web gamificada estilo Duolingo focada na preparação para a prova d
 
 ---
 
-## Passo 1 — Pesquisa de Base (GitHub)
+## Pesquisa de Base (GitHub)
 
 Antes de estruturar o código, foram analisados repositórios open-source de clones do Duolingo e apps de quiz gamificado em React/Next.js + Tailwind CSS para adotar padrões consolidados:
 
@@ -17,22 +17,19 @@ Antes de estruturar o código, foram analisados repositórios open-source de clo
 
 ---
 
-## Stack & Arquitetura
+## Stack & Novidades da Versão 2.0
 
-- **Frontend:** React 18 + Vite + TypeScript + Tailwind CSS v3.4 + Framer Motion + Lucide React (sem Three.js, mantendo o carregamento rápido e mobile-first).
-- **Persistência:** `LocalStorageProgressRepository` (`src/services/progressRepository.ts`) salvando XP, meta diária, 5 corações, ofensiva (streak), lições concluídas, banco de erros, histórico de simulados e checklist da prova.
-- **Pronto para Supabase:** Interface `ProgressRepository` com adaptador `SupabaseProgressRepository` e DDL completo com RLS em [`supabase/schema.sql`](supabase/schema.sql).
-
----
-
-## Estrutura Pedagógica (60 Questões Comentadas)
-
-O arquivo [`src/data/questions.ts`](src/data/questions.ts) contém **60 questões estruturadas** (15 por unidade, divididas em 3 lições de 5 questões cada) cobrindo todas as seções e tabelas do guia de estudos:
-
-1. **Unidade 1 — Língua Portuguesa (Maior Peso & Desempate):** Crase (`à` vs `a`, proibições, nomes de lugares), Concordância Verbal (`haver` vs `existir`, sujeito posposto, partícula `se`, porcentagem), Regência (`assistir`, `visar`, `preferir`), Vírgula, Novo Acordo Ortográfico (ditongos abertos e hífen) e Conjunções.
-2. **Unidade 2 — Matemática & Raciocínio Lógico:** Tabela-Verdade completa (`∧`, `∨`, `→`, `↔`), Leis de De Morgan, Negação MA-NÉ, Equivalências (Contrapositiva e NE-OU), Regra de Três Direta/Inversa, Porcentagens Sucessivas, Conjuntos (Venn) e Probabilidade.
-3. **Unidade 3 — Informática & Pegadinhas Office BR:** Atalhos Windows 10/11 (`Win + E/D/L`, `Ctrl + Shift + Esc`, `Shift + Delete`), Pegadinhas Word PT-BR (`Ctrl + B` salvar, `Ctrl + S` sublinhado, `Ctrl + T`, `Ctrl + A`, `Ctrl + L`), Fórmulas Excel PT-BR (`:` vs `;`, `SOMA`, `MÉDIA`, `MÁXIMO`, `MÍNIMO`, `CONT.NÚM`, `CONT.VALORES`, `SE`) e Segurança (HTTP vs HTTPS, Vírus, Worm, Trojan, Ransomware, Spyware Keylogger/Screenlogger, Phishing, Backup vs Firewall).
-4. **Unidade 4 — Saneago, Marco Legal & Goiás:** Natureza jurídica (Sociedade de Economia Mista da Administração Indireta), cobertura (>220 municípios), Metas do Novo Marco Legal até 31/12/2033 (99% água potável e 90% esgoto), os 4 Eixos da Lei nº 11.445/2007, bioma Cerrado (chuvoso out–abr / estiagem mai–set), saúde pública e regras da prova online de 06/12/2026.
+- **Frontend:** React 18 + Vite + TypeScript + Tailwind CSS v3.4 + Framer Motion + Lucide React (sem Three.js, responsivo e mobile-first).
+- **80 Questões Estáticas Comentadas (`src/data/questions.ts`):** 4 unidades × 4 lições × 5 questões (16 lições no total), incluindo módulos avançados de Porquês/Próclise/Parônimos/Vozes, Combinatória/Juros/Quantificadores, Extensões/Protocolos/Pharming/Backups, e Etapas da ETA/Bacias Hidrográficas de Goiás.
+- **Tutor Diagnóstico & Gerador Infinito com Groq API (`src/services/groqTutorService.ts`):**
+  - Integração direta via `https://api.groq.com/openai/v1/chat/completions` (`llama-3.3-70b-versatile` com fallback rápido `llama-3.1-8b-instant` e `response_format: { type: "json_object" }`).
+  - Ancoragem estrita no Edital nº 001/2026 ([`src/data/editalContext.ts`](src/data/editalContext.ts)), respeitando os pesos de desempate (1º Português 35%, 2º Matemática/Lógica 25%, Informática 20%, Saneago 20%).
+  - Suporta `VITE_GROQ_API_KEY` via `.env` ou configuração direta no navegador pelo botão de engrenagem (**Configurações → Chave API Groq**).
+  - Validador runtime antes da sessão + cache local para reutilizar pacotes gerados sem gastar tokens.
+  - Fallback offline gracioso: se estiver sem chave ou sem internet, gera diagnóstico e treinos usando as 80 questões estáticas.
+- **Central de Relatório de Erros & Analytics (`src/components/extra/ErrorAnalyticsView.tsx`):** projeção de nota ponderada em SVG, taxa de acerto por disciplina, tempo médio por questão, tópicos críticos (`< 70%`), histórico detalhado (`Você marcou` vs. `Correta`) e plano cirúrgico em 3 blocos com treino corretivo imediato.
+- **Mascote Interativo "Pingo" (`src/components/Mascot.tsx`):** SVG vetorial animado com Framer Motion nos estados `idle`, `happy`, `combo`, `sad` e `thinking`.
+- **Pronto para Supabase:** [`src/services/progressRepository.ts`](src/services/progressRepository.ts) + [`supabase/schema.sql`](supabase/schema.sql).
 
 ---
 
@@ -44,85 +41,16 @@ npm install
 npm run dev
 ```
 
-Para validar o banco de questões e o build de produção:
+*(Opcional)* Crie um arquivo `.env` local (nunca commitado) para preencher a chave automaticamente:
+
+```env
+VITE_GROQ_API_KEY=gsk_sua_chave_aqui
+```
+
+Para validar o banco de 80 questões e gerar o build de produção:
 
 ```bash
 npm run validate:questions
+npx tsc --noEmit
 npm run build
 ```
-
----
-
-## Como Adicionar Novas Questões
-
-Basta acrescentar objetos no array `QUESTIONS` em [`src/data/questions.ts`](src/data/questions.ts) seguindo qualquer um dos 4 formatos da discriminated union `Question`:
-
-```ts
-// 1) Múltipla Escolha
-{
-  id: 'pt-q99',
-  unitId: 'portugues',
-  lessonId: 'pt-1',
-  type: 'multiple-choice',
-  topic: 'Crase',
-  sourceSection: '1.1',
-  difficulty: 'medio',
-  prompt: 'Enunciado da questão...',
-  options: ['Opção A', 'Opção B', 'Opção C', 'Opção D', 'Opção E'],
-  correctIndex: 0,
-  tip: 'Micro-macete exibido na barra inferior após responder.',
-}
-
-// 2) Completar Lacuna
-{
-  id: 'pt-q98',
-  unitId: 'portugues',
-  lessonId: 'pt-1',
-  type: 'fill-blank',
-  topic: 'Verbo Haver',
-  sourceSection: '1.2',
-  difficulty: 'facil',
-  prompt: 'Complete corretamente:',
-  sentenceBefore: 'Ainda',
-  sentenceAfter: 'dúvidas sobre o edital.',
-  options: ['há', 'hão', 'existem', 'existe'],
-  correctAnswer: 'há',
-  tip: 'Haver impessoal fica sempre no singular.',
-}
-
-// 3) Verdadeiro ou Falso
-{
-  id: 'mat-q99',
-  unitId: 'matematica',
-  lessonId: 'mat-2',
-  type: 'true-false',
-  topic: 'MA-NÉ',
-  sourceSection: '2.1',
-  difficulty: 'facil',
-  prompt: 'Julgue a afirmação:',
-  statement: 'A negação de P → Q é P ∧ ¬Q.',
-  correctAnswer: true,
-  tip: 'Regra do MA-NÉ: mantém a 1ª e nega a 2ª com conectivo E.',
-}
-
-// 4) Associação de Pares
-{
-  id: 'inf-q99',
-  unitId: 'informatica',
-  lessonId: 'inf-1',
-  type: 'match-pairs',
-  topic: 'Office PT-BR',
-  sourceSection: '3.2',
-  difficulty: 'facil',
-  prompt: 'Associe atalho e função:',
-  pairs: [
-    { id: 'p1', left: 'Ctrl + B', right: 'Salvar' },
-    { id: 'p2', left: 'Ctrl + S', right: 'Sublinhado' },
-    { id: 'p3', left: 'Ctrl + T', right: 'Selecionar Tudo' },
-    { id: 'p4', left: 'Ctrl + A', right: 'Abrir' },
-  ],
-  tip: 'No Office em português, B = Backup (Salvar) e S = Sublinhado.',
-}
-```
-
-Execute `npm run validate:questions` após editar para garantir que todas as regras de integridade continuam válidas.

@@ -1,6 +1,11 @@
-import { CalendarClock, Droplets, Flame, Heart, Volume2, VolumeX, Zap } from 'lucide-react';
+import { CalendarClock, Droplets, Flame, Heart, Settings, Volume2, VolumeX, Zap } from 'lucide-react';
 import { EXAM_DATE_ISO } from '../../data/examChecklist';
 import { useGameProgress } from '../../hooks/useGameProgress';
+import { getGroqApiKey } from '../../services/groqTutorService';
+
+interface TopStatsBarProps {
+  onOpenSettings: () => void;
+}
 
 function getDaysUntilExam(): number {
   const now = new Date();
@@ -9,9 +14,10 @@ function getDaysUntilExam(): number {
   return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }
 
-export function TopStatsBar() {
+export function TopStatsBar({ onOpenSettings }: TopStatsBarProps) {
   const { progress, toggleSound } = useGameProgress();
   const daysLeft = getDaysUntilExam();
+  const hasGroqKey = Boolean(getGroqApiKey());
 
   return (
     <header className="sticky top-0 z-30 border-b border-[#28384A] bg-[#0B1117]/90 backdrop-blur-md">
@@ -97,6 +103,22 @@ export function TopStatsBar() {
               <Volume2 className="h-4 w-4 text-[#00B8FF]" />
             ) : (
               <VolumeX className="h-4 w-4" />
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            aria-label="Abrir configurações"
+            title="Configurações e Chave API Groq"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#131C26] border border-[#28384A] text-[#92A8BE] hover:text-white hover:bg-[#1D2A38] transition-colors"
+          >
+            <Settings className="h-4 w-4" />
+            {hasGroqKey && (
+              <span
+                className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#0B1117] bg-[#58CC02]"
+                aria-hidden="true"
+              />
             )}
           </button>
         </div>

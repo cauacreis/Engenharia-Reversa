@@ -1,12 +1,21 @@
-import { Clock, Lock, Play, ShieldAlert, Trophy } from 'lucide-react';
+import { Clock, Lock, Play, ShieldAlert, Sparkles, Trophy } from 'lucide-react';
 import { LESSONS, UNITS } from '../../data/questions';
 import { useGameProgress } from '../../hooks/useGameProgress';
-import { UnitId } from '../../types/quiz';
+import { loadSavedAIPacks } from '../../services/groqTutorService';
+import { Question, UnitId } from '../../types/quiz';
 import { TactileButton } from '../ui/TactileButton';
 
 interface SimuladoHubViewProps {
   onStartUnitSimulado: (unitId: UnitId) => void;
   onStartGeneralSimulado: () => void;
+  onOpenAIGenerator: (scope?: UnitId | 'geral', count?: number) => void;
+  onStartSavedAIPack: (params: {
+    title: string;
+    mode: 'lesson' | 'simulado';
+    scope: UnitId | 'geral';
+    durationMinutes?: number;
+    questions: Question[];
+  }) => void;
 }
 
 function formatSec(sec: number): string {
@@ -18,6 +27,8 @@ function formatSec(sec: number): string {
 export function SimuladoHubView({
   onStartUnitSimulado,
   onStartGeneralSimulado,
+  onOpenAIGenerator,
+  onStartSavedAIPack,
 }: SimuladoHubViewProps) {
   const {
     progress,
@@ -28,21 +39,34 @@ export function SimuladoHubView({
 
   const generalUnlocked = isGeneralSimuladoUnlocked();
   const completedLessonsTotal = Object.keys(progress.completedLessons).length;
+  const savedPacks = loadSavedAIPacks();
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Cabeçalho */}
-      <div className="rounded-3xl border-2 border-[#28384A] bg-[#131C26] p-5 sm:p-6 space-y-2">
-        <div className="inline-flex items-center gap-2 rounded-xl bg-[#FFC800]/15 border border-[#FFC800]/40 px-2.5 py-1 text-xs font-display font-extrabold text-[#FFC800]">
-          <Trophy className="h-3.5 w-3.5" />
-          <span>Simulação Real — Banca Universidade Patativa do Assaré</span>
+      <div className="rounded-3xl border-2 border-[#28384A] bg-[#131C26] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-xl bg-[#FFC800]/15 border border-[#FFC800]/40 px-2.5 py-1 text-xs font-display font-extrabold text-[#FFC800]">
+            <Trophy className="h-3.5 w-3.5" />
+            <span>Simulação Real — Banca Universidade Patativa do Assaré</span>
+          </div>
+          <h1 className="text-2xl font-display font-extrabold text-[#E8F1F8]">
+            Simulados Cronometrados
+          </h1>
+          <p className="text-sm text-[#92A8BE]">
+            Sem dicas nem feedback imediato durante as questões. O gabarito comentado e os erros aparecem apenas ao finalizar ou encerrar o cronômetro.
+          </p>
         </div>
-        <h1 className="text-2xl font-display font-extrabold text-[#E8F1F8]">
-          Simulados Cronometrados
-        </h1>
-        <p className="text-sm text-[#92A8BE]">
-          Sem dicas nem feedback imediato durante as questões. O gabarito comentado e os erros aparecem apenas ao finalizar ou encerrar o cronômetro.
-        </p>
+
+        <TactileButton
+          variant="primary"
+          size="md"
+          onClick={() => onOpenAIGenerator('geral', 20)}
+          className="shrink-0"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>Gerar Simulado Inédito com IA</span>
+        </TactileButton>
       </div>
 
       {/* Card do Simulado Geral */}
@@ -87,7 +111,7 @@ export function SimuladoHubView({
           <div className="flex items-center gap-2 rounded-2xl bg-[#0B1117]/70 px-3.5 py-2.5 text-xs text-[#92A8BE]">
             <ShieldAlert className="h-4 w-4 text-[#FFC800] shrink-0" />
             <span>
-              Complete todas as 12 lições das 4 unidades para liberar o Simulado Geral.
+              Complete todas as {LESSONS.length} lições das 4 unidades para liberar o Simulado Geral (ou gere um inédito com IA a qualquer momento).
             </span>
           </div>
         )}
@@ -160,6 +184,54 @@ export function SimuladoHubView({
           );
         })}
       </div>
+
+      {/* Pacotes Inéditos Salvos no Dispositivo */}
+      {savedPacks.length > 0 && (
+        <div className="rounded-3xl border-2 border-[#00B8FF]/35 bg-[#131C26] p-5 space-y-3">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="font-display text-lg font-extrabold text-[#E8F1F8]">
+              Simulados & Treinos IA Salvos
+            </h2>
+            <span className="text-xs text-[#92A8BE]">{savedPacks.length} pacote(s)</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            {savedPacks.slice(0, 6).map((pack) => (
+              <div
+                key={pack.id}
+                className="flex items-center justify-between gap-3 rounded-2xl bg-[#0B1117]/75 border border-[#28384A] px-3.5 py-2.5"
+              >
+                <div className="min-w-0">
+                  <p className="text-xs font-bold text-[#E8F1F8] truncate">{pack.title}</p>
+                  <p className="text-[11px] text-[#92A8BE]">
+                    {pack.questions.length} questões • {pack.mode === 'simulado' ? 'Simulado' : 'Treino'}
+                  </p>
+                </div>
+                <TactileButton
+                  size="sm"
+                  variant="primary"
+                  onClick={() =>
+                    onStartSavedAIPack({
+                      title: pack.title,
+                      mode: pack.mode,
+                      scope: pack.scope === 'corretivo' ? 'geral' : pack.scope,
+                      durationMinutes:
+                        pack.mode === 'simulado'
+                          ? pack.questions.length >= 20
+                            ? 25
+                            : 10
+                          : undefined,
+                      questions: pack.questions,
+                    })
+                  }
+                >
+                  <Play className="h-3 w-3 fill-current" />
+                  <span>Abrir</span>
+                </TactileButton>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Histórico recente */}
       {progress.simuladoHistory.length > 0 && (

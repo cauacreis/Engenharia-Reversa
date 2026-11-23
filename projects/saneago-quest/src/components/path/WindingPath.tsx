@@ -1,6 +1,7 @@
-import { Check, Lock, Play, Star, Trophy } from 'lucide-react';
+import { Check, Lock, Play, Sparkles, Star, Trophy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { LessonMeta, UnitId, UnitMeta } from '../../types/quiz';
+import { TactileButton } from '../ui/TactileButton';
 
 interface WindingPathProps {
   unit: UnitMeta;
@@ -11,6 +12,7 @@ interface WindingPathProps {
   simuladoUnlocked: boolean;
   onSelectLesson: (lesson: LessonMeta) => void;
   onStartSimulado: (unitId: UnitId) => void;
+  onGenerateUnitAI: (unitId: UnitId) => void;
 }
 
 /**
@@ -31,6 +33,7 @@ export function WindingPath({
   simuladoUnlocked,
   onSelectLesson,
   onStartSimulado,
+  onGenerateUnitAI,
 }: WindingPathProps) {
   const totalNodes = lessons.length + 1; // 3 lições + 1 troféu simulado
   const rowHeight = 112;
@@ -199,6 +202,19 @@ export function WindingPath({
             Simulado da Unidade
           </p>
         </div>
+      </div>
+
+      {/* Gerar +5 Questões Inéditas com IA ao final da unidade */}
+      <div className="relative z-10 mt-2 flex justify-center">
+        <TactileButton
+          size="sm"
+          variant="outline"
+          onClick={() => onGenerateUnitAI(unit.id)}
+          className="border-[#00B8FF]/45 text-[#61D5FF] hover:border-[#00B8FF]"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Gerar +5 Questões Inéditas</span>
+        </TactileButton>
       </div>
     </div>
   );

@@ -6,7 +6,14 @@ import {
   getYesterdayDateKey,
   MAX_HEARTS,
 } from '../services/progressRepository';
-import { SimuladoRecord, UnitId, UserProgress } from '../types/quiz';
+import {
+  AnswerAttemptLog,
+  GroqDiagnosisReport,
+  Question,
+  SimuladoRecord,
+  UnitId,
+  UserProgress,
+} from '../types/quiz';
 
 interface CompleteLessonInput {
   lessonId: string;
@@ -24,16 +31,37 @@ interface CompleteSimuladoInput {
   xpEarned: number;
 }
 
+interface RecordAnswerAttemptInput {
+  question: Question;
+  isCorrect: boolean;
+  timeMs: number;
+  userAnswer: string;
+  correctAnswer: string;
+}
+
 interface GameProgressContextValue {
   progress: UserProgress;
   mistakeIds: string[];
   loseHeart: () => void;
   gainHeart: (amount?: number) => void;
-  recordMistake: (questionId: string) => void;
+  recordMistake: (
+    questionId: string,
+    details?: {
+      userAnswer?: string;
+      correctAnswer?: string;
+      topic?: string;
+      unitId?: UnitId;
+      promptSnapshot?: string;
+      tipSnapshot?: string;
+    }
+  ) => void;
+  recordAnswerAttempt: (input: RecordAnswerAttemptInput) => void;
   resolveMistake: (questionId: string) => boolean;
   completeLesson: (input: CompleteLessonInput) => void;
+  completePracticeSession: (xpEarned: number) => void;
   completeMistakeReview: (xpEarned: number) => void;
   completeSimulado: (input: CompleteSimuladoInput) => void;
+  saveDiagnosis: (report: GroqDiagnosisReport) => void;
   isLessonUnlocked: (lessonId: string) => boolean;
   isLessonCompleted: (lessonId: string) => boolean;
   isUnitCompleted: (unitId: UnitId) => boolean;
@@ -104,20 +132,112 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
     }));
   }, []);
 
-  const recordMistake = useCallback((questionId: string) => {
+  const recordMistake = useCallback(
+    (
+      questionId: string,
+      details?: {
+        userAnswer?: string;
+        correctAnswer?: string;
+        topic?: string;
+        unitId?: UnitId;
+        promptSnapshot?: string;
+        tipSnapshot?: string;
+      }
+    ) => {
+      const nowIso = new Date().toISOString();
+      setProgress((prev) => {
+        const existing = prev.mistakes[questionId];
+        return {
+          ...prev,
+          mistakes: {
+            ...prev.mistakes,
+            [questionId]: {
+              questionId,
+              wrongCount: existing ? existing.wrongCount + 1 : 1,
+              lastWrongAt: nowIso,
+              lastUserAnswer: details?.userAnswer ?? existing?.lastUserAnswer,
+              correctAnswer: details?.correctAnswer ?? existing?.correctAnswer,
+              topic: details?.topic ?? existing?.topic,
+              unitId: details?.unitId ?? existing?.unitId,
+              promptSnapshot: details?.promptSnapshot ?? existing?.promptSnapshot,
+              tipSnapshot: details?.tipSnapshot ?? existing?.tipSnapshot,
+            },
+          },
+        };
+      });
+    },
+    []
+  );
+
+  const recordAnswerAttempt = useCallback((input: RecordAnswerAttemptInput) => {
     const nowIso = new Date().toISOString();
+    const safeTimeMs = Math.max(200, Math.min(300000, Math.round(input.timeMs)));
+    const { question, isCorrect, userAnswer, correctAnswer } = input;
+    const topicKey = `${question.unitId}::${question.topic}`;
+
     setProgress((prev) => {
-      const existing = prev.mistakes[questionId];
+      const prevUnit = prev.unitStats[question.unitId] ?? {
+        attempts: 0,
+        correct: 0,
+        totalTimeMs: 0,
+      };
+      const prevTopic = prev.topicStats[topicKey] ?? {
+        unitId: question.unitId,
+        topic: question.topic,
+        attempts: 0,
+        correct: 0,
+        totalTimeMs: 0,
+      };
+
+      const logEntry: AnswerAttemptLog = {
+        questionId: question.id,
+        unitId: question.unitId,
+        topic: question.topic,
+        isCorrect,
+        timeMs: safeTimeMs,
+        userAnswer,
+        correctAnswer,
+        timestamp: nowIso,
+      };
+
+      const nextMistakes = { ...prev.mistakes };
+      if (!isCorrect) {
+        const existing = nextMistakes[question.id];
+        nextMistakes[question.id] = {
+          questionId: question.id,
+          wrongCount: existing ? existing.wrongCount + 1 : 1,
+          lastWrongAt: nowIso,
+          lastUserAnswer: userAnswer,
+          correctAnswer,
+          topic: question.topic,
+          unitId: question.unitId,
+          promptSnapshot: question.prompt,
+          tipSnapshot: question.tip,
+        };
+      }
+
       return {
         ...prev,
-        mistakes: {
-          ...prev.mistakes,
-          [questionId]: {
-            questionId,
-            wrongCount: existing ? existing.wrongCount + 1 : 1,
-            lastWrongAt: nowIso,
+        unitStats: {
+          ...prev.unitStats,
+          [question.unitId]: {
+            attempts: prevUnit.attempts + 1,
+            correct: prevUnit.correct + (isCorrect ? 1 : 0),
+            totalTimeMs: prevUnit.totalTimeMs + safeTimeMs,
           },
         },
+        topicStats: {
+          ...prev.topicStats,
+          [topicKey]: {
+            unitId: question.unitId,
+            topic: question.topic,
+            attempts: prevTopic.attempts + 1,
+            correct: prevTopic.correct + (isCorrect ? 1 : 0),
+            totalTimeMs: prevTopic.totalTimeMs + safeTimeMs,
+          },
+        },
+        recentAttempts: [logEntry, ...prev.recentAttempts].slice(0, 120),
+        mistakes: nextMistakes,
       };
     });
   }, []);
@@ -177,6 +297,26 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
         ...streakInfo,
       };
     });
+  }, []);
+
+  const completePracticeSession = useCallback((xpEarned: number) => {
+    setProgress((prev) => {
+      const streakInfo = bumpStreakForToday(prev);
+      const dailyInfo = addXpToDaily(prev, xpEarned);
+      return {
+        ...prev,
+        xp: prev.xp + Math.max(0, xpEarned),
+        ...dailyInfo,
+        ...streakInfo,
+      };
+    });
+  }, []);
+
+  const saveDiagnosis = useCallback((report: GroqDiagnosisReport) => {
+    setProgress((prev) => ({
+      ...prev,
+      lastDiagnosis: report,
+    }));
   }, []);
 
   const completeSimulado = useCallback((input: CompleteSimuladoInput) => {
@@ -307,10 +447,13 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
     loseHeart,
     gainHeart,
     recordMistake,
+    recordAnswerAttempt,
     resolveMistake,
     completeLesson,
+    completePracticeSession,
     completeMistakeReview,
     completeSimulado,
+    saveDiagnosis,
     isLessonUnlocked,
     isLessonCompleted,
     isUnitCompleted,

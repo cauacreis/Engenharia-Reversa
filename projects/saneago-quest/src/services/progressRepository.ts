@@ -1,7 +1,35 @@
-import { UserProgress } from '../types/quiz';
+import { PerformanceBucket, UnitId, UserProgress } from '../types/quiz';
 
 export const PROGRESS_STORAGE_KEY = 'saneago_quest_progress_v1';
 export const MAX_HEARTS = 5;
+
+function createEmptyUnitStats(): Record<UnitId, PerformanceBucket> {
+  return {
+    portugues: { attempts: 0, correct: 0, totalTimeMs: 0 },
+    matematica: { attempts: 0, correct: 0, totalTimeMs: 0 },
+    informatica: { attempts: 0, correct: 0, totalTimeMs: 0 },
+    saneago: { attempts: 0, correct: 0, totalTimeMs: 0 },
+  };
+}
+
+function normalizeUnitStats(
+  raw: Partial<Record<UnitId, Partial<PerformanceBucket>>> | undefined
+): Record<UnitId, PerformanceBucket> {
+  const base = createEmptyUnitStats();
+  if (!raw || typeof raw !== 'object') return base;
+  const ids: UnitId[] = ['portugues', 'matematica', 'informatica', 'saneago'];
+  for (const id of ids) {
+    const entry = raw[id];
+    if (entry && typeof entry === 'object') {
+      base[id] = {
+        attempts: typeof entry.attempts === 'number' ? Math.max(0, entry.attempts) : 0,
+        correct: typeof entry.correct === 'number' ? Math.max(0, entry.correct) : 0,
+        totalTimeMs: typeof entry.totalTimeMs === 'number' ? Math.max(0, entry.totalTimeMs) : 0,
+      };
+    }
+  }
+  return base;
+}
 
 export function getLocalDateKey(date: Date = new Date()): string {
   const year = date.getFullYear();
@@ -32,6 +60,10 @@ export function createInitialProgress(): UserProgress {
     simuladoHistory: [],
     examChecklist: {},
     soundEnabled: true,
+    unitStats: createEmptyUnitStats(),
+    topicStats: {},
+    recentAttempts: [],
+    lastDiagnosis: null,
   };
 }
 
@@ -83,6 +115,16 @@ function normalizeProgress(raw: Partial<UserProgress> | null | undefined): UserP
     examChecklist:
       raw.examChecklist && typeof raw.examChecklist === 'object' ? raw.examChecklist : {},
     soundEnabled: typeof raw.soundEnabled === 'boolean' ? raw.soundEnabled : true,
+    unitStats: normalizeUnitStats(
+      raw.unitStats as Partial<Record<UnitId, Partial<PerformanceBucket>>> | undefined
+    ),
+    topicStats:
+      raw.topicStats && typeof raw.topicStats === 'object' ? raw.topicStats : {},
+    recentAttempts: Array.isArray(raw.recentAttempts)
+      ? raw.recentAttempts.slice(0, 120)
+      : [],
+    lastDiagnosis:
+      raw.lastDiagnosis && typeof raw.lastDiagnosis === 'object' ? raw.lastDiagnosis : null,
   };
 }
 

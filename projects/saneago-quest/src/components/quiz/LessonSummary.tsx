@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { Award, CheckCircle2, Clock, Flame, Heart, Lightbulb, RotateCcw, Target, XCircle, Zap } from 'lucide-react';
+import { CheckCircle2, Clock, Flame, Heart, Lightbulb, RotateCcw, Target, XCircle, Zap } from 'lucide-react';
 import { QuizSummaryData } from '../../types/quiz';
+import { Mascot } from '../Mascot';
 import { TactileButton } from '../ui/TactileButton';
 
 interface LessonSummaryProps {
@@ -27,14 +28,8 @@ export function LessonSummary({ summary, onFinish, onRetry }: LessonSummaryProps
       >
         {/* Cabeçalho de conquista */}
         <div className="rounded-3xl border-2 border-[#28384A] bg-[#131C26] p-6 sm:p-8 text-center space-y-4">
-          <div
-            className={`mx-auto flex h-20 w-20 items-center justify-center rounded-3xl border-b-[5px] ${
-              isStrong
-                ? 'bg-[#FFC800] border-[#D19D00] text-[#221700]'
-                : 'bg-[#00B8FF] border-[#0088C2] text-[#041824]'
-            }`}
-          >
-            <Award className="h-10 w-10" />
+          <div className="flex justify-center">
+            <Mascot mood={summary.maxCombo >= 3 ? 'combo' : isStrong ? 'happy' : 'idle'} size="md" />
           </div>
 
           <div className="space-y-1">

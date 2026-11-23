@@ -1,8 +1,9 @@
 import { ArrowRight, CalendarCheck, Heart, RotateCcw, ShieldAlert, Target, Trophy } from 'lucide-react';
-import { EXAM_DATE_DISPLAY } from '../../data/examChecklist';
+import { EXAM_DATE_DISPLAY, EXAM_DATE_ISO } from '../../data/examChecklist';
 import { getLessonsByUnit, LESSONS, UNITS } from '../../data/questions';
 import { useGameProgress } from '../../hooks/useGameProgress';
 import { AppTab, LessonMeta, UnitId } from '../../types/quiz';
+import { Mascot } from '../Mascot';
 import { ProgressBar } from '../ui/ProgressBar';
 import { TactileButton } from '../ui/TactileButton';
 import { UnitBanner } from './UnitBanner';
@@ -13,7 +14,14 @@ interface StudyMapViewProps {
   onStartUnitSimulado: (unitId: UnitId) => void;
   onStartGeneralSimulado: () => void;
   onStartMistakeReview: () => void;
+  onGenerateUnitAI: (unitId: UnitId) => void;
   onNavigateTab: (tab: AppTab) => void;
+}
+
+function getDaysUntilExam(): number {
+  const now = new Date();
+  const examDate = new Date(EXAM_DATE_ISO);
+  return Math.max(0, Math.ceil((examDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
 export function StudyMapView({
@@ -21,6 +29,7 @@ export function StudyMapView({
   onStartUnitSimulado,
   onStartGeneralSimulado,
   onStartMistakeReview,
+  onGenerateUnitAI,
   onNavigateTab,
 }: StudyMapViewProps) {
   const {
@@ -35,6 +44,16 @@ export function StudyMapView({
 
   const totalCompleted = Object.keys(progress.completedLessons).length;
   const generalUnlocked = isGeneralSimuladoUnlocked();
+  const daysLeft = getDaysUntilExam();
+
+  const mascotSpeech =
+    progress.hearts === 0
+      ? 'Eita! Sem corações. Vamos revisar seus erros para voltar à trilha agora mesmo!'
+      : progress.streak > 0
+      ? `Ofensiva de ${progress.streak} ${
+          progress.streak === 1 ? 'dia' : 'dias'
+        } ativa! Faltam ${daysLeft} dias para a prova de 06/12/2026.`
+      : `Faltam ${daysLeft} dias para a prova online da Saneago! Lembre: Português vale mais e é o 1º desempate.`;
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-12">
@@ -63,6 +82,17 @@ export function StudyMapView({
                 {totalCompleted}/{LESSONS.length} lições
               </span>
             </div>
+          </div>
+
+          {/* Mascote Pingo na trilha principal com balão contextual */}
+          <div className="mt-5 pt-4 border-t border-[#28384A]/70">
+            <Mascot
+              mood={progress.hearts === 0 ? 'sad' : 'idle'}
+              size="md"
+              accentColor={progress.hearts === 0 ? '#FF4B4B' : '#00B8FF'}
+              speechTitle="Pingo • Engenheiro Saneago"
+              speech={mascotSpeech}
+            />
           </div>
         </div>
 
@@ -114,6 +144,7 @@ export function StudyMapView({
                   simuladoUnlocked={simuladoUnlocked}
                   onSelectLesson={onStartLesson}
                   onStartSimulado={onStartUnitSimulado}
+                  onGenerateUnitAI={onGenerateUnitAI}
                 />
               </div>
             );

@@ -28,7 +28,7 @@ export function BottomNav({
     { id: 'trilha', label: 'Trilha de Estudos', shortLabel: 'Trilha', icon: Compass },
     {
       id: 'erros',
-      label: 'Revisão de Erros',
+      label: 'Relatório & Erros',
       shortLabel: 'Erros',
       icon: RotateCcw,
       badge: mistakeCount > 0 ? mistakeCount : undefined,

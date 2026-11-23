@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, Lightbulb, XCircle } from 'lucide-react';
+import { Lightbulb } from 'lucide-react';
+import { Mascot } from '../Mascot';
 import { TactileButton } from '../ui/TactileButton';
 
 interface FeedbackBannerProps {
@@ -8,6 +9,7 @@ interface FeedbackBannerProps {
   tip: string;
   isLastQuestion: boolean;
   recoveredHeart?: boolean;
+  combo?: number;
   onContinue: () => void;
 }
 
@@ -17,8 +19,11 @@ export function FeedbackBanner({
   tip,
   isLastQuestion,
   recoveredHeart = false,
+  combo = 0,
   onContinue,
 }: FeedbackBannerProps) {
+  const mascotMood = isCorrect ? (combo >= 3 ? 'combo' : 'happy') : 'sad';
+
   return (
     <motion.div
       initial={{ y: 40, opacity: 0 }}
@@ -32,16 +37,8 @@ export function FeedbackBanner({
     >
       <div className="mx-auto flex max-w-4xl flex-col gap-4 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div className="flex items-start gap-3.5 min-w-0">
-          <div
-            className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ${
-              isCorrect ? 'bg-[#58CC02] text-[#071F00]' : 'bg-[#FF4B4B] text-white'
-            }`}
-          >
-            {isCorrect ? (
-              <CheckCircle2 className="h-6 w-6" />
-            ) : (
-              <XCircle className="h-6 w-6" />
-            )}
+          <div className="mt-0.5 shrink-0">
+            <Mascot mood={mascotMood} size="sm" />
           </div>
 
           <div className="space-y-1.5 min-w-0">
@@ -51,7 +48,11 @@ export function FeedbackBanner({
                   isCorrect ? 'text-[#86F23B]' : 'text-[#FF8585]'
                 }`}
               >
-                {isCorrect ? 'Mandou bem!' : 'Atenção na pegadinha!'}
+                {isCorrect
+                  ? combo >= 3
+                    ? `Combo ${combo}x! Pingo orgulhoso!`
+                    : 'Mandou bem!'
+                  : 'Atenção na pegadinha!'}
               </h3>
 
               {recoveredHeart && (
