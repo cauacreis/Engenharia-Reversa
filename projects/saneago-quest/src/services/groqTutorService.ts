@@ -19,10 +19,18 @@ import {
 } from '../types/quiz';
 
 const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions';
-export const GROQ_PRIMARY_MODEL = 'llama-3.3-70b-versatile';
-export const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
+export const GROQ_PRIMARY_MODEL = 'openai/gpt-oss-120b';
+export const GROQ_FALLBACK_MODEL = 'openai/gpt-oss-20b';
+
+export const GROQ_DEFAULT_MODELS = [
+  'openai/gpt-oss-120b',
+  'openai/gpt-oss-20b',
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+] as const;
 
 const GROQ_KEY_STORAGE_KEY = 'saneago_quest_groq_key_v1';
+const GROQ_MODEL_STORAGE_KEY = 'saneago_quest_groq_model_v1';
 const AI_PACKS_STORAGE_KEY = 'saneago_quest_ai_bank_v1';
 
 export class GroqServiceError extends Error {
@@ -86,6 +94,45 @@ export function clearGroqApiKey(): void {
   }
 }
 
+export function getSelectedGroqModel(): string {
+  try {
+    const stored = window.localStorage.getItem(GROQ_MODEL_STORAGE_KEY);
+    if (stored && stored.trim().length > 0) {
+      return stored.trim();
+    }
+  } catch {
+    // Ignorar
+  }
+  return GROQ_PRIMARY_MODEL;
+}
+
+export function saveSelectedGroqModel(model: string): void {
+  try {
+    const trimmed = model.trim();
+    if (!trimmed) {
+      window.localStorage.removeItem(GROQ_MODEL_STORAGE_KEY);
+      return;
+    }
+    window.localStorage.setItem(GROQ_MODEL_STORAGE_KEY, trimmed);
+  } catch {
+    // Ignorar
+  }
+}
+
+function extractJsonBlock(raw: string): string {
+  const trimmed = raw.trim();
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenceMatch && fenceMatch[1]) {
+    return fenceMatch[1].trim();
+  }
+  const firstBrace = trimmed.indexOf('{');
+  const lastBrace = trimmed.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    return trimmed.slice(firstBrace, lastBrace + 1);
+  }
+  return trimmed;
+}
+
 export function loadSavedAIPacks(): SavedAIQuestionPack[] {
   try {
     const raw = window.localStorage.getItem(AI_PACKS_STORAGE_KEY);
@@ -134,6 +181,7 @@ async function callGroqJson<T>(
   messages: Array<{ role: 'system' | 'user'; content: string }>,
   options: {
     apiKeyOverride?: string;
+    modelOverride?: string;
     temperature?: number;
     maxTokens?: number;
   } = {}
@@ -146,7 +194,10 @@ async function callGroqJson<T>(
     );
   }
 
-  const models = [GROQ_PRIMARY_MODEL, GROQ_FALLBACK_MODEL];
+  const preferredModel = options.modelOverride?.trim() || getSelectedGroqModel();
+  const models = Array.from(
+    new Set([preferredModel, ...GROQ_DEFAULT_MODELS])
+  );
   let lastError: Error | null = null;
 
   for (let i = 0; i < models.length; i++) {
@@ -169,7 +220,7 @@ async function callGroqJson<T>(
 
       if (response.status === 401 || response.status === 403) {
         throw new GroqServiceError(
-          'Chave API da Groq inválida ou sem permissão.',
+          'Chave API da Groq inválida ou sem permissão. Verifique sua chave no console.groq.com/keys.',
           'AUTH_ERROR'
         );
       }
@@ -178,7 +229,7 @@ async function callGroqJson<T>(
         const text = await response.text().catch(() => '');
         const code = response.status === 429 ? 'RATE_LIMIT' : 'NETWORK';
         lastError = new GroqServiceError(
-          `Groq retornou status ${response.status}: ${text.slice(0, 180)}`,
+          `Groq retornou status ${response.status} (${model}): ${text.slice(0, 180)}`,
           code
         );
         continue;
@@ -189,15 +240,11 @@ async function callGroqJson<T>(
       };
       const content = payload.choices?.[0]?.message?.content;
       if (!content) {
-        lastError = new GroqServiceError('Resposta vazia da Groq.', 'INVALID_RESPONSE');
+        lastError = new GroqServiceError(`Resposta vazia da Groq (${model}).`, 'INVALID_RESPONSE');
         continue;
       }
 
-      const cleaned = content
-        .trim()
-        .replace(/^```json\s*/i, '')
-        .replace(/```$/i, '')
-        .trim();
+      const cleaned = extractJsonBlock(content);
       const parsed = JSON.parse(cleaned) as T;
       return { data: parsed, modelUsed: model };
     } catch (err) {
@@ -207,7 +254,7 @@ async function callGroqJson<T>(
       lastError =
         err instanceof Error
           ? err
-          : new GroqServiceError('Falha de rede ao consultar Groq.', 'NETWORK');
+          : new GroqServiceError(`Falha de rede ao consultar Groq (${model}).`, 'NETWORK');
     }
   }
 
@@ -217,19 +264,22 @@ async function callGroqJson<T>(
   );
 }
 
-export async function testGroqConnection(apiKeyOverride?: string): Promise<string> {
+export async function testGroqConnection(
+  apiKeyOverride?: string,
+  modelOverride?: string
+): Promise<string> {
   const result = await callGroqJson<{ ok?: boolean; status?: string }>(
     [
       {
         role: 'system',
-        content: 'Responda apenas com um JSON contendo {"ok": true, "status": "conectado"}.',
+        content: 'Você é um validador de API em JSON. Responda estritamente com o JSON {"ok": true, "status": "conectado"}.',
       },
       {
         role: 'user',
-        content: 'Teste de conectividade rápido.',
+        content: 'Responda com o JSON {"ok": true, "status": "conectado"}.',
       },
     ],
-    { apiKeyOverride, temperature: 0, maxTokens: 60 }
+    { apiKeyOverride, modelOverride, temperature: 0.1, maxTokens: 80 }
   );
   return result.modelUsed;
 }

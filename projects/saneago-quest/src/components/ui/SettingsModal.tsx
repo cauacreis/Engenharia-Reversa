@@ -4,9 +4,11 @@ import { useGameProgress } from '../../hooks/useGameProgress';
 import {
   clearGroqApiKey,
   getGroqApiKey,
+  getSelectedGroqModel,
   hasEnvGroqKey,
   hasStoredGroqKey,
   saveGroqApiKey,
+  saveSelectedGroqModel,
   testGroqConnection,
 } from '../../services/groqTutorService';
 import { Modal } from './Modal';
@@ -26,6 +28,7 @@ export function SettingsModal({
   onKeyStatusChanged,
 }: SettingsModalProps) {
   const { progress, setDailyGoal } = useGameProgress();
+  const [selectedModel, setSelectedModel] = useState<string>(getSelectedGroqModel());
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [testing, setTesting] = useState(false);
@@ -42,15 +45,17 @@ export function SettingsModal({
     setStatusMessage(null);
     const current = getGroqApiKey();
     setApiKeyInput(storedActive && current && !envActive ? current : '');
+    setSelectedModel(getSelectedGroqModel());
   }, [envActive, open, storedActive]);
 
   const handleSaveKey = () => {
     saveGroqApiKey(apiKeyInput);
+    saveSelectedGroqModel(selectedModel);
     onKeyStatusChanged?.();
     if (apiKeyInput.trim()) {
       setStatusMessage({
         kind: 'ok',
-        text: 'Chave salva no navegador com sucesso.',
+        text: 'Configurações salvas no navegador com sucesso.',
       });
     } else {
       setStatusMessage({
@@ -82,9 +87,10 @@ export function SettingsModal({
     setTesting(true);
     setStatusMessage(null);
     try {
-      const modelUsed = await testGroqConnection(keyToTest);
+      const modelUsed = await testGroqConnection(keyToTest, selectedModel);
       if (apiKeyInput.trim()) {
         saveGroqApiKey(apiKeyInput);
+        saveSelectedGroqModel(selectedModel);
         onKeyStatusChanged?.();
       }
       setStatusMessage({
@@ -155,6 +161,26 @@ export function SettingsModal({
             >
               {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-bold text-[#92A8BE]">
+              Modelo Groq:
+            </label>
+            <select
+              value={selectedModel}
+              onChange={(e) => {
+                setSelectedModel(e.target.value);
+                saveSelectedGroqModel(e.target.value);
+              }}
+              aria-label="Modelo Groq"
+              className="w-full rounded-xl border-2 border-[#28384A] bg-[#131C26] px-3 py-2 text-xs font-semibold text-[#E8F1F8] focus:border-[#00B8FF] focus:outline-none"
+            >
+              <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (Recomendado — Raciocínio & Diagnóstico)</option>
+              <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Ultra-rápido ~1000 tps)</option>
+              <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Plano Enterprise)</option>
+              <option value="llama-3.1-8b-instant">llama-3.1-8b-instant (Legado)</option>
+            </select>
           </div>
 
           {statusMessage && (
