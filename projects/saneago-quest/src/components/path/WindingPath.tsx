@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, Lock, Play, Sparkles, Star, Trophy } from 'lucide-react';
+import { Check, Crown, Lock, Play, Sparkles, Star, Trophy } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { LessonMeta, UnitId, UnitMeta } from '../../types/quiz';
+import { LessonMasteryLevel, LessonMeta, UnitId, UnitMeta } from '../../types/quiz';
 import { TactileButton } from '../ui/TactileButton';
 
 interface WindingPathProps {
@@ -9,9 +9,12 @@ interface WindingPathProps {
   lessons: LessonMeta[];
   isLessonUnlocked: (lessonId: string) => boolean;
   isLessonCompleted: (lessonId: string) => boolean;
+  getLessonLevel: (lessonId: string) => LessonMasteryLevel;
   getLessonBestAccuracy: (lessonId: string) => number | undefined;
   simuladoUnlocked: boolean;
+  loadingGoldenLessonId?: string | null;
   onSelectLesson: (lesson: LessonMeta, options?: { forceBriefing?: boolean }) => void;
+  onStartGoldenChallenge: (lesson: LessonMeta) => void;
   onStartSimulado: (unitId: UnitId) => void;
   onGenerateUnitAI: (unitId: UnitId) => void;
 }
@@ -30,9 +33,12 @@ export function WindingPath({
   lessons,
   isLessonUnlocked,
   isLessonCompleted,
+  getLessonLevel,
   getLessonBestAccuracy,
   simuladoUnlocked,
+  loadingGoldenLessonId = null,
   onSelectLesson,
+  onStartGoldenChallenge,
   onStartSimulado,
   onGenerateUnitAI,
 }: WindingPathProps) {
@@ -96,6 +102,7 @@ export function WindingPath({
           const d = `M ${from.x} ${from.y} C ${from.x} ${midY}, ${to.x} ${midY}, ${to.x} ${to.y}`;
           const sourceLesson = lessons[idx];
           const segmentDone = sourceLesson ? isLessonCompleted(sourceLesson.id) : false;
+          const segmentGold = sourceLesson ? getLessonLevel(sourceLesson.id) === 3 : false;
 
           return (
             <g key={`path-${idx}`}>
@@ -109,8 +116,8 @@ export function WindingPath({
               <path
                 d={d}
                 fill="none"
-                stroke={segmentDone ? unit.accentColor : '#2B3D50'}
-                strokeOpacity={segmentDone ? 0.65 : 1}
+                stroke={segmentGold ? '#FBBF24' : segmentDone ? unit.accentColor : '#2B3D50'}
+                strokeOpacity={segmentGold ? 0.85 : segmentDone ? 0.65 : 1}
                 strokeWidth="6"
                 strokeDasharray={segmentDone ? undefined : '8 8'}
                 strokeLinecap="round"
@@ -124,11 +131,14 @@ export function WindingPath({
       <div className="relative z-10 flex flex-col items-center">
         {lessons.map((lesson, idx) => {
           const unlocked = isLessonUnlocked(lesson.id);
-          const completed = isLessonCompleted(lesson.id);
+          const level = getLessonLevel(lesson.id);
+          const completed = level >= 1;
+          const isLegendary = level === 3;
           const isCurrent = lesson.id === firstPlayableLessonId;
           const bestAccuracy = getLessonBestAccuracy(lesson.id);
           const offsetX = getSinOffset(idx);
           const isTooltipOpen = openTooltipId === lesson.id;
+          const isLoadingGolden = loadingGoldenLessonId === lesson.id;
 
           return (
             <div
@@ -158,6 +168,13 @@ export function WindingPath({
                   />
                 )}
 
+                {isLegendary && (
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -inset-2 rounded-full border-2 border-[#FBBF24]/60 shadow-[0_0_20px_rgba(251,191,36,0.35)]"
+                  />
+                )}
+
                 <button
                   type="button"
                   disabled={!unlocked}
@@ -167,9 +184,17 @@ export function WindingPath({
                     )
                   }
                   aria-expanded={isTooltipOpen}
-                  aria-label={`${lesson.title} (${completed ? 'Concluída' : unlocked ? 'Disponível' : 'Bloqueada'})`}
+                  aria-label={`${lesson.title} (${
+                    isLegendary
+                      ? 'Lendária Dourada'
+                      : completed
+                      ? `Nível ${level}`
+                      : unlocked
+                      ? 'Disponível'
+                      : 'Bloqueada'
+                  })`}
                   style={
-                    unlocked
+                    unlocked && !isLegendary
                       ? {
                           backgroundColor: unit.accentColor,
                           borderColor: unit.shadeColor,
@@ -178,12 +203,16 @@ export function WindingPath({
                       : undefined
                   }
                   className={`group relative flex h-[72px] w-[72px] items-center justify-center rounded-full border-b-[6px] transition-all duration-100 ${
-                    unlocked
+                    isLegendary
+                      ? 'golden-node-btn cursor-pointer hover:brightness-105 active:translate-y-[4px] active:border-b-0'
+                      : unlocked
                       ? 'cursor-pointer hover:brightness-110 active:translate-y-[4px] active:border-b-0 shadow-lg'
                       : 'cursor-not-allowed bg-[#1D2A38] border-[#0F1720] text-[#5B728A]'
                   }`}
                 >
-                  {completed ? (
+                  {isLegendary ? (
+                    <Crown className="h-8 w-8 fill-current stroke-[2.2]" />
+                  ) : completed ? (
                     <Check className="h-8 w-8 stroke-[3]" />
                   ) : unlocked ? (
                     <Play className="h-7 w-7 fill-current translate-x-0.5" />
@@ -191,10 +220,25 @@ export function WindingPath({
                     <Lock className="h-6 w-6" />
                   )}
 
-                  {completed && bestAccuracy !== undefined && (
-                    <span className="absolute -top-1.5 -right-2 inline-flex items-center gap-0.5 rounded-full bg-[#FFC800] border-2 border-[#0B1117] px-1.5 py-0.5 text-[10px] font-display font-extrabold text-[#1E1500]">
-                      <Star className="h-2.5 w-2.5 fill-current" />
-                      {bestAccuracy}%
+                  {completed && (isLegendary || bestAccuracy !== undefined) && (
+                    <span
+                      className={`absolute -top-1.5 -right-2 inline-flex items-center gap-0.5 rounded-full border-2 border-[#0B1117] px-1.5 py-0.5 text-[10px] font-display font-extrabold ${
+                        isLegendary
+                          ? 'bg-[#F59E0B] text-[#221200]'
+                          : 'bg-[#FFC800] text-[#1E1500]'
+                      }`}
+                    >
+                      {isLegendary ? (
+                        <>
+                          <Trophy className="h-2.5 w-2.5 fill-current" />
+                          <span>Nv.3</span>
+                        </>
+                      ) : (
+                        <>
+                          <Star className="h-2.5 w-2.5 fill-current" />
+                          <span>{bestAccuracy}%</span>
+                        </>
+                      )}
                     </span>
                   )}
                 </button>
@@ -203,17 +247,21 @@ export function WindingPath({
               <div className="mt-1.5 max-w-[190px] text-center">
                 <p
                   className={`text-xs font-display font-bold leading-tight ${
-                    unlocked ? 'text-[#E8F1F8]' : 'text-[#6A8098]'
+                    isLegendary
+                      ? 'text-[#FDE68A]'
+                      : unlocked
+                      ? 'text-[#E8F1F8]'
+                      : 'text-[#6A8098]'
                   }`}
                 >
                   {lesson.order}. {lesson.title}
                 </p>
               </div>
 
-              {/* Tooltip / Popover estilo Duolingo com escolha entre Praticar ou Estudar Teoria */}
+              {/* Tooltip / Popover estilo Duolingo com escolha entre Desafio Dourado, Praticar ou Estudar Teoria */}
               <div
                 style={{ left: `calc(50% - ${offsetX}px)` }}
-                className="pointer-events-none absolute top-[112px] z-40 w-[280px] sm:w-[300px] -translate-x-1/2"
+                className="pointer-events-none absolute top-[112px] z-40 w-[285px] sm:w-[310px] -translate-x-1/2"
               >
                 <AnimatePresence>
                   {isTooltipOpen && unlocked && (
@@ -222,31 +270,52 @@ export function WindingPath({
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.96 }}
                       transition={{ type: 'spring', stiffness: 360, damping: 28 }}
-                      style={{ borderColor: `${unit.accentColor}88` }}
+                      style={{
+                        borderColor: isLegendary ? '#F59E0B' : `${unit.accentColor}88`,
+                      }}
                       className="pointer-events-auto relative rounded-2xl border-2 bg-[#131C26] p-4 shadow-[0_14px_34px_rgba(0,0,0,0.65)] space-y-3 text-left"
                     >
                       <span
                         style={{
                           left: `calc(50% + ${offsetX}px)`,
-                          borderColor: `${unit.accentColor}88`,
+                          borderColor: isLegendary ? '#F59E0B' : `${unit.accentColor}88`,
                         }}
                         className="absolute -top-2 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border-l-2 border-t-2 bg-[#131C26]"
                       />
 
                       <div className="flex items-start justify-between gap-2">
                         <div className="space-y-0.5 min-w-0">
-                          <p
-                            className="font-display text-[11px] font-extrabold uppercase tracking-wider"
-                            style={{ color: unit.accentColor }}
-                          >
-                            Lição {lesson.order}
-                          </p>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p
+                              className="font-display text-[11px] font-extrabold uppercase tracking-wider"
+                              style={{ color: isLegendary ? '#FBBF24' : unit.accentColor }}
+                            >
+                              Lição {lesson.order}
+                            </p>
+                            {level >= 1 && (
+                              <span
+                                className={`rounded-md px-1.5 py-0.5 text-[10px] font-display font-extrabold ${
+                                  level === 3
+                                    ? 'bg-[#F59E0B]/20 text-[#FBBF24] border border-[#F59E0B]/50'
+                                    : level === 2
+                                    ? 'bg-[#00B8FF]/15 text-[#61D5FF]'
+                                    : 'bg-[#58CC02]/15 text-[#86F23B]'
+                                }`}
+                              >
+                                {level === 3
+                                  ? 'Lendária'
+                                  : level === 2
+                                  ? 'Nível 2'
+                                  : 'Nível 1'}
+                              </span>
+                            )}
+                          </div>
                           <h4 className="font-display text-sm font-extrabold text-[#E8F1F8] leading-snug">
                             {lesson.title}
                           </h4>
                         </div>
                         <span className="shrink-0 rounded-lg bg-[#FFC800]/15 border border-[#FFC800]/40 px-2 py-0.5 font-mono text-[11px] font-bold text-[#FFC800]">
-                          +{lesson.xpReward} XP
+                          +{completed ? lesson.xpReward * 2 : lesson.xpReward} XP
                         </span>
                       </div>
 
@@ -255,12 +324,40 @@ export function WindingPath({
                       </p>
 
                       <div className="space-y-2 pt-0.5">
+                        {completed && (
+                          <div className="space-y-1">
+                            <TactileButton
+                              size="sm"
+                              variant="gold"
+                              fullWidth
+                              disabled={isLoadingGolden}
+                              onClick={() => {
+                                setOpenTooltipId(null);
+                                onStartGoldenChallenge(lesson);
+                              }}
+                            >
+                              <Trophy className="h-3.5 w-3.5" />
+                              <span>
+                                {isLoadingGolden
+                                  ? 'Preparando Desafio...'
+                                  : level === 3
+                                  ? '🏆 Refazer Desafio Dourado (2x XP)'
+                                  : '🏆 Desafio Dourado (Lendário)'}
+                              </span>
+                            </TactileButton>
+                            <p className="text-[10px] text-center text-[#FBBF24]/90 font-semibold">
+                              Vale 2x XP • 3 corações • Sem Cola Teórica • Só Difícil/Lendário
+                            </p>
+                          </div>
+                        )}
+
                         <TactileButton
                           size="sm"
                           fullWidth
-                          customBg={unit.accentColor}
-                          customShade={unit.shadeColor}
-                          customText="#071520"
+                          variant={completed ? 'neutral' : 'primary'}
+                          customBg={completed ? undefined : unit.accentColor}
+                          customShade={completed ? undefined : unit.shadeColor}
+                          customText={completed ? undefined : '#071520'}
                           onClick={() => {
                             setOpenTooltipId(null);
                             onSelectLesson(lesson, { forceBriefing: false });

@@ -6,6 +6,7 @@ import {
 } from '../data/editalContext';
 import { getQuestionsByUnit, getUnitMeta, QUESTIONS, UNITS } from '../data/questions';
 import {
+  DifficultyMode,
   FillBlankQuestion,
   GroqDiagnosisReport,
   MistakeRecord,
@@ -18,6 +19,7 @@ import {
   TrueFalseQuestion,
   UnitId,
 } from '../types/quiz';
+import { selectAntiRepetitionQuestions } from './simuladoEngine';
 
 const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions';
 export const GROQ_PRIMARY_MODEL = 'openai/gpt-oss-120b';
@@ -333,15 +335,21 @@ function normalizeUnitId(raw: unknown, fallback: UnitId): UnitId {
   return fallback;
 }
 
-function normalizeDifficulty(raw: unknown): QuestionDifficulty {
-  if (raw === 'facil' || raw === 'medio' || raw === 'dificil') return raw;
-  return 'medio';
+function normalizeDifficulty(
+  raw: unknown,
+  fallback: QuestionDifficulty = 'hard'
+): QuestionDifficulty {
+  if (raw === 'medium' || raw === 'hard' || raw === 'legendary') return raw;
+  if (raw === 'facil' || raw === 'medio') return 'medium';
+  if (raw === 'dificil') return 'hard';
+  return fallback;
 }
 
 export function validateAndNormalizeAIQuestions(
   rawItems: unknown,
   fallbackUnitId: UnitId = 'portugues',
-  lessonTag: string = 'ai-custom'
+  lessonTag: string = 'ai-custom',
+  fallbackDifficulty: QuestionDifficulty = 'hard'
 ): Question[] {
   if (!Array.isArray(rawItems)) return [];
 
@@ -357,11 +365,19 @@ export function validateAndNormalizeAIQuestions(
     const tip = typeof item.tip === 'string' ? item.tip.trim() : '';
     const topic = typeof item.topic === 'string' && item.topic.trim() ? item.topic.trim() : 'Revisão Edital 001/2026';
     const unitId = normalizeUnitId(item.unitId, fallbackUnitId);
-    const difficulty = normalizeDifficulty(item.difficulty);
+    const difficulty = normalizeDifficulty(item.difficulty, fallbackDifficulty);
     const sourceSection =
       typeof item.sourceSection === 'string' && item.sourceSection.trim()
         ? item.sourceSection.trim()
         : 'IA-Edital';
+    const sourceTag =
+      typeof item.sourceTag === 'string' && item.sourceTag.trim()
+        ? item.sourceTag.trim()
+        : 'IA • Estilo Saneago / Patativa';
+    const contextText =
+      typeof item.contextText === 'string' && item.contextText.trim().length > 10
+        ? item.contextText.trim()
+        : undefined;
 
     if (prompt.length < 10 || tip.length < 10) return;
     const promptKey = prompt.toLowerCase();
@@ -386,7 +402,9 @@ export function validateAndNormalizeAIQuestions(
         type: 'multiple-choice',
         topic,
         sourceSection,
+        sourceTag,
         difficulty,
+        ...(contextText ? { contextText } : {}),
         prompt,
         options,
         correctIndex,
@@ -419,7 +437,9 @@ export function validateAndNormalizeAIQuestions(
         type: 'fill-blank',
         topic,
         sourceSection,
+        sourceTag,
         difficulty,
+        ...(contextText ? { contextText } : {}),
         prompt,
         sentenceBefore,
         sentenceAfter,
@@ -444,7 +464,9 @@ export function validateAndNormalizeAIQuestions(
         type: 'true-false',
         topic,
         sourceSection,
+        sourceTag,
         difficulty,
+        ...(contextText ? { contextText } : {}),
         prompt,
         statement,
         correctAnswer: item.correctAnswer,
@@ -613,6 +635,8 @@ export interface GenerateQuestionsInput {
   count: number;
   focusTopics?: string[];
   focusUnitId?: UnitId;
+  difficultyMode?: DifficultyMode;
+  seenQuestionIds?: string[];
 }
 
 function buildScopeDistribution(
@@ -627,6 +651,14 @@ function buildScopeDistribution(
         { unitId: 'matematica', qty: 5 },
         { unitId: 'informatica', qty: 4 },
         { unitId: 'saneago', qty: 4 },
+      ];
+    }
+    if (count === 30) {
+      return [
+        { unitId: 'portugues', qty: 11 },
+        { unitId: 'matematica', qty: 7 },
+        { unitId: 'informatica', qty: 6 },
+        { unitId: 'saneago', qty: 6 },
       ];
     }
     const pt = Math.max(1, Math.round(count * 0.35));
@@ -648,82 +680,90 @@ function buildScopeDistribution(
   return [{ unitId: scope, qty: count }];
 }
 
+const STRICT_AI_PEDAGOGY_RULES = `REGRAS OBRIGATÓRIAS DE RIGOR PEDAGÓGICO (Banca Universidade Patativa — Sem Alternativas Óbvias):
+1. PROIBIDO criar alternativas absurdas, engraçadas, curtas demais ou obviamente falsas.
+2. Todas as 5 alternativas (índices 0 a 4) DEVEM ter tamanho equivalente, vocabulário técnico/formal de concurso e distratores sutis reais:
+   - Em Português: troque apenas uma preposição em regência, mude a vírgula de restritiva/explicativa, inverta causa e consequência em textos densos ("contextText"), ou use questões de assertivas múltiplas (I, II, III — "Estão corretas apenas...").
+   - Em Matemática/Lógica: exija 2 passos de cálculo (ex.: regra de três inversa + %, ou Venn + probabilidade) e construa distratores a partir de erros clássicos de cálculo.
+   - Em Informática: troque ":" por ";" no Excel, atalhos Office PT-BR vs EN, ou protocolos próximos (IMAP vs POP3, Incremental vs Diferencial).
+   - Em Saneago/Marco Legal: misture etapas adjacentes da ETA (Coagulação vs Floculação), metas de 2033 (99% vs 90%) ou os 4 eixos da Lei 11.445/2007.
+3. Priorize questões "multiple_choice" com 5 alternativas (e opcionalmente "contextText" com passagem formal quando houver interpretação/reescrita).
+4. Distribua "correctIndex" de maneira equilibrada entre 0, 1, 2, 3 e 4 (nunca repita sempre o mesmo índice).
+5. Use "difficulty": "hard" ou "legendary". Em toda questão, "tip" deve explicar objetivamente o porquê da resposta e o erro dos distratores.`;
+
 async function generateBatchWithGroq(params: {
   unitId: UnitId;
   qty: number;
   focusTopics?: string[];
   lessonTag: string;
+  difficultyMode?: DifficultyMode;
 }): Promise<{ questions: Question[]; modelUsed: string }> {
   const topicsList =
     params.focusTopics && params.focusTopics.length > 0
       ? params.focusTopics.join('; ')
       : EDITAL_SUBTOPICS[params.unitId].join('; ');
+  const targetDifficulty: QuestionDifficulty =
+    params.difficultyMode === 'legendary' ? 'legendary' : 'hard';
 
   const { data, modelUsed } = await callGroqJson<{ questions?: unknown[] }>(
     [
       { role: 'system', content: EDITAL_SYSTEM_PROMPT },
       {
         role: 'user',
-        content: `Gere EXATAMENTE ${params.qty} questões INÉDITAS no estilo da banca Universidade Patativa do Assaré para a unidade "${params.unitId}".
+        content: `Gere EXATAMENTE ${params.qty} questões INÉDITAS de nível ${
+          targetDifficulty === 'legendary' ? 'Lendário (difícil avançado)' : 'Difícil (Banca Real)'
+        } no estilo da banca Universidade Patativa do Assaré para a unidade "${params.unitId}".
 Tópicos permitidos: ${topicsList}.
 
-Use uma mistura dos 3 formatos compatíveis abaixo (em JSON estrito):
+${STRICT_AI_PEDAGOGY_RULES}
 
-1) Múltipla escolha (5 alternativas estilo banca):
+Estrutura JSON por questão:
+1) Múltipla escolha (5 alternativas — formato preferencial):
 {
   "type": "multiple_choice",
   "unitId": "${params.unitId}",
   "topic": "Nome do tópico",
   "sourceSection": "Edital 001/2026",
-  "difficulty": "facil | medio | dificil",
-  "prompt": "Enunciado completo...",
+  "sourceTag": "IA • Estilo Saneago / Patativa",
+  "difficulty": "${targetDifficulty}",
+  "contextText": "Texto-base opcional (quando houver passagem densa ou cenário)",
+  "prompt": "Enunciado objetivo ou com assertivas I, II, III...",
   "options": ["Alt A", "Alt B", "Alt C", "Alt D", "Alt E"],
   "correctIndex": 0,
-  "tip": "Micro-macete explicativo objetivo (mínimo 25 caracteres)"
+  "tip": "Micro-macete explicativo detalhado (mínimo 25 caracteres)"
 }
 
-2) Completar lacuna:
+2) Completar lacuna (opcional):
 {
   "type": "fill_blank",
   "unitId": "${params.unitId}",
   "topic": "Nome do tópico",
   "sourceSection": "Edital 001/2026",
-  "difficulty": "medio",
-  "prompt": "Complete a lacuna corretamente:",
+  "sourceTag": "IA • Estilo Saneago / Patativa",
+  "difficulty": "${targetDifficulty}",
+  "prompt": "Complete a lacuna conforme a norma/regra:",
   "sentenceBefore": "Texto antes da lacuna",
   "sentenceAfter": "texto depois da lacuna.",
-  "options": ["correta", "distrator 1", "distrator 2", "distrator 3"],
+  "options": ["correta", "distrator sutil 1", "distrator sutil 2", "distrator sutil 3"],
   "correctAnswer": "correta",
   "tip": "Micro-macete explicativo objetivo"
 }
 
-3) Verdadeiro ou Falso:
-{
-  "type": "true_false",
-  "unitId": "${params.unitId}",
-  "topic": "Nome do tópico",
-  "sourceSection": "Edital 001/2026",
-  "difficulty": "facil",
-  "prompt": "Julgue a afirmação:",
-  "statement": "Afirmação clara para julgar como verdadeira ou falsa.",
-  "correctAnswer": true,
-  "tip": "Micro-macete explicativo objetivo"
-}
-
-REGRAS OBRIGATÓRIAS:
-- Em "fill_blank", o valor de "correctAnswer" DEVE estar idêntico dentro do array "options".
-- Em "multiple_choice", "correctIndex" deve ser inteiro de 0 a 4 apontando para a opção correta.
-- Toda questão deve ter "tip" claro com o macete exato.
-- Retorne apenas {"questions": [ ... ]}.`,
+Retorne exclusivamente JSON válido no formato {"questions": [ ... ]}.`,
       },
     ],
-    { temperature: 0.45, maxTokens: 3800 }
+    {
+      temperature: 0.45,
+      maxTokens: 4500,
+      reasoningEffort: 'low',
+    }
   );
 
   const normalized = validateAndNormalizeAIQuestions(
     data.questions,
     params.unitId,
-    params.lessonTag
+    params.lessonTag,
+    targetDifficulty
   );
   return { questions: normalized, modelUsed };
 }
@@ -750,6 +790,7 @@ export async function generateQuestionsWithGroq(
         qty: batchQty,
         focusTopics: input.focusTopics,
         lessonTag: `ai-${input.scope}`,
+        difficultyMode: input.difficultyMode,
       });
       allQuestions.push(...questions);
       lastModel = modelUsed;
@@ -770,20 +811,104 @@ export async function generateQuestionsWithGroq(
   };
 }
 
-function shuffleLocal<T>(items: T[]): T[] {
-  const arr = [...items];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+export async function generateSingleBatchSimuladoWithGroq(params: {
+  scope: UnitId | 'geral';
+  count: number;
+  difficultyMode: DifficultyMode;
+}): Promise<{ questions: Question[]; modelUsed: string }> {
+  const distribution = buildScopeDistribution(params.scope, params.count);
+  const fallbackUnit: UnitId = params.scope === 'geral' ? 'portugues' : params.scope;
+  const targetDifficulty: QuestionDifficulty =
+    params.difficultyMode === 'legendary' ? 'legendary' : 'hard';
+
+  const breakdownDesc = distribution
+    .map(
+      (slice) =>
+        `- "${slice.unitId}": ${slice.qty} questões (tópicos: ${EDITAL_SUBTOPICS[slice.unitId].join('; ')})`
+    )
+    .join('\n');
+
+  try {
+    const { data, modelUsed } = await callGroqJson<{ questions?: unknown[] }>(
+      [
+        { role: 'system', content: EDITAL_SYSTEM_PROMPT },
+        {
+          role: 'user',
+          content: `Elabore um SIMULADO COMPLETO INÉDITO em lote único JSON com EXATAMENTE ${params.count} questões de múltipla escolha (5 alternativas) de nível ${
+            targetDifficulty === 'legendary' ? 'Lendário' : 'Difícil (Banca Real)'
+          }, respeitando esta distribuição exata por unidade:
+${breakdownDesc}
+
+${STRICT_AI_PEDAGOGY_RULES}
+
+Cada item em "questions" deve conter:
+{
+  "type": "multiple_choice",
+  "unitId": "portugues | matematica | informatica | saneago",
+  "topic": "Nome do tópico",
+  "sourceSection": "Edital 001/2026",
+  "sourceTag": "IA • Simulado Inédito Patativa",
+  "difficulty": "${targetDifficulty}",
+  "contextText": "Texto-base opcional",
+  "prompt": "Enunciado denso ou com assertivas I, II, III...",
+  "options": ["Alt A", "Alt B", "Alt C", "Alt D", "Alt E"],
+  "correctIndex": 0,
+  "tip": "Micro-macete explicativo detalhado"
+}
+
+Retorne APENAS o objeto JSON {"questions": [ ... ]} sem texto externo.`,
+        },
+      ],
+      {
+        temperature: 0.45,
+        maxTokens: 6500,
+        reasoningEffort: 'low',
+      }
+    );
+
+    const normalized = validateAndNormalizeAIQuestions(
+      data.questions,
+      fallbackUnit,
+      `ai-sim-${params.scope}`,
+      targetDifficulty
+    );
+
+    if (normalized.length >= Math.min(params.count, 5)) {
+      return {
+        questions: normalized.slice(0, params.count),
+        modelUsed,
+      };
+    }
+  } catch (err) {
+    if (
+      err instanceof GroqServiceError &&
+      (err.code === 'MISSING_KEY' || err.code === 'AUTH_ERROR')
+    ) {
+      throw err;
+    }
   }
-  return arr;
+
+  return generateQuestionsWithGroq({
+    scope: params.scope,
+    count: params.count,
+    difficultyMode: params.difficultyMode,
+  });
 }
 
 export function buildOfflineQuestionsFallback(input: GenerateQuestionsInput): Question[] {
+  const mode = input.difficultyMode ?? 'balanced';
+  const seen = input.seenQuestionIds ?? [];
+
   if (input.scope === 'geral') {
     const dist = buildScopeDistribution('geral', input.count);
-    return dist.flatMap((slice) =>
-      shuffleLocal(getQuestionsByUnit(slice.unitId)).slice(0, slice.qty)
+    return dist.flatMap(
+      (slice) =>
+        selectAntiRepetitionQuestions(
+          getQuestionsByUnit(slice.unitId),
+          slice.qty,
+          seen,
+          mode
+        ).questions
     );
   }
 
@@ -807,10 +932,15 @@ export function buildOfflineQuestionsFallback(input: GenerateQuestionsInput): Qu
             ),
           ];
 
-    return shuffleLocal(pool).slice(0, input.count);
+    return selectAntiRepetitionQuestions(pool, input.count, seen, mode).questions;
   }
 
-  return shuffleLocal(getQuestionsByUnit(input.scope)).slice(0, input.count);
+  return selectAntiRepetitionQuestions(
+    getQuestionsByUnit(input.scope),
+    input.count,
+    seen,
+    mode
+  ).questions;
 }
 
 export interface PingoChatMessage {

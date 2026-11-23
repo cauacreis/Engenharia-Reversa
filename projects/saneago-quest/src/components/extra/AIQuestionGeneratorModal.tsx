@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BookmarkCheck, KeyRound, Play, Sparkles, Trash2 } from 'lucide-react';
 import { getUnitMeta, UNITS } from '../../data/questions';
+import { useGameProgress } from '../../hooks/useGameProgress';
 import {
   buildOfflineQuestionsFallback,
   deleteAIPack,
@@ -50,6 +51,7 @@ export function AIQuestionGeneratorModal({
   onStartGeneratedSession,
   onOpenSettings,
 }: AIQuestionGeneratorModalProps) {
+  const { progress } = useGameProgress();
   const [scope, setScope] = useState<GeneratorScope>(initialScope);
   const [count, setCount] = useState<number>(initialCount);
   const [sessionMode, setSessionMode] = useState<'lesson' | 'simulado'>(initialMode);
@@ -86,7 +88,7 @@ export function AIQuestionGeneratorModal({
       setMissingKey(true);
       setMascotMood('sad');
       setNotice(
-        'Nenhuma chave API da Groq encontrada. Configure sua chave gratuita ou monte um simulado/treino inédito usando o banco offline de 80 questões.'
+        'Nenhuma chave API da Groq encontrada. Configure sua chave gratuita ou monte um simulado/treino inédito usando o banco offline de 160 questões.'
       );
       setGenerating(false);
       return;
@@ -96,6 +98,7 @@ export function AIQuestionGeneratorModal({
       const { questions, modelUsed } = await generateQuestionsWithGroq({
         scope,
         count,
+        difficultyMode: progress.preferredDifficulty,
       });
 
       const title =
@@ -121,7 +124,14 @@ export function AIQuestionGeneratorModal({
         title,
         mode: sessionMode,
         scope,
-        durationMinutes: sessionMode === 'simulado' ? (count >= 20 ? 25 : 10) : undefined,
+        durationMinutes:
+          sessionMode === 'simulado'
+            ? count >= 30
+              ? 40
+              : count >= 20
+                ? 25
+                : 10
+            : undefined,
         questions,
       });
       onClose();
@@ -144,6 +154,8 @@ export function AIQuestionGeneratorModal({
     const questions = buildOfflineQuestionsFallback({
       scope,
       count,
+      difficultyMode: progress.preferredDifficulty,
+      seenQuestionIds: progress.seenQuestionIds,
     });
     const title =
       sessionMode === 'simulado'
@@ -154,7 +166,14 @@ export function AIQuestionGeneratorModal({
       title,
       mode: sessionMode,
       scope,
-      durationMinutes: sessionMode === 'simulado' ? (count >= 20 ? 25 : 10) : undefined,
+      durationMinutes:
+        sessionMode === 'simulado'
+          ? count >= 30
+            ? 40
+            : count >= 20
+              ? 25
+              : 10
+          : undefined,
       questions,
     });
     onClose();
@@ -215,8 +234,8 @@ export function AIQuestionGeneratorModal({
             <p className="text-xs font-display font-extrabold uppercase tracking-wider text-[#92A8BE]">
               2. Quantidade
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              {[5, 10, 20].map((qty) => (
+            <div className="grid grid-cols-4 gap-2">
+              {[5, 10, 20, 30].map((qty) => (
                 <button
                   key={qty}
                   type="button"
@@ -299,7 +318,7 @@ export function AIQuestionGeneratorModal({
                 onClick={handleStartOfflineFallback}
               >
                 <Play className="h-3.5 w-3.5" />
-                <span>Montar com Banco Offline (80q)</span>
+                <span>Montar com Banco Offline (160q)</span>
               </TactileButton>
             </div>
           </div>
@@ -357,9 +376,11 @@ export function AIQuestionGeneratorModal({
                             scope: pack.scope === 'corretivo' ? 'geral' : pack.scope,
                             durationMinutes:
                               pack.mode === 'simulado'
-                                ? pack.questions.length >= 20
-                                  ? 25
-                                  : 10
+                                ? pack.questions.length >= 30
+                                  ? 40
+                                  : pack.questions.length >= 20
+                                    ? 25
+                                    : 10
                                 : undefined,
                             questions: pack.questions,
                           });

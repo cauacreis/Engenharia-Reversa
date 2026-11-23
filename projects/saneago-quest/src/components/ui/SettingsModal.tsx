@@ -135,7 +135,7 @@ export function SettingsModal({
           </div>
 
           <p className="text-xs text-[#92A8BE] leading-relaxed">
-            Opcional: configure sua chave gratuita da Groq para ativar o diagnóstico com IA e a criação ilimitada de questões inéditas. Sem chave, o aplicativo continua funcionando normalmente com o banco de 80 questões.
+            Opcional: configure sua chave gratuita da Groq para ativar o diagnóstico com IA e a criação ilimitada de questões inéditas. Sem chave, o aplicativo continua funcionando normalmente com o banco de 160 questões.
           </p>
 
           {envActive && (

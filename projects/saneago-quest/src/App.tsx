@@ -2,13 +2,23 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   getLessonsByUnit,
   getQuestionById,
-  getQuestionsByLesson,
-  getQuestionsByUnit,
   getUnitMeta,
   QUESTIONS,
   UNITS,
 } from './data/questions';
-import { findAIQuestionById } from './services/groqTutorService';
+import {
+  findAIQuestionById,
+  generateQuestionsWithGroq,
+  generateSingleBatchSimuladoWithGroq,
+  getGroqApiKey,
+  saveAIPack,
+} from './services/groqTutorService';
+import {
+  buildGeneralSimuladoSelection,
+  buildUnitSimuladoSelection,
+  selectLessonQuestions,
+  shuffleQuestions,
+} from './services/simuladoEngine';
 import { GameProgressProvider, useGameProgress } from './hooks/useGameProgress';
 import { BottomNav } from './components/layout/BottomNav';
 import { TopStatsBar } from './components/layout/TopStatsBar';
@@ -25,17 +35,8 @@ import {
 import { Modal } from './components/ui/Modal';
 import { SettingsModal } from './components/ui/SettingsModal';
 import { TactileButton } from './components/ui/TactileButton';
-import { AppTab, LessonMeta, Question, UnitId } from './types/quiz';
+import { AppTab, DifficultyMode, LessonMeta, Question, UnitId } from './types/quiz';
 import { HeartCrack, RotateCcw } from 'lucide-react';
-
-function shuffleArray<T>(items: T[]): T[] {
-  const arr = [...items];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
 
 function SaneagoQuestShell() {
   const {
@@ -54,6 +55,9 @@ function SaneagoQuestShell() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [guideModalUnitId, setGuideModalUnitId] = useState<UnitId | null>(null);
   const [keyBadgeRefresh, setKeyBadgeRefresh] = useState(0);
+  const [loadingGoldenLessonId, setLoadingGoldenLessonId] = useState<string | null>(
+    null
+  );
 
   const [aiGenState, setAiGenState] = useState<{
     open: boolean;
@@ -80,11 +84,13 @@ function SaneagoQuestShell() {
         .filter((q) => !filterUnitId || q.unitId === filterUnitId);
 
       if (pool.length === 0) {
-        pool = shuffleArray(
-          filterUnitId ? getQuestionsByUnit(filterUnitId) : QUESTIONS
+        pool = shuffleQuestions(
+          filterUnitId
+            ? QUESTIONS.filter((q) => q.unitId === filterUnitId)
+            : QUESTIONS
         ).slice(0, 5);
       } else {
-        pool = shuffleArray(pool).slice(0, 8);
+        pool = shuffleQuestions(pool).slice(0, 8);
       }
 
       if (pool.length === 0) return null;
@@ -118,7 +124,12 @@ function SaneagoQuestShell() {
         setNoHeartsModalOpen(true);
         return;
       }
-      const lessonQuestions = getQuestionsByLesson(lesson.id);
+      const { questions: lessonQuestions } = selectLessonQuestions(
+        lesson.id,
+        progress.seenQuestionIds,
+        progress.preferredDifficulty,
+        false
+      );
       if (lessonQuestions.length === 0) return;
 
       const isFirstTime = !isLessonCompleted(lesson.id);
@@ -132,10 +143,75 @@ function SaneagoQuestShell() {
         unitId: lesson.unitId,
         lessonId: lesson.id,
         initialShowBriefing,
+        difficultyMode: progress.preferredDifficulty,
+        disableCheatSheet: progress.preferredDifficulty === 'legendary',
         questions: lessonQuestions,
       });
     },
-    [isLessonCompleted, progress.hearts]
+    [
+      isLessonCompleted,
+      progress.hearts,
+      progress.preferredDifficulty,
+      progress.seenQuestionIds,
+    ]
+  );
+
+  const handleStartGoldenChallenge = useCallback(
+    async (lesson: LessonMeta) => {
+      if (loadingGoldenLessonId) return;
+
+      const unitMeta = getUnitMeta(lesson.unitId);
+      const { questions: staticGoldenPool, allHardUnseenExhausted } =
+        selectLessonQuestions(
+          lesson.id,
+          progress.seenQuestionIds,
+          'legendary',
+          true
+        );
+
+      let finalQuestions = staticGoldenPool;
+      let usedAI = false;
+
+      if (allHardUnseenExhausted && getGroqApiKey()) {
+        setLoadingGoldenLessonId(lesson.id);
+        try {
+          const { questions: aiGoldenQuestions } =
+            await generateQuestionsWithGroq({
+              scope: lesson.unitId,
+              count: 5,
+              focusTopics: [lesson.title, lesson.subtitle],
+              focusUnitId: lesson.unitId,
+              difficultyMode: 'legendary',
+            });
+          if (aiGoldenQuestions.length > 0) {
+            finalQuestions = aiGoldenQuestions;
+            usedAI = true;
+          }
+        } catch {
+          // Fallback silencioso para o banco estático difícil/lendário
+        } finally {
+          setLoadingGoldenLessonId(null);
+        }
+      }
+
+      if (finalQuestions.length === 0) return;
+
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: 'lesson',
+        title: `Desafio Dourado • ${unitMeta.shortTitle} • ${lesson.title}`,
+        unitId: lesson.unitId,
+        lessonId: lesson.id,
+        initialShowBriefing: false,
+        isGoldenChallenge: true,
+        disableCheatSheet: true,
+        sessionMaxHearts: 3,
+        difficultyMode: 'legendary',
+        isAIGeneratedSession: usedAI,
+        questions: finalQuestions,
+      });
+    },
+    [loadingGoldenLessonId, progress.seenQuestionIds]
   );
 
   const handlePracticeFromUnitGuide = useCallback(
@@ -158,39 +234,93 @@ function SaneagoQuestShell() {
     [handleStartLesson, isLessonCompleted, isLessonUnlocked]
   );
 
-  const handleStartUnitSimulado = useCallback((unitId: UnitId) => {
-    const unitMeta = getUnitMeta(unitId);
-    const pool = shuffleArray(getQuestionsByUnit(unitId)).slice(
-      0,
-      unitMeta.simuladoQuestionCount
-    );
-    setQuizSeed((s) => s + 1);
-    setActiveQuiz({
-      mode: 'simulado',
-      title: `Simulado ${unitMeta.title}`,
-      unitId,
-      simuladoScope: unitId,
-      durationMinutes: unitMeta.simuladoDurationMinutes,
-      questions: pool,
-    });
-  }, []);
+  const handleStartUnitSimulado = useCallback(
+    (unitId: UnitId) => {
+      const unitMeta = getUnitMeta(unitId);
+      const selection = buildUnitSimuladoSelection(
+        unitId,
+        progress.seenQuestionIds,
+        progress.preferredDifficulty,
+        unitMeta.simuladoQuestionCount
+      );
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: 'simulado',
+        title: `Simulado ${unitMeta.title}`,
+        unitId,
+        simuladoScope: unitId,
+        durationMinutes: unitMeta.simuladoDurationMinutes,
+        difficultyMode: progress.preferredDifficulty,
+        disableCheatSheet: true,
+        questions: selection.questions,
+      });
+    },
+    [progress.preferredDifficulty, progress.seenQuestionIds]
+  );
 
-  const handleStartGeneralSimulado = useCallback(() => {
-    // 20 questões ponderadas: 7 Português (maior peso), 5 Matemática, 4 Informática, 4 Saneago
-    const ptPool = shuffleArray(getQuestionsByUnit('portugues')).slice(0, 7);
-    const matPool = shuffleArray(getQuestionsByUnit('matematica')).slice(0, 5);
-    const infPool = shuffleArray(getQuestionsByUnit('informatica')).slice(0, 4);
-    const sanPool = shuffleArray(getQuestionsByUnit('saneago')).slice(0, 4);
+  const handleStartGeneralSimulado = useCallback(
+    (count: 20 | 30 = 20) => {
+      const selection = buildGeneralSimuladoSelection(
+        count,
+        progress.seenQuestionIds,
+        progress.preferredDifficulty
+      );
 
-    setQuizSeed((s) => s + 1);
-    setActiveQuiz({
-      mode: 'simulado',
-      title: 'Simulado Geral SANEAGO — Banca Patativa',
-      simuladoScope: 'geral',
-      durationMinutes: 25,
-      questions: [...ptPool, ...matPool, ...infPool, ...sanPool],
-    });
-  }, []);
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: 'simulado',
+        title: `Simulado Geral SANEAGO (${count}q) — Banca Patativa`,
+        simuladoScope: 'geral',
+        durationMinutes: count === 30 ? 40 : 25,
+        difficultyMode: progress.preferredDifficulty,
+        disableCheatSheet: true,
+        questions: selection.questions,
+      });
+    },
+    [progress.preferredDifficulty, progress.seenQuestionIds]
+  );
+
+  const handleGenerateSingleBatchAISimulado = useCallback(
+    async (params: {
+      scope: UnitId | 'geral';
+      count: number;
+      difficultyMode: DifficultyMode;
+    }) => {
+      const { questions, modelUsed } =
+        await generateSingleBatchSimuladoWithGroq(params);
+
+      const scopeLabel =
+        params.scope === 'geral'
+          ? 'Geral Patativa'
+          : getUnitMeta(params.scope).shortTitle;
+      const title = `Simulado IA Inédito • ${scopeLabel} (${questions.length}q)`;
+
+      saveAIPack({
+        id: `pack-${Date.now()}`,
+        title,
+        scope: params.scope,
+        mode: 'simulado',
+        createdAt: new Date().toISOString(),
+        modelUsed,
+        questions,
+      });
+
+      setQuizSeed((s) => s + 1);
+      setActiveQuiz({
+        mode: 'simulado',
+        title,
+        unitId: params.scope === 'geral' ? undefined : params.scope,
+        simuladoScope: params.scope,
+        durationMinutes:
+          params.count >= 30 ? 40 : params.count >= 20 ? 25 : 15,
+        difficultyMode: params.difficultyMode,
+        disableCheatSheet: true,
+        isAIGeneratedSession: true,
+        questions,
+      });
+    },
+    []
+  );
 
   const handleStartGeneratedSession = useCallback(
     (params: {
@@ -211,11 +341,15 @@ function SaneagoQuestShell() {
         unitId: params.scope === 'geral' ? undefined : params.scope,
         simuladoScope: params.mode === 'simulado' ? params.scope : undefined,
         durationMinutes: params.durationMinutes,
+        difficultyMode: progress.preferredDifficulty,
+        disableCheatSheet:
+          params.mode === 'simulado' ||
+          progress.preferredDifficulty === 'legendary',
         isAIGeneratedSession: true,
         questions: params.questions,
       });
     },
-    [progress.hearts]
+    [progress.hearts, progress.preferredDifficulty]
   );
 
   const handleStartCustomTraining = useCallback(
@@ -229,17 +363,23 @@ function SaneagoQuestShell() {
         mode: 'lesson',
         title: params.title,
         unitId: params.unitId,
+        difficultyMode: progress.preferredDifficulty,
+        disableCheatSheet: progress.preferredDifficulty === 'legendary',
         isAIGeneratedSession: true,
         questions: params.questions,
       });
     },
-    [progress.hearts]
+    [progress.hearts, progress.preferredDifficulty]
   );
 
   const handleRetryActiveQuiz = useCallback(() => {
     if (!activeQuiz) return;
     if (activeQuiz.isAIGeneratedSession) {
-      if (activeQuiz.mode === 'lesson' && progress.hearts <= 0) {
+      if (
+        activeQuiz.mode === 'lesson' &&
+        !activeQuiz.isGoldenChallenge &&
+        progress.hearts <= 0
+      ) {
         setActiveQuiz(null);
         setNoHeartsModalOpen(true);
         return;
@@ -248,26 +388,59 @@ function SaneagoQuestShell() {
       setActiveQuiz({
         ...activeQuiz,
         initialShowBriefing: false,
-        questions: shuffleArray(activeQuiz.questions),
+        questions: shuffleQuestions(activeQuiz.questions),
       });
       return;
     }
 
     if (activeQuiz.mode === 'lesson' && activeQuiz.lessonId) {
+      if (activeQuiz.isGoldenChallenge) {
+        const lessonMeta = activeQuiz.unitId
+          ? getLessonsByUnit(activeQuiz.unitId).find(
+              (l) => l.id === activeQuiz.lessonId
+            )
+          : undefined;
+        if (lessonMeta) {
+          void handleStartGoldenChallenge(lessonMeta);
+          return;
+        }
+        const { questions: goldenRetry } = selectLessonQuestions(
+          activeQuiz.lessonId,
+          progress.seenQuestionIds,
+          'legendary',
+          true
+        );
+        setQuizSeed((s) => s + 1);
+        setActiveQuiz({
+          ...activeQuiz,
+          initialShowBriefing: false,
+          questions: goldenRetry,
+        });
+        return;
+      }
+
       if (progress.hearts <= 0) {
         setActiveQuiz(null);
         setNoHeartsModalOpen(true);
         return;
       }
+      const { questions: retryQuestions } = selectLessonQuestions(
+        activeQuiz.lessonId,
+        progress.seenQuestionIds,
+        activeQuiz.difficultyMode ?? progress.preferredDifficulty,
+        false
+      );
       setQuizSeed((s) => s + 1);
       setActiveQuiz({
         ...activeQuiz,
         initialShowBriefing: false,
-        questions: getQuestionsByLesson(activeQuiz.lessonId),
+        questions: retryQuestions,
       });
     } else if (activeQuiz.mode === 'simulado') {
       if (activeQuiz.simuladoScope === 'geral') {
-        handleStartGeneralSimulado();
+        handleStartGeneralSimulado(
+          activeQuiz.questions.length >= 30 ? 30 : 20
+        );
       } else if (activeQuiz.unitId) {
         handleStartUnitSimulado(activeQuiz.unitId);
       }
@@ -277,9 +450,12 @@ function SaneagoQuestShell() {
   }, [
     activeQuiz,
     handleStartGeneralSimulado,
+    handleStartGoldenChallenge,
     handleStartMistakeReview,
     handleStartUnitSimulado,
     progress.hearts,
+    progress.preferredDifficulty,
+    progress.seenQuestionIds,
   ]);
 
   return (
@@ -309,7 +485,9 @@ function SaneagoQuestShell() {
             <main className="flex-1 min-w-0 px-4 py-6 pb-24 md:px-8 md:py-8 md:pb-12">
               {activeTab === 'trilha' && (
                 <StudyMapView
+                  loadingGoldenLessonId={loadingGoldenLessonId}
                   onStartLesson={handleStartLesson}
+                  onStartGoldenChallenge={handleStartGoldenChallenge}
                   onStartUnitSimulado={handleStartUnitSimulado}
                   onStartGeneralSimulado={handleStartGeneralSimulado}
                   onStartMistakeReview={() => handleStartMistakeReview()}
@@ -336,6 +514,7 @@ function SaneagoQuestShell() {
 
               {activeTab === 'simulados' && (
                 <SimuladoHubView
+                  keyRefreshTick={keyBadgeRefresh}
                   onStartUnitSimulado={handleStartUnitSimulado}
                   onStartGeneralSimulado={handleStartGeneralSimulado}
                   onOpenAIGenerator={(scope = 'geral', count = 20) =>
@@ -345,6 +524,9 @@ function SaneagoQuestShell() {
                       count,
                       mode: 'simulado',
                     })
+                  }
+                  onGenerateSingleBatchAISimulado={
+                    handleGenerateSingleBatchAISimulado
                   }
                   onStartSavedAIPack={handleStartGeneratedSession}
                 />

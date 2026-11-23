@@ -8,7 +8,10 @@ import {
 } from '../services/progressRepository';
 import {
   AnswerAttemptLog,
+  DifficultyMode,
   GroqDiagnosisReport,
+  LessonMasteryLevel,
+  LessonProgress,
   Question,
   SimuladoRecord,
   UnitId,
@@ -20,6 +23,8 @@ interface CompleteLessonInput {
   correctCount: number;
   totalCount: number;
   xpEarned: number;
+  isGoldenChallenge?: boolean;
+  answeredQuestionIds?: string[];
 }
 
 interface CompleteSimuladoInput {
@@ -29,6 +34,7 @@ interface CompleteSimuladoInput {
   durationSeconds: number;
   wrongQuestionIds: string[];
   xpEarned: number;
+  answeredQuestionIds?: string[];
 }
 
 interface RecordAnswerAttemptInput {
@@ -58,10 +64,15 @@ interface GameProgressContextValue {
   recordAnswerAttempt: (input: RecordAnswerAttemptInput) => void;
   resolveMistake: (questionId: string) => boolean;
   completeLesson: (input: CompleteLessonInput) => void;
-  completePracticeSession: (xpEarned: number) => void;
-  completeMistakeReview: (xpEarned: number) => void;
+  completePracticeSession: (xpEarned: number, answeredQuestionIds?: string[]) => void;
+  completeMistakeReview: (xpEarned: number, answeredQuestionIds?: string[]) => void;
   completeSimulado: (input: CompleteSimuladoInput) => void;
   saveDiagnosis: (report: GroqDiagnosisReport) => void;
+  getLessonLevel: (lessonId: string) => LessonMasteryLevel;
+  getUnitGoldenLessonCount: (unitId: UnitId) => number;
+  markQuestionsSeen: (questionIds: string[]) => void;
+  resetSeenQuestionIds: () => void;
+  setPreferredDifficulty: (mode: DifficultyMode) => void;
   isLessonUnlocked: (lessonId: string) => boolean;
   isLessonCompleted: (lessonId: string) => boolean;
   isUnitCompleted: (unitId: UnitId) => boolean;
@@ -75,6 +86,20 @@ interface GameProgressContextValue {
 }
 
 const GameProgressContext = createContext<GameProgressContextValue | null>(null);
+
+function mergeSeenIds(prevIds: string[], incoming?: string[]): string[] {
+  if (!incoming || incoming.length === 0) return prevIds;
+  const set = new Set(prevIds);
+  let changed = false;
+  for (const rawId of incoming) {
+    const id = rawId.trim();
+    if (id && !set.has(id)) {
+      set.add(id);
+      changed = true;
+    }
+  }
+  return changed ? Array.from(set) : prevIds;
+}
 
 function bumpStreakForToday(prev: UserProgress): { streak: number; lastStudyDate: string } {
   const today = getLocalDateKey();
@@ -237,6 +262,7 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
           },
         },
         recentAttempts: [logEntry, ...prev.recentAttempts].slice(0, 120),
+        seenQuestionIds: mergeSeenIds(prev.seenQuestionIds, [question.id]),
         mistakes: nextMistakes,
       };
     });
@@ -265,7 +291,31 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
     const nowIso = new Date().toISOString();
 
     setProgress((prev) => {
-      const existing = prev.completedLessons[input.lessonId];
+      const existing = prev.lessonProgress[input.lessonId] ?? prev.completedLessons[input.lessonId];
+      const prevLevel = existing?.level ?? (existing ? 1 : 0);
+      let nextLevel: LessonMasteryLevel;
+      if (input.isGoldenChallenge) {
+        nextLevel = 3;
+      } else if (prevLevel === 0) {
+        nextLevel = 1;
+      } else if (prevLevel === 1) {
+        nextLevel = 2;
+      } else {
+        nextLevel = prevLevel;
+      }
+
+      const updatedLesson: LessonProgress = {
+        level: nextLevel,
+        completions: existing ? existing.completions + 1 : 1,
+        bestAccuracy: existing ? Math.max(existing.bestAccuracy, accuracy) : accuracy,
+        lastCompletedAt: nowIso,
+        ...(input.isGoldenChallenge
+          ? { goldenCompletedAt: nowIso }
+          : existing?.goldenCompletedAt
+          ? { goldenCompletedAt: existing.goldenCompletedAt }
+          : {}),
+      };
+
       const streakInfo = bumpStreakForToday(prev);
       const dailyInfo = addXpToDaily(prev, input.xpEarned);
 
@@ -274,43 +324,52 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
         xp: prev.xp + input.xpEarned,
         ...dailyInfo,
         ...streakInfo,
+        lessonProgress: {
+          ...prev.lessonProgress,
+          [input.lessonId]: updatedLesson,
+        },
         completedLessons: {
           ...prev.completedLessons,
-          [input.lessonId]: {
-            completions: existing ? existing.completions + 1 : 1,
-            bestAccuracy: existing ? Math.max(existing.bestAccuracy, accuracy) : accuracy,
-            lastCompletedAt: nowIso,
-          },
+          [input.lessonId]: updatedLesson,
         },
+        seenQuestionIds: mergeSeenIds(prev.seenQuestionIds, input.answeredQuestionIds),
       };
     });
   }, []);
 
-  const completeMistakeReview = useCallback((xpEarned: number) => {
-    setProgress((prev) => {
-      const streakInfo = bumpStreakForToday(prev);
-      const dailyInfo = addXpToDaily(prev, xpEarned);
-      return {
-        ...prev,
-        xp: prev.xp + Math.max(0, xpEarned),
-        ...dailyInfo,
-        ...streakInfo,
-      };
-    });
-  }, []);
+  const completeMistakeReview = useCallback(
+    (xpEarned: number, answeredQuestionIds?: string[]) => {
+      setProgress((prev) => {
+        const streakInfo = bumpStreakForToday(prev);
+        const dailyInfo = addXpToDaily(prev, xpEarned);
+        return {
+          ...prev,
+          xp: prev.xp + Math.max(0, xpEarned),
+          ...dailyInfo,
+          ...streakInfo,
+          seenQuestionIds: mergeSeenIds(prev.seenQuestionIds, answeredQuestionIds),
+        };
+      });
+    },
+    []
+  );
 
-  const completePracticeSession = useCallback((xpEarned: number) => {
-    setProgress((prev) => {
-      const streakInfo = bumpStreakForToday(prev);
-      const dailyInfo = addXpToDaily(prev, xpEarned);
-      return {
-        ...prev,
-        xp: prev.xp + Math.max(0, xpEarned),
-        ...dailyInfo,
-        ...streakInfo,
-      };
-    });
-  }, []);
+  const completePracticeSession = useCallback(
+    (xpEarned: number, answeredQuestionIds?: string[]) => {
+      setProgress((prev) => {
+        const streakInfo = bumpStreakForToday(prev);
+        const dailyInfo = addXpToDaily(prev, xpEarned);
+        return {
+          ...prev,
+          xp: prev.xp + Math.max(0, xpEarned),
+          ...dailyInfo,
+          ...streakInfo,
+          seenQuestionIds: mergeSeenIds(prev.seenQuestionIds, answeredQuestionIds),
+        };
+      });
+    },
+    []
+  );
 
   const saveDiagnosis = useCallback((report: GroqDiagnosisReport) => {
     setProgress((prev) => ({
@@ -352,13 +411,48 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
         ...streakInfo,
         mistakes: nextMistakes,
         simuladoHistory: [record, ...prev.simuladoHistory].slice(0, 20),
+        seenQuestionIds: mergeSeenIds(prev.seenQuestionIds, input.answeredQuestionIds),
       };
     });
   }, []);
 
+  const markQuestionsSeen = useCallback((questionIds: string[]) => {
+    setProgress((prev) => {
+      const nextSeen = mergeSeenIds(prev.seenQuestionIds, questionIds);
+      if (nextSeen === prev.seenQuestionIds) return prev;
+      return {
+        ...prev,
+        seenQuestionIds: nextSeen,
+      };
+    });
+  }, []);
+
+  const resetSeenQuestionIds = useCallback(() => {
+    setProgress((prev) => ({
+      ...prev,
+      seenQuestionIds: [],
+    }));
+  }, []);
+
+  const setPreferredDifficulty = useCallback((mode: DifficultyMode) => {
+    setProgress((prev) => ({
+      ...prev,
+      preferredDifficulty: mode,
+    }));
+  }, []);
+
+  const getLessonLevel = useCallback(
+    (lessonId: string): LessonMasteryLevel => {
+      const entry = progress.lessonProgress[lessonId] ?? progress.completedLessons[lessonId];
+      if (!entry) return 0;
+      return entry.level ?? 1;
+    },
+    [progress.completedLessons, progress.lessonProgress]
+  );
+
   const isLessonCompleted = useCallback(
-    (lessonId: string) => Boolean(progress.completedLessons[lessonId]),
-    [progress.completedLessons]
+    (lessonId: string) => getLessonLevel(lessonId) >= 1,
+    [getLessonLevel]
   );
 
   const isLessonUnlocked = useCallback(
@@ -369,28 +463,36 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
         if (idx !== -1) {
           if (idx === 0) return true;
           const prevLesson = unitLessons[idx - 1];
-          return Boolean(progress.completedLessons[prevLesson.id]);
+          return getLessonLevel(prevLesson.id) >= 1;
         }
       }
       return false;
     },
-    [progress.completedLessons]
+    [getLessonLevel]
   );
 
   const getUnitCompletedLessonCount = useCallback(
     (unitId: UnitId) => {
       const lessons = getLessonsByUnit(unitId);
-      return lessons.filter((l) => Boolean(progress.completedLessons[l.id])).length;
+      return lessons.filter((l) => getLessonLevel(l.id) >= 1).length;
     },
-    [progress.completedLessons]
+    [getLessonLevel]
+  );
+
+  const getUnitGoldenLessonCount = useCallback(
+    (unitId: UnitId) => {
+      const lessons = getLessonsByUnit(unitId);
+      return lessons.filter((l) => getLessonLevel(l.id) === 3).length;
+    },
+    [getLessonLevel]
   );
 
   const isUnitCompleted = useCallback(
     (unitId: UnitId) => {
       const lessons = getLessonsByUnit(unitId);
-      return lessons.every((l) => Boolean(progress.completedLessons[l.id]));
+      return lessons.every((l) => getLessonLevel(l.id) >= 1);
     },
-    [progress.completedLessons]
+    [getLessonLevel]
   );
 
   const isUnitSimuladoUnlocked = useCallback(
@@ -454,6 +556,11 @@ export function GameProgressProvider({ children }: { children: React.ReactNode }
     completeMistakeReview,
     completeSimulado,
     saveDiagnosis,
+    getLessonLevel,
+    getUnitGoldenLessonCount,
+    markQuestionsSeen,
+    resetSeenQuestionIds,
+    setPreferredDifficulty,
     isLessonUnlocked,
     isLessonCompleted,
     isUnitCompleted,

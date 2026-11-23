@@ -1,7 +1,116 @@
-import { PerformanceBucket, UnitId, UserProgress } from '../types/quiz';
+import {
+  DifficultyMode,
+  LessonMasteryLevel,
+  LessonProgress,
+  PerformanceBucket,
+  UnitId,
+  UserProgress,
+} from '../types/quiz';
 
 export const PROGRESS_STORAGE_KEY = 'saneago_quest_progress_v1';
 export const MAX_HEARTS = 5;
+
+function normalizeDifficultyMode(raw: unknown): DifficultyMode {
+  if (raw === 'balanced' || raw === 'hard' || raw === 'legendary') {
+    return raw;
+  }
+  return 'balanced';
+}
+
+function clampMasteryLevel(rawLevel: unknown, completions: number): LessonMasteryLevel {
+  if (rawLevel === 0 || rawLevel === 1 || rawLevel === 2 || rawLevel === 3) {
+    return rawLevel;
+  }
+  if (completions <= 0) return 0;
+  return (completions >= 2 ? 2 : 1) as LessonMasteryLevel;
+}
+
+function normalizeLessonProgressMap(
+  rawLessonProgress: unknown,
+  rawCompletedLessons: unknown
+): {
+  lessonProgress: Record<string, LessonProgress>;
+  completedLessons: Record<string, LessonProgress>;
+} {
+  const mergedKeys = new Set<string>();
+  const lpObj =
+    rawLessonProgress && typeof rawLessonProgress === 'object'
+      ? (rawLessonProgress as Record<string, Partial<LessonProgress>>)
+      : {};
+  const clObj =
+    rawCompletedLessons && typeof rawCompletedLessons === 'object'
+      ? (rawCompletedLessons as Record<string, Partial<LessonProgress>>)
+      : {};
+
+  Object.keys(lpObj).forEach((k) => mergedKeys.add(k));
+  Object.keys(clObj).forEach((k) => mergedKeys.add(k));
+
+  const lessonProgress: Record<string, LessonProgress> = {};
+  const completedLessons: Record<string, LessonProgress> = {};
+
+  for (const lessonId of mergedKeys) {
+    const primary = lpObj[lessonId];
+    const fallback = clObj[lessonId];
+    const source = primary ?? fallback;
+    if (!source || typeof source !== 'object') continue;
+
+    const completions =
+      typeof source.completions === 'number' ? Math.max(0, Math.round(source.completions)) : 1;
+    const level = clampMasteryLevel(source.level, completions);
+    const bestAccuracy =
+      typeof source.bestAccuracy === 'number'
+        ? Math.min(100, Math.max(0, Math.round(source.bestAccuracy)))
+        : 0;
+    const lastCompletedAt =
+      typeof source.lastCompletedAt === 'string' && source.lastCompletedAt
+        ? source.lastCompletedAt
+        : new Date().toISOString();
+
+    const normalizedEntry: LessonProgress = {
+      level,
+      completions: Math.max(completions, level >= 1 ? 1 : 0),
+      bestAccuracy,
+      lastCompletedAt,
+      ...(typeof source.goldenCompletedAt === 'string' && source.goldenCompletedAt
+        ? { goldenCompletedAt: source.goldenCompletedAt }
+        : {}),
+    };
+
+    lessonProgress[lessonId] = normalizedEntry;
+    if (normalizedEntry.level >= 1) {
+      completedLessons[lessonId] = normalizedEntry;
+    }
+  }
+
+  return { lessonProgress, completedLessons };
+}
+
+function normalizeSeenQuestionIds(
+  rawSeen: unknown,
+  recentAttempts: Array<{ questionId?: unknown }>,
+  mistakes: Record<string, unknown>
+): string[] {
+  const set = new Set<string>();
+  if (Array.isArray(rawSeen)) {
+    for (const id of rawSeen) {
+      if (typeof id === 'string' && id.trim()) {
+        set.add(id.trim());
+      }
+    }
+  } else {
+    for (const attempt of recentAttempts) {
+      if (attempt && typeof attempt.questionId === 'string' && attempt.questionId.trim()) {
+        set.add(attempt.questionId.trim());
+      }
+    }
+    for (const mistakeId of Object.keys(mistakes)) {
+      if (mistakeId.trim()) {
+        set.add(mistakeId.trim());
+      }
+    }
+  }
+  return Array.from(set);
+}
 
 function createEmptyUnitStats(): Record<UnitId, PerformanceBucket> {
   return {
@@ -55,7 +164,10 @@ export function createInitialProgress(): UserProgress {
     maxHearts: MAX_HEARTS,
     streak: 0,
     lastStudyDate: null,
+    lessonProgress: {},
     completedLessons: {},
+    seenQuestionIds: [],
+    preferredDifficulty: 'balanced',
     mistakes: {},
     simuladoHistory: [],
     examChecklist: {},
@@ -97,6 +209,20 @@ function normalizeProgress(raw: Partial<UserProgress> | null | undefined): UserP
       ? Math.min(maxHearts, Math.max(0, Math.round(raw.hearts)))
       : maxHearts;
 
+  const mistakesObj = raw.mistakes && typeof raw.mistakes === 'object' ? raw.mistakes : {};
+  const recentAttempts = Array.isArray(raw.recentAttempts)
+    ? raw.recentAttempts.slice(0, 120)
+    : [];
+  const { lessonProgress, completedLessons } = normalizeLessonProgressMap(
+    raw.lessonProgress,
+    raw.completedLessons
+  );
+  const seenQuestionIds = normalizeSeenQuestionIds(
+    raw.seenQuestionIds,
+    recentAttempts,
+    mistakesObj
+  );
+
   return {
     schemaVersion: 1,
     xp: typeof raw.xp === 'number' ? Math.max(0, raw.xp) : 0,
@@ -108,9 +234,11 @@ function normalizeProgress(raw: Partial<UserProgress> | null | undefined): UserP
     maxHearts,
     streak,
     lastStudyDate,
-    completedLessons:
-      raw.completedLessons && typeof raw.completedLessons === 'object' ? raw.completedLessons : {},
-    mistakes: raw.mistakes && typeof raw.mistakes === 'object' ? raw.mistakes : {},
+    lessonProgress,
+    completedLessons,
+    seenQuestionIds,
+    preferredDifficulty: normalizeDifficultyMode(raw.preferredDifficulty),
+    mistakes: mistakesObj,
     simuladoHistory: Array.isArray(raw.simuladoHistory) ? raw.simuladoHistory : [],
     examChecklist:
       raw.examChecklist && typeof raw.examChecklist === 'object' ? raw.examChecklist : {},
@@ -120,9 +248,7 @@ function normalizeProgress(raw: Partial<UserProgress> | null | undefined): UserP
     ),
     topicStats:
       raw.topicStats && typeof raw.topicStats === 'object' ? raw.topicStats : {},
-    recentAttempts: Array.isArray(raw.recentAttempts)
-      ? raw.recentAttempts.slice(0, 120)
-      : [],
+    recentAttempts,
     lastDiagnosis:
       raw.lastDiagnosis && typeof raw.lastDiagnosis === 'object' ? raw.lastDiagnosis : null,
   };

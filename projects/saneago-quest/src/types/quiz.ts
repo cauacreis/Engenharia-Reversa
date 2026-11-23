@@ -1,6 +1,10 @@
 export type UnitId = 'portugues' | 'matematica' | 'informatica' | 'saneago';
 
-export type QuestionDifficulty = 'facil' | 'medio' | 'dificil';
+export type QuestionDifficulty = 'medium' | 'hard' | 'legendary';
+
+export type DifficultyMode = 'balanced' | 'hard' | 'legendary';
+
+export type LessonMasteryLevel = 0 | 1 | 2 | 3;
 
 export type QuestionType =
   | 'multiple-choice'
@@ -14,7 +18,10 @@ export interface BaseQuestion {
   lessonId: string;
   topic: string;
   sourceSection: string;
+  sourceTag?: string;
   difficulty: QuestionDifficulty;
+  /** Texto-base opcional (ex.: passagem densa de interpretação ou conjunto de assertivas I, II, III) */
+  contextText?: string;
   prompt: string;
   /** Micro-macete exibido imediatamente após confirmar a resposta no modo treino/revisão e no gabarito do simulado */
   tip: string;
@@ -84,11 +91,15 @@ export interface LessonMeta {
   xpReward: number;
 }
 
-export interface LessonCompletion {
+export interface LessonProgress {
+  level: LessonMasteryLevel; // 0: não iniciada, 1: concluída, 2: aprimorada, 3: Lendária/Dourada
   completions: number;
   bestAccuracy: number;
   lastCompletedAt: string;
+  goldenCompletedAt?: string;
 }
+
+export type LessonCompletion = LessonProgress;
 
 export interface MistakeRecord {
   questionId: string;
@@ -165,7 +176,10 @@ export interface UserProgress {
   maxHearts: number;
   streak: number;
   lastStudyDate: string | null;
-  completedLessons: Record<string, LessonCompletion>;
+  lessonProgress: Record<string, LessonProgress>;
+  completedLessons: Record<string, LessonProgress>;
+  seenQuestionIds: string[];
+  preferredDifficulty: DifficultyMode;
   mistakes: Record<string, MistakeRecord>;
   simuladoHistory: SimuladoRecord[];
   examChecklist: Record<string, boolean>;
@@ -201,6 +215,10 @@ export interface QuizSummaryData {
   heartsRecovered: number;
   durationSeconds: number;
   timedOut?: boolean;
+  isGoldenChallenge?: boolean;
+  goldenVictory?: boolean;
+  newLessonLevel?: LessonMasteryLevel;
+  difficultyMode?: DifficultyMode;
   reviewItems?: SimuladoReviewItem[];
 }
 

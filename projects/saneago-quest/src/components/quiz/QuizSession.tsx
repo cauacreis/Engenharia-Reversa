@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Clock, Heart, HeartCrack, RotateCcw, ShieldCheck, X } from 'lucide-react';
+import { BookText, Clock, Crown, Heart, HeartCrack, RotateCcw, ShieldCheck, Trophy, X } from 'lucide-react';
 import { getGuidesByUnit, getLessonGuide } from '../../data/lessonGuides';
 import { getUnitMeta } from '../../data/questions';
 import { useGameProgress } from '../../hooks/useGameProgress';
 import { useSoundEffects } from '../../hooks/useSoundEffects';
 import {
+  DifficultyMode,
   Question,
   QuizSessionMode,
   QuizSummaryData,
@@ -39,6 +40,10 @@ export interface ActiveQuizConfig {
   durationMinutes?: number;
   isAIGeneratedSession?: boolean;
   initialShowBriefing?: boolean;
+  isGoldenChallenge?: boolean;
+  disableCheatSheet?: boolean;
+  sessionMaxHearts?: number;
+  difficultyMode?: DifficultyMode;
   questions: Question[];
 }
 
@@ -98,6 +103,10 @@ export function QuizSession({
   const [selectedTf, setSelectedTf] = useState<boolean | null>(null);
   const [examPairMap, setExamPairMap] = useState<Record<string, string>>({});
 
+  const isGolden = Boolean(config.isGoldenChallenge);
+  const goldenMaxHearts = config.sessionMaxHearts ?? 3;
+  const [sessionHearts, setSessionHearts] = useState<number>(goldenMaxHearts);
+
   const [feedbackState, setFeedbackState] = useState<{
     checked: boolean;
     isCorrect: boolean;
@@ -122,15 +131,20 @@ export function QuizSession({
   const currentQuestion = config.questions[currentIndex];
   const isLastQuestion = currentIndex === config.questions.length - 1;
   const isSimulado = config.mode === 'simulado';
+  const isNoCheatMode =
+    isSimulado ||
+    isGolden ||
+    Boolean(config.disableCheatSheet) ||
+    config.difficultyMode === 'legendary';
 
   const lessonGuide = getLessonGuide(config.lessonId ?? currentQuestion?.lessonId);
   const unitFallbackGuides =
     !lessonGuide && currentQuestion ? getGuidesByUnit(currentQuestion.unitId) : [];
   const hasCheatSheet =
-    !isSimulado && (Boolean(lessonGuide) || unitFallbackGuides.length > 0);
+    !isNoCheatMode && (Boolean(lessonGuide) || unitFallbackGuides.length > 0);
 
   const [showBriefing, setShowBriefing] = useState<boolean>(
-    Boolean(config.initialShowBriefing && !isSimulado && lessonGuide)
+    Boolean(config.initialShowBriefing && !isSimulado && !isGolden && lessonGuide)
   );
   const [showCheatSheet, setShowCheatSheet] = useState(false);
   const [showAskPingo, setShowAskPingo] = useState(false);
@@ -142,7 +156,9 @@ export function QuizSession({
     questionStartedAtRef.current = now;
   }, []);
 
-  const unitAccent = config.unitId
+  const unitAccent = isGolden
+    ? '#FBBF24'
+    : config.unitId
     ? getUnitMeta(config.unitId).accentColor
     : currentQuestion
     ? getUnitMeta(currentQuestion.unitId).accentColor
@@ -175,22 +191,32 @@ export function QuizSession({
         Math.round((Date.now() - startedAtRef.current) / 1000)
       );
       const accuracy = totalCount > 0 ? Math.round((finalCorrect / totalCount) * 100) : 0;
+      const answeredQuestionIds = timedOut
+        ? finalReviewItems
+            .filter((item) => !item.userAnswerSummary.startsWith('Não respondida'))
+            .map((item) => item.question.id)
+        : config.questions.map((q) => q.id);
 
       let xpEarned = finalCorrect * 10 + finalMaxCombo * 2;
       if (config.mode === 'lesson') {
         xpEarned += 15;
-        if (config.isAIGeneratedSession || !config.lessonId) {
-          completePracticeSession(xpEarned);
+        if (isGolden) {
+          xpEarned *= 2;
+        }
+        if ((config.isAIGeneratedSession && !isGolden) || !config.lessonId) {
+          completePracticeSession(xpEarned, answeredQuestionIds);
         } else {
           completeLesson({
             lessonId: config.lessonId,
             correctCount: finalCorrect,
             totalCount,
             xpEarned,
+            isGoldenChallenge: isGolden,
+            answeredQuestionIds,
           });
         }
       } else if (config.mode === 'mistake-review') {
-        completeMistakeReview(xpEarned);
+        completeMistakeReview(xpEarned, answeredQuestionIds);
       } else if (config.mode === 'simulado') {
         xpEarned = finalCorrect * 12 + (accuracy >= 70 ? 25 : 0);
         const wrongIds = finalReviewItems
@@ -203,6 +229,7 @@ export function QuizSession({
           durationSeconds: elapsedSeconds,
           wrongQuestionIds: wrongIds,
           xpEarned,
+          answeredQuestionIds,
         });
       }
 
@@ -221,6 +248,10 @@ export function QuizSession({
         heartsRecovered: finalHeartsRecovered,
         durationSeconds: elapsedSeconds,
         timedOut,
+        isGoldenChallenge: isGolden,
+        goldenVictory: isGolden,
+        newLessonLevel: isGolden ? 3 : undefined,
+        difficultyMode: config.difficultyMode,
         reviewItems: config.mode === 'simulado' ? finalReviewItems : undefined,
       });
     },
@@ -230,6 +261,7 @@ export function QuizSession({
       completePracticeSession,
       completeSimulado,
       config,
+      isGolden,
       playComplete,
     ]
   );
@@ -380,7 +412,11 @@ export function QuizSession({
       playWrong();
       setCombo(0);
       if (config.mode === 'lesson') {
-        loseHeart();
+        if (isGolden) {
+          setSessionHearts((prev) => Math.max(0, prev - 1));
+        } else {
+          loseHeart();
+        }
       }
     }
 
@@ -399,6 +435,7 @@ export function QuizSession({
     feedbackState?.checked,
     finalizeSession,
     gainHeart,
+    isGolden,
     isLastQuestion,
     isSimulado,
     loseHeart,
@@ -418,6 +455,14 @@ export function QuizSession({
   ]);
 
   const handleContinue = useCallback(() => {
+    if (isGolden && sessionHearts <= 0) {
+      resetInputs();
+      return;
+    }
+    if (!isGolden && config.mode === 'lesson' && progress.hearts <= 0) {
+      resetInputs();
+      return;
+    }
     if (isLastQuestion) {
       finalizeSession(correctCount, maxCombo, heartsRecovered, reviewItems, false);
       return;
@@ -425,13 +470,17 @@ export function QuizSession({
     setCurrentIndex((prev) => prev + 1);
     resetInputs();
   }, [
+    config.mode,
     correctCount,
     finalizeSession,
     heartsRecovered,
+    isGolden,
     isLastQuestion,
     maxCombo,
+    progress.hearts,
     resetInputs,
     reviewItems,
+    sessionHearts,
   ]);
 
   // Atalho Enter para confirmar ou continuar + Escape para fechar Cola Teórica
@@ -489,8 +538,10 @@ export function QuizSession({
     return null;
   }
 
+  const outOfGoldenHearts =
+    isGolden && sessionHearts === 0 && !feedbackState?.checked;
   const outOfHeartsInLesson =
-    config.mode === 'lesson' && progress.hearts === 0 && !feedbackState?.checked;
+    config.mode === 'lesson' && !isGolden && progress.hearts === 0 && !feedbackState?.checked;
 
   const unitMeta = getUnitMeta(currentQuestion.unitId);
 
@@ -506,6 +557,22 @@ export function QuizSession({
       />
     );
   }
+
+  const difficultyBadge =
+    currentQuestion.difficulty === 'legendary'
+      ? {
+          label: 'Lendária',
+          classes: 'border-[#F59E0B]/60 bg-[#F59E0B]/15 text-[#FBBF24]',
+        }
+      : currentQuestion.difficulty === 'hard'
+      ? {
+          label: 'Banca Real',
+          classes: 'border-[#FF9600]/55 bg-[#FF9600]/15 text-[#FFB340]',
+        }
+      : {
+          label: 'Médio',
+          classes: 'border-[#00B8FF]/45 bg-[#00B8FF]/10 text-[#61D5FF]',
+        };
 
   return (
     <div className="min-h-dvh flex flex-col bg-[#0B1117]">
@@ -557,6 +624,17 @@ export function QuizSession({
               <ShieldCheck className="h-4 w-4" />
               <span>Modo Recuperação</span>
             </div>
+          ) : isGolden ? (
+            <div
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#F59E0B]/70 bg-[#F59E0B]/15 px-3 py-1.5 font-display text-sm font-extrabold text-[#FBBF24]"
+              title="Desafio Dourado: 3 corações nesta sessão"
+            >
+              <Crown className="h-4 w-4" />
+              <Heart className="h-3.5 w-3.5 fill-[#FF4B4B] text-[#FF4B4B]" />
+              <span>
+                {sessionHearts}/{goldenMaxHearts}
+              </span>
+            </div>
           ) : (
             <div className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#28384A] bg-[#131C26] px-3 py-1.5 font-display text-sm font-extrabold text-[#FF4B4B]">
               <Heart
@@ -575,6 +653,12 @@ export function QuizSession({
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-2">
+              {isGolden && (
+                <span className="inline-flex items-center gap-1 rounded-xl border border-[#F59E0B]/65 bg-[#F59E0B]/20 px-2.5 py-1 text-xs font-display font-extrabold text-[#FDE68A]">
+                  <Trophy className="h-3.5 w-3.5 text-[#FBBF24]" />
+                  <span>Desafio Dourado • 2x XP</span>
+                </span>
+              )}
               <span
                 className="rounded-xl px-2.5 py-1 text-xs font-display font-extrabold"
                 style={{
@@ -584,9 +668,19 @@ export function QuizSession({
               >
                 {unitMeta.shortTitle}
               </span>
+              <span
+                className={`rounded-xl border px-2.5 py-1 text-xs font-display font-extrabold ${difficultyBadge.classes}`}
+              >
+                {difficultyBadge.label}
+              </span>
               {!isSimulado && (
                 <span className="rounded-xl bg-[#131C26] border border-[#28384A] px-2.5 py-1 text-xs font-bold text-[#92A8BE]">
                   {currentQuestion.topic}
+                </span>
+              )}
+              {currentQuestion.sourceTag && (
+                <span className="rounded-xl bg-[#0B1117] border border-[#28384A] px-2.5 py-1 text-[11px] font-semibold text-[#7E96AE]">
+                  {currentQuestion.sourceTag}
                 </span>
               )}
             </div>
@@ -596,7 +690,19 @@ export function QuizSession({
             </span>
           </div>
 
-          <h1 className="font-display text-xl sm:text-2xl font-extrabold leading-snug text-[#E8F1F8]">
+          {currentQuestion.contextText && (
+            <div className="rounded-2xl border border-[#28384A] border-l-4 border-l-[#00B8FF] bg-[#131C26]/90 p-4 sm:p-5 space-y-2">
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-display font-extrabold uppercase tracking-wider text-[#61D5FF]">
+                <BookText className="h-3.5 w-3.5" />
+                <span>Texto / Situação-Base</span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#D6E4F0] leading-relaxed whitespace-pre-line">
+                {currentQuestion.contextText}
+              </p>
+            </div>
+          )}
+
+          <h1 className="font-display text-lg sm:text-2xl font-extrabold leading-snug text-[#E8F1F8] whitespace-pre-line">
             {currentQuestion.prompt}
           </h1>
 
@@ -647,7 +753,9 @@ export function QuizSession({
                   userAnswer: 'Associação incorreta na tentativa',
                   correctAnswer: getCorrectLabel(currentQuestion),
                 });
-                if (config.mode === 'lesson') {
+                if (isGolden) {
+                  setSessionHearts((prev) => Math.max(0, prev - 1));
+                } else if (config.mode === 'lesson') {
                   loseHeart();
                 }
               }}
@@ -718,7 +826,7 @@ export function QuizSession({
 
               {!(currentQuestion.type === 'match-pairs' && !isSimulado) && (
                 <TactileButton
-                  variant={isSimulado ? 'gold' : 'success'}
+                  variant={isSimulado || isGolden ? 'gold' : 'success'}
                   size="lg"
                   disabled={!canConfirmAnswer}
                   onClick={handleConfirm}
@@ -778,6 +886,31 @@ export function QuizSession({
             <TactileButton variant="danger" fullWidth onClick={onStartMistakeReview}>
               <RotateCcw className="h-4 w-4" />
               <span>Revisar Erros e Ganhar Vidas</span>
+            </TactileButton>
+            <TactileButton variant="outline" fullWidth onClick={onExit}>
+              Voltar ao Mapa
+            </TactileButton>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Modal sem corações no Desafio Dourado (sessão com 3 vidas) */}
+      <Modal
+        open={outOfGoldenHearts}
+        onClose={onExit}
+        title="Desafio Dourado encerrado!"
+      >
+        <div className="space-y-5 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F59E0B]/15 border-2 border-[#F59E0B]/50 text-[#FBBF24]">
+            <Crown className="h-8 w-8" />
+          </div>
+          <p className="text-sm text-[#92A8BE] leading-relaxed">
+            Você perdeu os 3 corações do Desafio Dourado (Lendário). Suas vidas globais do mapa foram preservadas — tente novamente quando estiver pronto para o 2x XP!
+          </p>
+          <div className="flex flex-col gap-3">
+            <TactileButton variant="gold" fullWidth onClick={onRetrySession}>
+              <RotateCcw className="h-4 w-4" />
+              <span>Tentar Desafio Dourado Novamente</span>
             </TactileButton>
             <TactileButton variant="outline" fullWidth onClick={onExit}>
               Voltar ao Mapa

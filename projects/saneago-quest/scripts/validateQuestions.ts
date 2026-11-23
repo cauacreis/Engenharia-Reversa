@@ -4,8 +4,10 @@ import {
   UNIT_GUIDE_OVERVIEWS,
 } from '../src/data/lessonGuides';
 import { LESSONS, QUESTIONS, UNITS } from '../src/data/questions';
+import { QuestionDifficulty } from '../src/types/quiz';
 
 const errors: string[] = [];
+const VALID_DIFFICULTIES = new Set<QuestionDifficulty>(['medium', 'hard', 'legendary']);
 
 if (UNITS.length !== 4) {
   errors.push(`Esperado 4 unidades, encontrado ${UNITS.length}`);
@@ -15,8 +17,8 @@ if (LESSONS.length !== 16) {
   errors.push(`Esperado 16 lições, encontrado ${LESSONS.length}`);
 }
 
-if (QUESTIONS.length !== 80) {
-  errors.push(`Esperado exatamente 80 questões estáticas, encontrado ${QUESTIONS.length}`);
+if (QUESTIONS.length !== 160) {
+  errors.push(`Esperado exatamente 160 questões estáticas, encontrado ${QUESTIONS.length}`);
 }
 
 const unitIds = new Set(UNITS.map((u) => u.id));
@@ -25,8 +27,8 @@ const questionIds = new Set<string>();
 
 for (const unit of UNITS) {
   const unitQuestions = QUESTIONS.filter((q) => q.unitId === unit.id);
-  if (unitQuestions.length !== 20) {
-    errors.push(`Unidade ${unit.id} possui ${unitQuestions.length} questões (esperado 20).`);
+  if (unitQuestions.length !== 40) {
+    errors.push(`Unidade ${unit.id} possui ${unitQuestions.length} questões (esperado 40).`);
   }
   const types = new Set(unitQuestions.map((q) => q.type));
   for (const requiredType of ['multiple-choice', 'fill-blank', 'true-false', 'match-pairs'] as const) {
@@ -37,11 +39,33 @@ for (const unit of UNITS) {
 }
 
 for (const lesson of LESSONS) {
-  const count = QUESTIONS.filter((q) => q.lessonId === lesson.id).length;
-  if (count !== 5) {
-    errors.push(`Lição ${lesson.id} possui ${count} questões (esperado 5).`);
+  const lessonQuestions = QUESTIONS.filter((q) => q.lessonId === lesson.id);
+  if (lessonQuestions.length !== 10) {
+    errors.push(`Lição ${lesson.id} possui ${lessonQuestions.length} questões (esperado 10).`);
+  }
+  const mediumCount = lessonQuestions.filter((q) => q.difficulty === 'medium').length;
+  const advancedCount = lessonQuestions.filter(
+    (q) => q.difficulty === 'hard' || q.difficulty === 'legendary'
+  ).length;
+  const legendaryCount = lessonQuestions.filter((q) => q.difficulty === 'legendary').length;
+
+  if (mediumCount !== 5) {
+    errors.push(`Lição ${lesson.id} possui ${mediumCount} questões medium (esperado 5).`);
+  }
+  if (advancedCount !== 5) {
+    errors.push(
+      `Lição ${lesson.id} possui ${advancedCount} questões hard/legendary (esperado 5).`
+    );
+  }
+  if (legendaryCount < 2) {
+    errors.push(
+      `Lição ${lesson.id} possui ${legendaryCount} questões legendary (esperado >= 2).`
+    );
   }
 }
+
+const mcDistribution = [0, 0, 0, 0, 0];
+let fiveOptionMcCount = 0;
 
 for (const q of QUESTIONS) {
   if (questionIds.has(q.id)) {
@@ -55,17 +79,35 @@ for (const q of QUESTIONS) {
   if (!lessonIds.has(q.lessonId)) {
     errors.push(`Questão ${q.id} referencia lição inválida: ${q.lessonId}`);
   }
-  if (!q.tip || q.tip.trim().length < 10) {
-    errors.push(`Questão ${q.id} possui micro-macete (tip) vazio ou muito curto.`);
+  if (!VALID_DIFFICULTIES.has(q.difficulty)) {
+    errors.push(`Questão ${q.id} possui difficulty inválido: ${String(q.difficulty)}`);
+  }
+  if (!q.sourceTag || !q.sourceTag.trim()) {
+    errors.push(`Questão ${q.id} está sem sourceTag preenchida.`);
+  }
+  if (!q.tip || q.tip.trim().length < 15) {
+    errors.push(`Questão ${q.id} possui micro-macete (tip) vazio ou muito curto (< 15 chars).`);
   }
 
   if (q.type === 'multiple-choice') {
     if (q.options.length < 4 || q.correctIndex < 0 || q.correctIndex >= q.options.length) {
       errors.push(`Questão ${q.id} (multiple-choice) possui opções ou correctIndex inválidos.`);
     }
+    const uniqueOpts = new Set(q.options.map((o) => o.trim().toLowerCase()));
+    if (uniqueOpts.size !== q.options.length) {
+      errors.push(`Questão ${q.id} possui alternativas duplicadas.`);
+    }
+    if (q.options.length === 5 && q.correctIndex >= 0 && q.correctIndex < 5) {
+      mcDistribution[q.correctIndex]++;
+      fiveOptionMcCount++;
+    }
   } else if (q.type === 'fill-blank') {
     if (!q.options.includes(q.correctAnswer)) {
       errors.push(`Questão ${q.id} (fill-blank) não contém correctAnswer em options.`);
+    }
+    const uniqueOpts = new Set(q.options.map((o) => o.trim().toLowerCase()));
+    if (uniqueOpts.size !== q.options.length) {
+      errors.push(`Questão ${q.id} (fill-blank) possui opções duplicadas.`);
     }
   } else if (q.type === 'match-pairs') {
     if (q.pairs.length < 3) {
@@ -76,6 +118,20 @@ for (const q of QUESTIONS) {
       errors.push(`Questão ${q.id} (match-pairs) possui IDs de pares duplicados.`);
     }
   }
+}
+
+if (fiveOptionMcCount === 0) {
+  errors.push('Nenhuma questão de múltipla escolha com 5 alternativas encontrada.');
+} else {
+  mcDistribution.forEach((count, idx) => {
+    const pct = (count / fiveOptionMcCount) * 100;
+    const letter = String.fromCharCode(65 + idx);
+    if (pct < 14 || pct > 26) {
+      errors.push(
+        `Distribuição desequilibrada na alternativa ${letter}: ${count}/${fiveOptionMcCount} (${pct.toFixed(1)}%, esperado entre 14% e 26%).`
+      );
+    }
+  });
 }
 
 // Validação dos Guias Teóricos por Unidade (UNIT_GUIDE_OVERVIEWS)
@@ -168,9 +224,27 @@ if (errors.length > 0) {
   throw new Error('FALHA NA VALIDAÇÃO DE QUESTÕES:\n' + errors.map((e) => `- ${e}`).join('\n'));
 }
 
+const difficultyTotals = {
+  medium: QUESTIONS.filter((q) => q.difficulty === 'medium').length,
+  hard: QUESTIONS.filter((q) => q.difficulty === 'hard').length,
+  legendary: QUESTIONS.filter((q) => q.difficulty === 'legendary').length,
+};
+
+const distReport = mcDistribution
+  .map((c, idx) => {
+    const letter = String.fromCharCode(65 + idx);
+    const pct = ((c / fiveOptionMcCount) * 100).toFixed(1);
+    return `${letter}=${c} (${pct}%)`;
+  })
+  .join(' | ');
+
 console.log(
   `OK: ${UNITS.length} unidades, ${LESSONS.length} lições, ${QUESTIONS.length} questões e ${LESSON_GUIDES.length} guias teóricos validados com sucesso.`
 );
+console.log(
+  `Dificuldades: medium=${difficultyTotals.medium}, hard=${difficultyTotals.hard}, legendary=${difficultyTotals.legendary}`
+);
+console.log(`Gabaritos (5 alternativas, n=${fiveOptionMcCount}): ${distReport}`);
 for (const unit of UNITS) {
   const count = QUESTIONS.filter((q) => q.unitId === unit.id).length;
   console.log(`  - ${unit.title}: ${count} questões`);

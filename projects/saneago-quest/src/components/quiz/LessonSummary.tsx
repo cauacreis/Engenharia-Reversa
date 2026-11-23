@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Clock, Flame, Heart, Lightbulb, RotateCcw, Target, XCircle, Zap } from 'lucide-react';
+import { CheckCircle2, Clock, Crown, Flame, Heart, Lightbulb, RotateCcw, Target, XCircle, Zap } from 'lucide-react';
 import { QuizSummaryData } from '../../types/quiz';
 import { Mascot } from '../Mascot';
 import { TactileButton } from '../ui/TactileButton';
@@ -29,6 +29,7 @@ export function LessonSummary({
 }: LessonSummaryProps) {
   const [pingoContext, setPingoContext] = useState<AskPingoContext | null>(null);
   const isStrong = summary.accuracy >= 70;
+  const isGoldenWin = Boolean(summary.isGoldenChallenge && summary.goldenVictory);
 
   return (
     <div className="min-h-dvh bg-[#0B1117] px-4 py-8 sm:py-12">
@@ -38,19 +39,36 @@ export function LessonSummary({
         className="mx-auto max-w-3xl space-y-6"
       >
         {/* Cabeçalho de conquista */}
-        <div className="rounded-3xl border-2 border-[#28384A] bg-[#131C26] p-6 sm:p-8 text-center space-y-4">
+        <div
+          className={`rounded-3xl border-2 p-6 sm:p-8 text-center space-y-4 ${
+            isGoldenWin
+              ? 'border-[#F59E0B] bg-gradient-to-br from-[#2B1D04] via-[#171B22] to-[#131C26] shadow-[0_0_32px_rgba(251,191,36,0.2)]'
+              : 'border-[#28384A] bg-[#131C26]'
+          }`}
+        >
           <div className="flex justify-center">
-            <Mascot mood={summary.maxCombo >= 3 ? 'combo' : isStrong ? 'happy' : 'idle'} size="md" />
+            <Mascot
+              mood={summary.maxCombo >= 3 || isGoldenWin ? 'combo' : isStrong ? 'happy' : 'idle'}
+              size="md"
+              accentColor={isGoldenWin ? '#FBBF24' : '#00B8FF'}
+            />
           </div>
 
-          <div className="space-y-1">
-            <span className="text-xs font-display font-extrabold uppercase tracking-wider text-[#00B8FF]">
-              {summary.mode === 'simulado'
-                ? 'Resultado do Simulado Cronometrado'
-                : summary.mode === 'mistake-review'
-                ? 'Revisão de Erros Concluída'
-                : 'Lição Concluída'}
-            </span>
+          <div className="space-y-1.5">
+            {isGoldenWin ? (
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#F59E0B]/20 border border-[#F59E0B]/60 px-3 py-1 text-xs font-display font-extrabold uppercase tracking-wider text-[#FDE68A]">
+                <Crown className="h-3.5 w-3.5 text-[#FBBF24]" />
+                <span>Nível Lendário (Dourado) Conquistado • 2x XP</span>
+              </span>
+            ) : (
+              <span className="text-xs font-display font-extrabold uppercase tracking-wider text-[#00B8FF]">
+                {summary.mode === 'simulado'
+                  ? 'Resultado do Simulado Cronometrado'
+                  : summary.mode === 'mistake-review'
+                  ? 'Revisão de Erros Concluída'
+                  : 'Lição Concluída'}
+              </span>
+            )}
             <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-[#E8F1F8]">
               {summary.title}
             </h1>

@@ -1,16 +1,19 @@
-import { ArrowRight, CalendarCheck, Heart, RotateCcw, ShieldAlert, Target, Trophy } from 'lucide-react';
+import { ArrowRight, CalendarCheck, Crown, Heart, RotateCcw, ShieldAlert, Target, Trophy } from 'lucide-react';
 import { EXAM_DATE_DISPLAY, EXAM_DATE_ISO } from '../../data/examChecklist';
-import { getLessonsByUnit, LESSONS, UNITS } from '../../data/questions';
+import { getLessonsByUnit, LESSONS, QUESTIONS, UNITS } from '../../data/questions';
 import { useGameProgress } from '../../hooks/useGameProgress';
 import { AppTab, LessonMeta, UnitId } from '../../types/quiz';
 import { Mascot } from '../Mascot';
+import { DifficultySelector } from '../ui/DifficultySelector';
 import { ProgressBar } from '../ui/ProgressBar';
 import { TactileButton } from '../ui/TactileButton';
 import { UnitBanner } from './UnitBanner';
 import { WindingPath } from './WindingPath';
 
 interface StudyMapViewProps {
+  loadingGoldenLessonId?: string | null;
   onStartLesson: (lesson: LessonMeta, options?: { forceBriefing?: boolean }) => void;
+  onStartGoldenChallenge: (lesson: LessonMeta) => void;
   onStartUnitSimulado: (unitId: UnitId) => void;
   onStartGeneralSimulado: () => void;
   onStartMistakeReview: () => void;
@@ -26,7 +29,9 @@ function getDaysUntilExam(): number {
 }
 
 export function StudyMapView({
+  loadingGoldenLessonId = null,
   onStartLesson,
+  onStartGoldenChallenge,
   onStartUnitSimulado,
   onStartGeneralSimulado,
   onStartMistakeReview,
@@ -37,6 +42,9 @@ export function StudyMapView({
   const {
     progress,
     mistakeIds,
+    getLessonLevel,
+    getUnitGoldenLessonCount,
+    setPreferredDifficulty,
     isLessonUnlocked,
     isLessonCompleted,
     isUnitSimuladoUnlocked,
@@ -44,7 +52,8 @@ export function StudyMapView({
     getUnitCompletedLessonCount,
   } = useGameProgress();
 
-  const totalCompleted = Object.keys(progress.completedLessons).length;
+  const totalCompleted = LESSONS.filter((l) => getLessonLevel(l.id) >= 1).length;
+  const totalGolden = LESSONS.filter((l) => getLessonLevel(l.id) === 3).length;
   const generalUnlocked = isGeneralSimuladoUnlocked();
   const daysLeft = getDaysUntilExam();
 
@@ -54,25 +63,25 @@ export function StudyMapView({
       : progress.streak > 0
       ? `Ofensiva de ${progress.streak} ${
           progress.streak === 1 ? 'dia' : 'dias'
-        } ativa! Faltam ${daysLeft} dias para a prova de 06/12/2026.`
-      : `Faltam ${daysLeft} dias para a prova online da Saneago! Lembre: Português vale mais e é o 1º desempate.`;
+        } ativa! Já respondi ${progress.seenQuestionIds.length}/${QUESTIONS.length} questões com você. Faltam ${daysLeft} dias!`
+      : `Faltam ${daysLeft} dias para a prova online da Saneago! Escolha sua dificuldade e avance para o nível Dourado.`;
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-12">
       {/* Coluna principal: Trilha das 4 Unidades */}
-      <div className="space-y-8 lg:col-span-8">
+      <div className="space-y-6 lg:col-span-8">
         {/* Hero compacto da jornada */}
         <div className="hydro-grid-bg relative overflow-hidden rounded-3xl border-2 border-[#28384A] bg-[#131C26] p-5 sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1.5">
               <span className="inline-flex items-center gap-1.5 rounded-xl bg-[#00B8FF]/15 border border-[#00B8FF]/40 px-2.5 py-1 text-xs font-display font-extrabold text-[#00B8FF]">
-                Revisão Intensiva — Edital nº 001/2026
+                Revisão Intensiva — Edital nº 001/2026 ({QUESTIONS.length} questões)
               </span>
               <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-[#E8F1F8]">
                 Trilha de Aprovação SANEAGO
               </h1>
               <p className="text-sm text-[#92A8BE]">
-                Português possui o maior peso e é o critério de desempate. Conclua cada unidade para liberar os simulados cronometrados.
+                Português possui o maior peso e é o critério de desempate. Conclua cada lição e conquiste a maestria Dourada no Desafio Lendário.
               </p>
             </div>
 
@@ -83,20 +92,30 @@ export function StudyMapView({
               <span className="font-display text-2xl font-extrabold text-[#58CC02]">
                 {totalCompleted}/{LESSONS.length} lições
               </span>
+              <span className="inline-flex items-center gap-1 text-xs font-display font-extrabold text-[#FBBF24]">
+                <Crown className="h-3.5 w-3.5" />
+                {totalGolden}/{LESSONS.length} douradas
+              </span>
             </div>
           </div>
 
           {/* Mascote Pingo na trilha principal com balão contextual */}
           <div className="mt-5 pt-4 border-t border-[#28384A]/70">
             <Mascot
-              mood={progress.hearts === 0 ? 'sad' : 'idle'}
+              mood={progress.hearts === 0 ? 'sad' : totalGolden > 0 ? 'happy' : 'idle'}
               size="md"
-              accentColor={progress.hearts === 0 ? '#FF4B4B' : '#00B8FF'}
+              accentColor={progress.hearts === 0 ? '#FF4B4B' : totalGolden > 0 ? '#FBBF24' : '#00B8FF'}
               speechTitle="Pingo • Engenheiro Saneago"
               speech={mascotSpeech}
             />
           </div>
         </div>
+
+        {/* Seletor de Dificuldade Manual visível no topo da Trilha */}
+        <DifficultySelector
+          value={progress.preferredDifficulty}
+          onChange={setPreferredDifficulty}
+        />
 
         {/* Banner de alerta quando está sem corações */}
         {progress.hearts === 0 && (
@@ -120,10 +139,11 @@ export function StudyMapView({
         )}
 
         {/* As 4 Unidades em Trilha */}
-        <div className="space-y-10">
+        <div className="space-y-10 pt-2">
           {UNITS.map((unit) => {
             const unitLessons = getLessonsByUnit(unit.id);
             const completedCount = getUnitCompletedLessonCount(unit.id);
+            const goldenCount = getUnitGoldenLessonCount(unit.id);
             const simuladoUnlocked = isUnitSimuladoUnlocked(unit.id);
 
             return (
@@ -131,6 +151,7 @@ export function StudyMapView({
                 <UnitBanner
                   unit={unit}
                   completedLessonsCount={completedCount}
+                  goldenLessonsCount={goldenCount}
                   simuladoUnlocked={simuladoUnlocked}
                   onStartSimulado={onStartUnitSimulado}
                   onOpenGuide={onOpenUnitGuide}
@@ -141,11 +162,15 @@ export function StudyMapView({
                   lessons={unitLessons}
                   isLessonUnlocked={isLessonUnlocked}
                   isLessonCompleted={isLessonCompleted}
+                  getLessonLevel={getLessonLevel}
                   getLessonBestAccuracy={(lessonId) =>
-                    progress.completedLessons[lessonId]?.bestAccuracy
+                    (progress.lessonProgress[lessonId] ?? progress.completedLessons[lessonId])
+                      ?.bestAccuracy
                   }
                   simuladoUnlocked={simuladoUnlocked}
+                  loadingGoldenLessonId={loadingGoldenLessonId}
                   onSelectLesson={onStartLesson}
+                  onStartGoldenChallenge={onStartGoldenChallenge}
                   onStartSimulado={onStartUnitSimulado}
                   onGenerateUnitAI={onGenerateUnitAI}
                 />
@@ -225,7 +250,7 @@ export function StudyMapView({
             <h3 className="font-display text-lg font-extrabold">Simulado Final Patativa</h3>
           </div>
           <p className="text-xs text-[#92A8BE] leading-relaxed">
-            20 questões cronometradas (25 min) com peso maior em Português e zero dicas durante a prova.
+            20 ou 30 questões cronometradas sem repetição automática e zero dicas durante a prova.
           </p>
           <TactileButton
             variant={generalUnlocked ? 'gold' : 'outline'}
