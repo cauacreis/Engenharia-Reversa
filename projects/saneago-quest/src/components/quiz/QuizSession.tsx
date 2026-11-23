@@ -21,6 +21,7 @@ import {
 import { Modal } from '../ui/Modal';
 import { ProgressBar } from '../ui/ProgressBar';
 import { TactileButton } from '../ui/TactileButton';
+import { AskPingoDrawer } from './AskPingoDrawer';
 import { FeedbackBanner } from './FeedbackBanner';
 import { LessonBriefingStep } from './LessonBriefingStep';
 import { LessonSummary } from './LessonSummary';
@@ -43,9 +44,11 @@ export interface ActiveQuizConfig {
 
 interface QuizSessionProps {
   config: ActiveQuizConfig;
+  keyRefreshTick?: number;
   onExit: () => void;
   onStartMistakeReview: () => void;
   onRetrySession: () => void;
+  onOpenSettings: () => void;
 }
 
 function getCorrectLabel(question: Question): string {
@@ -70,9 +73,11 @@ function formatClock(seconds: number): string {
 
 export function QuizSession({
   config,
+  keyRefreshTick = 0,
   onExit,
   onStartMistakeReview,
   onRetrySession,
+  onOpenSettings,
 }: QuizSessionProps) {
   const {
     progress,
@@ -97,6 +102,7 @@ export function QuizSession({
     checked: boolean;
     isCorrect: boolean;
     recoveredHeart: boolean;
+    userAnswerSummary: string;
   } | null>(null);
 
   const [correctCount, setCorrectCount] = useState(0);
@@ -127,6 +133,7 @@ export function QuizSession({
     Boolean(config.initialShowBriefing && !isSimulado && lessonGuide)
   );
   const [showCheatSheet, setShowCheatSheet] = useState(false);
+  const [showAskPingo, setShowAskPingo] = useState(false);
 
   const handleFinishBriefing = useCallback(() => {
     setShowBriefing(false);
@@ -147,6 +154,7 @@ export function QuizSession({
     setSelectedTf(null);
     setExamPairMap({});
     setFeedbackState(null);
+    setShowAskPingo(false);
     questionStartedAtRef.current = Date.now();
   }, []);
 
@@ -289,7 +297,7 @@ export function QuizSession({
 
     if (currentQuestion.type === 'multiple-choice' && selectedMc !== null) {
       isCorrect = selectedMc === currentQuestion.correctIndex;
-      userSummary = currentQuestion.options[selectedMc];
+      userSummary = `${String.fromCharCode(65 + selectedMc)}) ${currentQuestion.options[selectedMc]}`;
     } else if (currentQuestion.type === 'fill-blank' && selectedBlank !== null) {
       isCorrect = selectedBlank === currentQuestion.correctAnswer;
       userSummary = selectedBlank;
@@ -380,6 +388,7 @@ export function QuizSession({
       checked: true,
       isCorrect,
       recoveredHeart: recovered,
+      userAnswerSummary: userSummary,
     });
   }, [
     combo,
@@ -437,7 +446,7 @@ export function QuizSession({
       return () => window.removeEventListener('keydown', onEsc);
     }
 
-    if (summary || showExitModal || showBriefing) return;
+    if (summary || showExitModal || showBriefing || showAskPingo) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Enter') return;
       if (feedbackState?.checked) {
@@ -455,6 +464,7 @@ export function QuizSession({
     feedbackState?.checked,
     handleConfirm,
     handleContinue,
+    showAskPingo,
     showBriefing,
     showCheatSheet,
     showExitModal,
@@ -469,6 +479,8 @@ export function QuizSession({
         onRetry={() => {
           onRetrySession();
         }}
+        onOpenSettings={onOpenSettings}
+        keyRefreshTick={keyRefreshTick}
       />
     );
   }
@@ -670,6 +682,9 @@ export function QuizSession({
                   checked: true,
                   isCorrect: !hadAnyMistake,
                   recoveredHeart: recovered,
+                  userAnswerSummary: hadAnyMistake
+                    ? 'Teve erro ao associar os pares'
+                    : getCorrectLabel(currentQuestion),
                 });
               }}
             />
@@ -688,6 +703,7 @@ export function QuizSession({
             recoveredHeart={feedbackState.recoveredHeart}
             combo={combo}
             onContinue={handleContinue}
+            onAskPingo={isSimulado ? undefined : () => setShowAskPingo(true)}
           />
         ) : (
           <div className="border-t border-[#28384A] px-4 py-4 sm:px-6">
@@ -884,6 +900,26 @@ export function QuizSession({
           </div>
         )}
       </AnimatePresence>
+
+      {/* Drawer interativo "Pergunte ao Pingo" pós-resposta */}
+      {!isSimulado && (
+        <AskPingoDrawer
+          open={showAskPingo}
+          context={
+            feedbackState?.checked
+              ? {
+                  question: currentQuestion,
+                  selectedOption: feedbackState.userAnswerSummary,
+                  correctLabel: getCorrectLabel(currentQuestion),
+                  isCorrect: feedbackState.isCorrect,
+                }
+              : null
+          }
+          keyRefreshTick={keyRefreshTick}
+          onClose={() => setShowAskPingo(false)}
+          onOpenSettings={onOpenSettings}
+        />
+      )}
     </div>
   );
 }

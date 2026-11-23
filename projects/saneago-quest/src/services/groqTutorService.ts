@@ -3,7 +3,7 @@ import {
   EDITAL_SYSTEM_PROMPT,
   EDITAL_WEIGHTS,
 } from '../data/editalContext';
-import { getQuestionsByUnit, QUESTIONS, UNITS } from '../data/questions';
+import { getQuestionsByUnit, getUnitMeta, QUESTIONS, UNITS } from '../data/questions';
 import {
   FillBlankQuestion,
   GroqDiagnosisReport,
@@ -177,14 +177,23 @@ export function findAIQuestionById(questionId: string): Question | undefined {
   return undefined;
 }
 
-async function callGroqJson<T>(
-  messages: Array<{ role: 'system' | 'user'; content: string }>,
-  options: {
-    apiKeyOverride?: string;
-    modelOverride?: string;
-    temperature?: number;
-    maxTokens?: number;
-  } = {}
+export interface GroqChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+interface CallGroqOptions {
+  apiKeyOverride?: string;
+  modelOverride?: string;
+  temperature?: number;
+  maxTokens?: number;
+  jsonMode?: boolean;
+}
+
+async function callGroqWithFallback<T>(
+  messages: GroqChatMessage[],
+  options: CallGroqOptions,
+  parseResponse: (rawContent: string) => T
 ): Promise<{ data: T; modelUsed: string }> {
   const apiKey = options.apiKeyOverride?.trim() || getGroqApiKey();
   if (!apiKey) {
@@ -203,19 +212,23 @@ async function callGroqJson<T>(
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     try {
+      const body: Record<string, unknown> = {
+        model,
+        messages,
+        temperature: options.temperature ?? 0.35,
+        max_tokens: options.maxTokens ?? 3200,
+      };
+      if (options.jsonMode) {
+        body.response_format = { type: 'json_object' };
+      }
+
       const response = await fetch(GROQ_CHAT_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          model,
-          messages,
-          temperature: options.temperature ?? 0.35,
-          max_tokens: options.maxTokens ?? 3200,
-          response_format: { type: 'json_object' },
-        }),
+        body: JSON.stringify(body),
       });
 
       if (response.status === 401 || response.status === 403) {
@@ -239,13 +252,12 @@ async function callGroqJson<T>(
         choices?: Array<{ message?: { content?: string } }>;
       };
       const content = payload.choices?.[0]?.message?.content;
-      if (!content) {
+      if (!content || !content.trim()) {
         lastError = new GroqServiceError(`Resposta vazia da Groq (${model}).`, 'INVALID_RESPONSE');
         continue;
       }
 
-      const cleaned = extractJsonBlock(content);
-      const parsed = JSON.parse(cleaned) as T;
+      const parsed = parseResponse(content);
       return { data: parsed, modelUsed: model };
     } catch (err) {
       if (err instanceof GroqServiceError && err.code === 'AUTH_ERROR') {
@@ -262,6 +274,29 @@ async function callGroqJson<T>(
     lastError ??
     new GroqServiceError('Não foi possível obter resposta da Groq.', 'NETWORK')
   );
+}
+
+async function callGroqJson<T>(
+  messages: Array<{ role: 'system' | 'user'; content: string }>,
+  options: Omit<CallGroqOptions, 'jsonMode'> = {}
+): Promise<{ data: T; modelUsed: string }> {
+  return callGroqWithFallback<T>(
+    messages,
+    { ...options, jsonMode: true },
+    (content) => JSON.parse(extractJsonBlock(content)) as T
+  );
+}
+
+async function callGroqText(
+  messages: GroqChatMessage[],
+  options: Omit<CallGroqOptions, 'jsonMode'> = {}
+): Promise<{ text: string; modelUsed: string }> {
+  const { data, modelUsed } = await callGroqWithFallback<string>(
+    messages,
+    { ...options, jsonMode: false },
+    (content) => content.trim()
+  );
+  return { text: data, modelUsed };
 }
 
 export async function testGroqConnection(
@@ -771,4 +806,115 @@ export function buildOfflineQuestionsFallback(input: GenerateQuestionsInput): Qu
   }
 
   return shuffleLocal(getQuestionsByUnit(input.scope)).slice(0, input.count);
+}
+
+export interface PingoChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface AskPingoAboutQuestionParams {
+  question: Question;
+  selectedOption: string;
+  history: PingoChatMessage[];
+  userPrompt: string;
+}
+
+export interface AskPingoResponse {
+  answer: string;
+  modelUsed: string;
+}
+
+function formatQuestionContextForPingo(
+  question: Question,
+  selectedOption: string
+): string {
+  const unitTitle = getUnitMeta(question.unitId).title;
+  const lines: string[] = [
+    `Unidade: ${unitTitle}`,
+    `Tópico: ${question.topic}`,
+    `Enunciado: ${question.prompt}`,
+  ];
+
+  if (question.type === 'multiple-choice') {
+    lines.push('Alternativas:');
+    question.options.forEach((opt, idx) => {
+      const letter = String.fromCharCode(65 + idx);
+      lines.push(`  ${letter}) ${opt}`);
+    });
+    const correctLetter = String.fromCharCode(65 + question.correctIndex);
+    lines.push(
+      `Gabarito oficial: ${correctLetter}) ${question.options[question.correctIndex]}`
+    );
+  } else if (question.type === 'fill-blank') {
+    const sentence = `${question.sentenceBefore ? `${question.sentenceBefore} ` : ''}___ ${question.sentenceAfter}`.trim();
+    lines.push(`Frase com lacuna: "${sentence}"`);
+    lines.push(`Opções: ${question.options.join(' | ')}`);
+    lines.push(`Gabarito oficial: ${question.correctAnswer}`);
+  } else if (question.type === 'true-false') {
+    lines.push(`Afirmação: ${question.statement}`);
+    lines.push(
+      `Gabarito oficial: ${question.correctAnswer ? 'Verdadeiro' : 'Falso'}`
+    );
+  } else if (question.type === 'match-pairs') {
+    lines.push('Pares corretos:');
+    question.pairs.forEach((p) => {
+      lines.push(`  - ${p.left} ↔ ${p.right}`);
+    });
+  }
+
+  lines.push(`Resposta marcada pelo aluno: ${selectedOption || 'Não informada'}`);
+  lines.push(`Explicação / Micro-macete base: ${question.tip}`);
+
+  return lines.join('\n');
+}
+
+export async function askPingoAboutQuestion(
+  params: AskPingoAboutQuestionParams
+): Promise<AskPingoResponse> {
+  const questionContext = formatQuestionContextForPingo(
+    params.question,
+    params.selectedOption
+  );
+
+  const systemPrompt = `${EDITAL_SYSTEM_PROMPT}
+
+PAPEL NESTA CONVERSA:
+Você é o **Pingo**, a gota d'água engenheira da SANEAGO e tutor do aplicativo Saneago Quest.
+O candidato acabou de responder uma questão e abriu o chat com você para tirar dúvidas.
+
+ESTILO E REGRAS DE RESPOSTA:
+1. Seja direto, didático e bem-humorado, sempre focado nas pegadinhas da banca Universidade Patativa do Assaré (Edital SANEAGO 001/2026).
+2. Você JÁ conhece o enunciado, todas as alternativas, o gabarito e o que o aluno marcou (abaixo). Não peça para ele repetir a questão.
+3. Responda de forma curta: **no máximo 3 a 4 parágrafos curtos ou bullet points** diretos ao ponto.
+4. Use analogias simples e linguagem do dia a dia — evite "gramatiquês" ou "juridiquês" pesado.
+5. Destaque palavras-chave, regras mnemônicas e letras das alternativas em **negrito** (ex: **alternativa B**, **regra do MA-NÉ**).
+6. Nunca invente alternativas ou afirmações que não existam na questão abaixo.
+
+DADOS COMPLETOS DA QUESTÃO ATUAL:
+${questionContext}`;
+
+  const cleanHistory = params.history
+    .filter((m) => m.content.trim().length > 0)
+    .slice(-10)
+    .map((m) => ({
+      role: m.role,
+      content: m.content.trim(),
+    }));
+
+  const messages: GroqChatMessage[] = [
+    { role: 'system', content: systemPrompt },
+    ...cleanHistory,
+    { role: 'user', content: params.userPrompt.trim() },
+  ];
+
+  const { text, modelUsed } = await callGroqText(messages, {
+    temperature: 0.45,
+    maxTokens: 700,
+  });
+
+  return {
+    answer: text,
+    modelUsed,
+  };
 }

@@ -11,6 +11,7 @@ interface FeedbackBannerProps {
   recoveredHeart?: boolean;
   combo?: number;
   onContinue: () => void;
+  onAskPingo?: () => void;
 }
 
 export function FeedbackBanner({
@@ -21,6 +22,7 @@ export function FeedbackBanner({
   recoveredHeart = false,
   combo = 0,
   onContinue,
+  onAskPingo,
 }: FeedbackBannerProps) {
   const mascotMood = isCorrect ? (combo >= 3 ? 'combo' : 'happy') : 'sad';
 
@@ -75,13 +77,25 @@ export function FeedbackBanner({
           </div>
         </div>
 
-        <div className="shrink-0 sm:pl-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0 sm:pl-4">
+          {onAskPingo && (
+            <TactileButton
+              variant="outline"
+              size="md"
+              onClick={onAskPingo}
+              className="w-full sm:w-auto border-[#00B8FF]/55 text-[#61D5FF] hover:border-[#00B8FF] whitespace-nowrap"
+            >
+              <span aria-hidden="true">💬</span>
+              <span>Pergunte ao Pingo</span>
+            </TactileButton>
+          )}
+
           <TactileButton
             variant={isCorrect ? 'success' : 'danger'}
             size="lg"
             fullWidth
             onClick={onContinue}
-            className="sm:min-w-[170px]"
+            className="sm:w-auto sm:min-w-[170px]"
           >
             {isLastQuestion ? 'Ver Resumo' : 'Continuar'}
           </TactileButton>

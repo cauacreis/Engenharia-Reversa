@@ -1,13 +1,17 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Clock, Flame, Heart, Lightbulb, RotateCcw, Target, XCircle, Zap } from 'lucide-react';
 import { QuizSummaryData } from '../../types/quiz';
 import { Mascot } from '../Mascot';
 import { TactileButton } from '../ui/TactileButton';
+import { AskPingoContext, AskPingoDrawer } from './AskPingoDrawer';
 
 interface LessonSummaryProps {
   summary: QuizSummaryData;
   onFinish: () => void;
   onRetry?: () => void;
+  onOpenSettings?: () => void;
+  keyRefreshTick?: number;
 }
 
 function formatDuration(totalSec: number): string {
@@ -16,7 +20,14 @@ function formatDuration(totalSec: number): string {
   return `${m}m ${String(s).padStart(2, '0')}s`;
 }
 
-export function LessonSummary({ summary, onFinish, onRetry }: LessonSummaryProps) {
+export function LessonSummary({
+  summary,
+  onFinish,
+  onRetry,
+  onOpenSettings,
+  keyRefreshTick = 0,
+}: LessonSummaryProps) {
+  const [pingoContext, setPingoContext] = useState<AskPingoContext | null>(null);
   const isStrong = summary.accuracy >= 70;
 
   return (
@@ -181,12 +192,39 @@ export function LessonSummary({ summary, onFinish, onRetry }: LessonSummaryProps
                     <Lightbulb className="h-3.5 w-3.5 text-[#FFC800] shrink-0 mt-0.5" />
                     <span>{item.question.tip}</span>
                   </div>
+
+                  <div className="pt-1 flex justify-end">
+                    <TactileButton
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        setPingoContext({
+                          question: item.question,
+                          selectedOption: item.userAnswerSummary,
+                          correctLabel: item.correctAnswerSummary,
+                          isCorrect: item.isCorrect,
+                        })
+                      }
+                      className="border-[#00B8FF]/45 text-[#61D5FF] hover:border-[#00B8FF]"
+                    >
+                      <span aria-hidden="true">💬</span>
+                      <span>Pergunte ao Pingo</span>
+                    </TactileButton>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
       </motion.div>
+
+      <AskPingoDrawer
+        open={Boolean(pingoContext)}
+        context={pingoContext}
+        keyRefreshTick={keyRefreshTick}
+        onClose={() => setPingoContext(null)}
+        onOpenSettings={() => onOpenSettings?.()}
+      />
     </div>
   );
 }

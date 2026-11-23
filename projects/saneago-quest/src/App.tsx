@@ -53,7 +53,7 @@ function SaneagoQuestShell() {
   const [noHeartsModalOpen, setNoHeartsModalOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [guideModalUnitId, setGuideModalUnitId] = useState<UnitId | null>(null);
-  const [, setKeyBadgeRefresh] = useState(0);
+  const [keyBadgeRefresh, setKeyBadgeRefresh] = useState(0);
 
   const [aiGenState, setAiGenState] = useState<{
     open: boolean;
@@ -282,136 +282,138 @@ function SaneagoQuestShell() {
     progress.hearts,
   ]);
 
-  if (activeQuiz) {
-    return (
-      <QuizSession
-        key={`${activeQuiz.mode}-${activeQuiz.lessonId ?? activeQuiz.simuladoScope ?? 'rev'}-${quizSeed}`}
-        config={activeQuiz}
-        onExit={() => setActiveQuiz(null)}
-        onStartMistakeReview={() => handleStartMistakeReview()}
-        onRetrySession={handleRetryActiveQuiz}
-      />
-    );
-  }
-
   return (
-    <div className="min-h-dvh flex flex-col bg-[#0B1117]">
-      <TopStatsBar onOpenSettings={() => setSettingsOpen(true)} />
-
-      <div className="mx-auto flex w-full max-w-6xl flex-1">
-        <BottomNav
-          activeTab={activeTab}
-          onSelectTab={setActiveTab}
-          mistakeCount={mistakeIds.length}
-          unlockedSimuladosCount={unlockedSimuladosCount}
+    <>
+      {activeQuiz ? (
+        <QuizSession
+          key={`${activeQuiz.mode}-${activeQuiz.lessonId ?? activeQuiz.simuladoScope ?? 'rev'}-${quizSeed}`}
+          config={activeQuiz}
+          keyRefreshTick={keyBadgeRefresh}
+          onExit={() => setActiveQuiz(null)}
+          onStartMistakeReview={() => handleStartMistakeReview()}
+          onRetrySession={handleRetryActiveQuiz}
+          onOpenSettings={() => setSettingsOpen(true)}
         />
+      ) : (
+        <div className="min-h-dvh flex flex-col bg-[#0B1117]">
+          <TopStatsBar onOpenSettings={() => setSettingsOpen(true)} />
 
-        <main className="flex-1 min-w-0 px-4 py-6 pb-24 md:px-8 md:py-8 md:pb-12">
-          {activeTab === 'trilha' && (
-            <StudyMapView
-              onStartLesson={handleStartLesson}
-              onStartUnitSimulado={handleStartUnitSimulado}
-              onStartGeneralSimulado={handleStartGeneralSimulado}
-              onStartMistakeReview={() => handleStartMistakeReview()}
-              onGenerateUnitAI={(unitId) =>
-                setAiGenState({
-                  open: true,
-                  scope: unitId,
-                  count: 5,
-                  mode: 'lesson',
-                })
-              }
-              onOpenUnitGuide={setGuideModalUnitId}
-              onNavigateTab={setActiveTab}
+          <div className="mx-auto flex w-full max-w-6xl flex-1">
+            <BottomNav
+              activeTab={activeTab}
+              onSelectTab={setActiveTab}
+              mistakeCount={mistakeIds.length}
+              unlockedSimuladosCount={unlockedSimuladosCount}
             />
-          )}
 
-          {activeTab === 'erros' && (
-            <ErrorAnalyticsView
-              onStartMistakeReview={handleStartMistakeReview}
-              onStartCustomTraining={handleStartCustomTraining}
-              onOpenSettings={() => setSettingsOpen(true)}
-            />
-          )}
+            <main className="flex-1 min-w-0 px-4 py-6 pb-24 md:px-8 md:py-8 md:pb-12">
+              {activeTab === 'trilha' && (
+                <StudyMapView
+                  onStartLesson={handleStartLesson}
+                  onStartUnitSimulado={handleStartUnitSimulado}
+                  onStartGeneralSimulado={handleStartGeneralSimulado}
+                  onStartMistakeReview={() => handleStartMistakeReview()}
+                  onGenerateUnitAI={(unitId) =>
+                    setAiGenState({
+                      open: true,
+                      scope: unitId,
+                      count: 5,
+                      mode: 'lesson',
+                    })
+                  }
+                  onOpenUnitGuide={setGuideModalUnitId}
+                  onNavigateTab={setActiveTab}
+                />
+              )}
 
-          {activeTab === 'simulados' && (
-            <SimuladoHubView
-              onStartUnitSimulado={handleStartUnitSimulado}
-              onStartGeneralSimulado={handleStartGeneralSimulado}
-              onOpenAIGenerator={(scope = 'geral', count = 20) =>
-                setAiGenState({
-                  open: true,
-                  scope,
-                  count,
-                  mode: 'simulado',
-                })
-              }
-              onStartSavedAIPack={handleStartGeneratedSession}
-            />
-          )}
+              {activeTab === 'erros' && (
+                <ErrorAnalyticsView
+                  onStartMistakeReview={handleStartMistakeReview}
+                  onStartCustomTraining={handleStartCustomTraining}
+                  onOpenSettings={() => setSettingsOpen(true)}
+                />
+              )}
 
-          {activeTab === 'prova' && <ExamDayView />}
-        </main>
-      </div>
+              {activeTab === 'simulados' && (
+                <SimuladoHubView
+                  onStartUnitSimulado={handleStartUnitSimulado}
+                  onStartGeneralSimulado={handleStartGeneralSimulado}
+                  onOpenAIGenerator={(scope = 'geral', count = 20) =>
+                    setAiGenState({
+                      open: true,
+                      scope,
+                      count,
+                      mode: 'simulado',
+                    })
+                  }
+                  onStartSavedAIPack={handleStartGeneratedSession}
+                />
+              )}
 
-      {/* Modal Guia Teórico da Unidade */}
-      <UnitGuideModal
-        unitId={guideModalUnitId}
-        onClose={() => setGuideModalUnitId(null)}
-        onPracticeNow={handlePracticeFromUnitGuide}
-      />
+              {activeTab === 'prova' && <ExamDayView />}
+            </main>
+          </div>
 
-      {/* Modal Gerador IA */}
-      <AIQuestionGeneratorModal
-        open={aiGenState.open}
-        initialScope={aiGenState.scope}
-        initialCount={aiGenState.count}
-        initialMode={aiGenState.mode}
-        onClose={() => setAiGenState((prev) => ({ ...prev, open: false }))}
-        onStartGeneratedSession={handleStartGeneratedSession}
-        onOpenSettings={() => setSettingsOpen(true)}
-      />
+          {/* Modal Guia Teórico da Unidade */}
+          <UnitGuideModal
+            unitId={guideModalUnitId}
+            onClose={() => setGuideModalUnitId(null)}
+            onPracticeNow={handlePracticeFromUnitGuide}
+          />
 
-      {/* Modal Configurações (Chave Groq & Meta Diária) */}
+          {/* Modal Gerador IA */}
+          <AIQuestionGeneratorModal
+            open={aiGenState.open}
+            initialScope={aiGenState.scope}
+            initialCount={aiGenState.count}
+            initialMode={aiGenState.mode}
+            onClose={() => setAiGenState((prev) => ({ ...prev, open: false }))}
+            onStartGeneratedSession={handleStartGeneratedSession}
+            onOpenSettings={() => setSettingsOpen(true)}
+          />
+
+          {/* Modal de bloqueio quando o usuário tenta abrir lição com 0 corações */}
+          <Modal
+            open={noHeartsModalOpen}
+            onClose={() => setNoHeartsModalOpen(false)}
+            title="Você está sem corações!"
+          >
+            <div className="space-y-5 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF4B4B]/15 border-2 border-[#FF4B4B]/50 text-[#FF4B4B]">
+                <HeartCrack className="h-8 w-8" />
+              </div>
+              <p className="text-sm text-[#92A8BE] leading-relaxed">
+                Para entrar em uma nova lição você precisa de pelo menos 1 coração. Faça uma revisão rápida de erros para recuperar vidas agora mesmo!
+              </p>
+              <div className="flex flex-col gap-3">
+                <TactileButton
+                  variant="danger"
+                  fullWidth
+                  onClick={() => handleStartMistakeReview()}
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  <span>Recuperar Corações Agora</span>
+                </TactileButton>
+                <TactileButton
+                  variant="outline"
+                  fullWidth
+                  onClick={() => setNoHeartsModalOpen(false)}
+                >
+                  Fechar
+                </TactileButton>
+              </div>
+            </div>
+          </Modal>
+        </div>
+      )}
+
+      {/* Modal Configurações (Chave Groq & Meta Diária) acessível inclusive durante o Pergunte ao Pingo */}
       <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onKeyStatusChanged={() => setKeyBadgeRefresh((n) => n + 1)}
       />
-
-      {/* Modal de bloqueio quando o usuário tenta abrir lição com 0 corações */}
-      <Modal
-        open={noHeartsModalOpen}
-        onClose={() => setNoHeartsModalOpen(false)}
-        title="Você está sem corações!"
-      >
-        <div className="space-y-5 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#FF4B4B]/15 border-2 border-[#FF4B4B]/50 text-[#FF4B4B]">
-            <HeartCrack className="h-8 w-8" />
-          </div>
-          <p className="text-sm text-[#92A8BE] leading-relaxed">
-            Para entrar em uma nova lição você precisa de pelo menos 1 coração. Faça uma revisão rápida de erros para recuperar vidas agora mesmo!
-          </p>
-          <div className="flex flex-col gap-3">
-            <TactileButton
-              variant="danger"
-              fullWidth
-              onClick={() => handleStartMistakeReview()}
-            >
-              <RotateCcw className="h-4 w-4" />
-              <span>Recuperar Corações Agora</span>
-            </TactileButton>
-            <TactileButton
-              variant="outline"
-              fullWidth
-              onClick={() => setNoHeartsModalOpen(false)}
-            >
-              Fechar
-            </TactileButton>
-          </div>
-        </div>
-      </Modal>
-    </div>
+    </>
   );
 }
 
