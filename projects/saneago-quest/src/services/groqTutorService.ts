@@ -1,4 +1,5 @@
 import {
+  EDITAL_BASE_CONTEXT,
   EDITAL_SUBTOPICS,
   EDITAL_SYSTEM_PROMPT,
   EDITAL_WEIGHTS,
@@ -188,6 +189,7 @@ interface CallGroqOptions {
   temperature?: number;
   maxTokens?: number;
   jsonMode?: boolean;
+  reasoningEffort?: 'low' | 'medium' | 'high';
 }
 
 async function callGroqWithFallback<T>(
@@ -216,10 +218,13 @@ async function callGroqWithFallback<T>(
         model,
         messages,
         temperature: options.temperature ?? 0.35,
-        max_tokens: options.maxTokens ?? 3200,
+        max_completion_tokens: options.maxTokens ?? 3200,
       };
       if (options.jsonMode) {
         body.response_format = { type: 'json_object' };
+      }
+      if (options.reasoningEffort && model.startsWith('openai/gpt-oss')) {
+        body.reasoning_effort = options.reasoningEffort;
       }
 
       const response = await fetch(GROQ_CHAT_URL, {
@@ -314,7 +319,7 @@ export async function testGroqConnection(
         content: 'Responda com o JSON {"ok": true, "status": "conectado"}.',
       },
     ],
-    { apiKeyOverride, modelOverride, temperature: 0.1, maxTokens: 80 }
+    { apiKeyOverride, modelOverride, temperature: 0.1, maxTokens: 256, reasoningEffort: 'low' }
   );
   return result.modelUsed;
 }
@@ -869,6 +874,63 @@ function formatQuestionContextForPingo(
   return lines.join('\n');
 }
 
+function collectReadableJsonLines(
+  value: unknown,
+  lines: string[],
+  inArray = false
+): void {
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed) {
+      lines.push(inArray && !/^[-*•]\s+/.test(trimmed) ? `- ${trimmed}` : trimmed);
+    }
+    return;
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    lines.push(inArray ? `- ${String(value)}` : String(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item) => collectReadableJsonLines(item, lines, true));
+    return;
+  }
+  if (value && typeof value === 'object') {
+    Object.values(value as Record<string, unknown>).forEach((entry) =>
+      collectReadableJsonLines(entry, lines, false)
+    );
+  }
+}
+
+function sanitizePingoChatText(raw: string): string {
+  let cleaned = raw.trim();
+  const fenceMatch = cleaned.match(/^```(?:markdown|md|json|text)?\s*\r?\n([\s\S]*?)\r?\n```$/i);
+  if (fenceMatch && fenceMatch[1]) {
+    cleaned = fenceMatch[1].trim();
+  }
+
+  if (cleaned.startsWith('{') && cleaned.endsWith('}')) {
+    try {
+      const parsed: unknown = JSON.parse(cleaned);
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        const lines: string[] = [];
+        collectReadableJsonLines(parsed, lines);
+        if (lines.length > 0) {
+          return lines.reduce((acc, line, index) => {
+            if (index === 0) return line;
+            const prevIsBullet = lines[index - 1].startsWith('- ');
+            const currIsBullet = line.startsWith('- ');
+            return acc + (prevIsBullet && currIsBullet ? '\n' : '\n\n') + line;
+          }, '');
+        }
+      }
+    } catch {
+      // Se não for JSON válido completo, mantém o texto original
+    }
+  }
+
+  return cleaned;
+}
+
 export async function askPingoAboutQuestion(
   params: AskPingoAboutQuestionParams
 ): Promise<AskPingoResponse> {
@@ -877,7 +939,7 @@ export async function askPingoAboutQuestion(
     params.selectedOption
   );
 
-  const systemPrompt = `${EDITAL_SYSTEM_PROMPT}
+  const systemPrompt = `${EDITAL_BASE_CONTEXT}
 
 PAPEL NESTA CONVERSA:
 Você é o **Pingo**, a gota d'água engenheira da SANEAGO e tutor do aplicativo Saneago Quest.
@@ -890,6 +952,7 @@ ESTILO E REGRAS DE RESPOSTA:
 4. Use analogias simples e linguagem do dia a dia — evite "gramatiquês" ou "juridiquês" pesado.
 5. Destaque palavras-chave, regras mnemônicas e letras das alternativas em **negrito** (ex: **alternativa B**, **regra do MA-NÉ**).
 6. Nunca invente alternativas ou afirmações que não existam na questão abaixo.
+7. Responda SEMPRE em texto natural (Português do Brasil), com parágrafos curtos ou bullet points iniciados por "- ". NUNCA responda em formato JSON, nem use chaves {}, colchetes [] ou blocos de código JSON.
 
 DADOS COMPLETOS DA QUESTÃO ATUAL:
 ${questionContext}`;
@@ -910,11 +973,12 @@ ${questionContext}`;
 
   const { text, modelUsed } = await callGroqText(messages, {
     temperature: 0.45,
-    maxTokens: 700,
+    maxTokens: 2048,
+    reasoningEffort: 'low',
   });
 
   return {
-    answer: text,
+    answer: sanitizePingoChatText(text),
     modelUsed,
   };
 }

@@ -95,6 +95,17 @@ function RichPingoText({ text }: { text: string }) {
       return;
     }
 
+    const headingMatch = trimmed.match(/^#{1,3}\s+(.*)$/);
+    if (headingMatch) {
+      flushBullets(`ul-before-h-${idx}`);
+      blocks.push(
+        <p key={`h-${idx}`} className="font-display font-extrabold text-white pt-1">
+          {renderInlineFormatting(headingMatch[1])}
+        </p>
+      );
+      return;
+    }
+
     const bulletMatch = trimmed.match(/^[-*•]\s+(.*)$/);
     if (bulletMatch) {
       bulletBuffer.push(bulletMatch[1]);
@@ -285,7 +296,7 @@ export function AskPingoDrawer({
             <div className="h-1.5 w-full shrink-0 bg-gradient-to-r from-[#00B8FF] via-[#14B8A6] to-[#58CC02]" />
 
             {/* Cabeçalho */}
-            <div className="shrink-0 flex items-center justify-between gap-3 border-b border-[#28384A] px-4 py-3 sm:px-5">
+            <div className="shrink-0 flex items-center justify-between gap-3 border-b border-[#28384A] px-4 pt-4 pb-3 sm:px-5">
               <div className="flex items-center gap-3 min-w-0">
                 <Mascot
                   mood={loading ? 'thinking' : 'teaching'}

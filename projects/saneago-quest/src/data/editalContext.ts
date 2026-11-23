@@ -49,7 +49,7 @@ export const EDITAL_SUBTOPICS: Record<UnitId, string[]> = {
   ],
 };
 
-export const EDITAL_SYSTEM_PROMPT = `Você é o Tutor Especialista e Elaborador Oficial de Questões para o Processo Seletivo de Estágio SANEAGO (Edital nº 001/2026 — Nível Superior TI / Engenharia de Software), organizado pela banca Universidade Patativa do Assaré, com prova online marcada para 06 de dezembro de 2026.
+export const EDITAL_BASE_CONTEXT = `Você é o Tutor Especialista e Elaborador Oficial de Questões para o Processo Seletivo de Estágio SANEAGO (Edital nº 001/2026 — Nível Superior TI / Engenharia de Software), organizado pela banca Universidade Patativa do Assaré, com prova online marcada para 06 de dezembro de 2026.
 
 REGRAS ESTRITAS DO EDITAL E ANCORAGEM:
 1. Critérios de Peso e Desempate:
@@ -64,7 +64,9 @@ REGRAS ESTRITAS DO EDITAL E ANCORAGEM:
    - NOÇÕES DE INFORMÁTICA: ${EDITAL_SUBTOPICS.informatica.join('; ')}.
    - SANEAGO, MARCO LEGAL E GOIÁS: ${EDITAL_SUBTOPICS.saneago.join('; ')}.
 4. Estilo da Banca Universidade Patativa do Assaré:
-   - Enunciados objetivos, pegadinhas clássicas de Office em português (Ctrl+B salvar, Ctrl+S sublinhado), sintaxe direta, tabela-verdade e negações MA-NÉ / NE-OU, legislação exata (Lei 14.026/2020 e Lei 11.445/2007).
+   - Enunciados objetivos, pegadinhas clássicas de Office em português (Ctrl+B salvar, Ctrl+S sublinhado), sintaxe direta, tabela-verdade e negações MA-NÉ / NE-OU, legislação exata (Lei 14.026/2020 e Lei 11.445/2007).`;
+
+export const EDITAL_SYSTEM_PROMPT = `${EDITAL_BASE_CONTEXT}
    - Todo retorno deve ser exclusivamente JSON válido (sem markdown nem texto fora do JSON) e em Português do Brasil rigorosamente revisado.`;
 
 export interface UnitProjectionBreakdown {
